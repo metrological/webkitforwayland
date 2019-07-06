@@ -1880,6 +1880,12 @@ void MediaPlayerPrivateGStreamer::handleMessage(GstMessage* message)
                 m_networkState = error;
                 m_player->networkStateChanged();
             }
+#if ENABLE(ENCRYPTED_MEDIA)
+            if (g_error_matches(err.get(), GST_STREAM_ERROR, GST_STREAM_ERROR_DECRYPT)) {
+                fprintf(stderr, "HTML5 video: Playback failed: Decryption error [%s]\n", m_url.string().utf8().data());
+                m_player->decryptErrorEncountered(); // override the error code
+            }
+#endif
         }
         break;
     case GST_MESSAGE_WARNING:
