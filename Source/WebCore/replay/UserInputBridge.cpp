@@ -38,6 +38,7 @@
 #include "PlatformKeyboardEvent.h"
 #include "PlatformMouseEvent.h"
 #include "PlatformWheelEvent.h"
+#include "LegacySchemeRegistry.h"
 
 namespace WebCore {
 
@@ -118,8 +119,13 @@ bool UserInputBridge::logicalScrollRecursively(ScrollLogicalDirection direction,
     return Ref(m_page.focusController().focusedOrMainFrame())->eventHandler().logicalScrollRecursively(direction, granularity, nullptr);
 }
 
+void ForceStopMediaElements();  // defined in HTMLMediaElement
 void UserInputBridge::loadRequest(FrameLoadRequest&& request, InputSource)
 {
+    if (request.resourceRequest().url().isEmpty() ||
+        LegacySchemeRegistry::shouldLoadURLSchemeAsEmptyDocument(request.resourceRequest().url().protocol().toStringWithoutCopying())) {
+        ForceStopMediaElements();
+    }
 #if ENABLE(WEB_AUTHN)
     m_page.authenticatorCoordinator().resetUserGestureRequirement();
 #endif
