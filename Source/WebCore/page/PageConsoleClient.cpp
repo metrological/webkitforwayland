@@ -148,7 +148,7 @@ void PageConsoleClient::addMessage(std::unique_ptr<Inspector::ConsoleMessage>&& 
         page->chrome().client().addMessageToConsole(consoleMessage->source(), consoleMessage->level(), message, consoleMessage->line(), consoleMessage->column(), consoleMessage->url());
         page->chrome().client().addMessageWithArgumentsToConsole(consoleMessage->source(), consoleMessage->level(), message, additionalArguments, consoleMessage->line(), consoleMessage->column(), consoleMessage->url());
 
-        if (UNLIKELY(page->settings().logsPageMessagesToSystemConsoleEnabled() || shouldPrintExceptions()))
+        if (true || UNLIKELY(page->settings().logsPageMessagesToSystemConsoleEnabled() || shouldPrintExceptions()))
             logMessageToSystemConsole(*consoleMessage);
     }
 
@@ -213,7 +213,7 @@ void PageConsoleClient::messageWithTypeAndLevel(MessageType type, MessageLevel l
         page->chrome().client().addMessageWithArgumentsToConsole(MessageSource::ConsoleAPI, level, messageText, additionalArguments, lineNumber, columnNumber, url);
     }
 
-    if (page->settings().logsPageMessagesToSystemConsoleEnabled() || PageConsoleClient::shouldPrintExceptions())
+    if (true || page->settings().logsPageMessagesToSystemConsoleEnabled() || PageConsoleClient::shouldPrintExceptions())
         ConsoleClient::printConsoleMessageWithArguments(MessageSource::ConsoleAPI, type, level, lexicalGlobalObject, WTFMove(arguments));
 }
 
