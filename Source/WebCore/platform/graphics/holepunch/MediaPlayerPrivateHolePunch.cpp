@@ -111,7 +111,8 @@ static HashSet<String, ASCIICaseInsensitiveHash>& mimeTypeCache()
         return cache;
 
     const ASCIILiteral mimeTypes[] = {
-        "video/holepunch"_s
+        "video/holepunch"_s,
+        "video/ave"_s
     };
 
     for (unsigned i = 0; i < (sizeof(mimeTypes) / sizeof(*mimeTypes)); ++i)
