@@ -433,6 +433,10 @@ void GStreamerRegistryScanner::initializeDecoders(const GStreamerRegistryScanner
         m_decoderCodecMap.add(AtomString("x-h265"_s), h265DecoderAvailable);
         m_decoderCodecMap.add(AtomString("hvc1*"_s), h265DecoderAvailable);
         m_decoderCodecMap.add(AtomString("hev1*"_s), h265DecoderAvailable);
+#if ENABLE(DV)
+        m_decoderCodecMap.add(AtomString("dvhe*"_s), h265DecoderAvailable);
+        m_decoderCodecMap.add(AtomString("dvh1*"_s), h265DecoderAvailable);
+#endif
     }
 
     if (shouldAddMP4Container) {
@@ -762,6 +766,27 @@ MediaPlayerEnums::SupportsType GStreamerRegistryScanner::isContentTypeSupported(
     // Spec says we should not return "probably" if the codecs string is empty.
     if (codecs.isEmpty())
         return SupportsType::MayBeSupported;
+
+    String eotf = contentType.parameter("eotf"_s);
+    if (!eotf.isEmpty()) {
+        // Electro-optic transfer function (EOTF) support, possible values:
+        //  bt709 (SDR)
+        //  smpte2084 HDR10
+        //  arib-std-b67 HLG
+#if ENABLE(HDR)
+        if (eotf == "bt709"_s || eotf == "smpte2084"_s || eotf == "arib-std-b67"_s) {
+            GST_DEBUG("eotf: %s", eotf.utf8().data());
+        } else {
+            GST_WARNING("unsupported eotf: %s", eotf.utf8().data());
+            return SupportsType::IsNotSupported;
+        }
+#else
+        if (eotf != "bt709"_s) {
+            GST_WARNING("unsupported eotf: %s", eotf.utf8().data());
+            return SupportsType::IsNotSupported;
+        }
+#endif
+    }
 
     for (const auto& codec : codecs) {
         bool requiresHardwareSupport = contentTypesRequiringHardwareSupport

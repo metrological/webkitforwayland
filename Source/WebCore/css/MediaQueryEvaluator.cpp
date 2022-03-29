@@ -445,6 +445,16 @@ static bool dynamicRangeEvaluate(CSSValue* value, const CSSToLengthConversionDat
     if (!value)
         return false;
 
+#if ENABLE(HDR)
+    switch (downcast<CSSPrimitiveValue>(*value).valueID()) {
+    case CSSValueHigh:
+    case CSSValueStandard:
+        return true;
+    default:
+        return false; // Any unknown value should not be considered a match.
+    }
+#endif
+
     if (!frame.settings().hdrMediaCapabilitiesEnabled())
         return false;
 
