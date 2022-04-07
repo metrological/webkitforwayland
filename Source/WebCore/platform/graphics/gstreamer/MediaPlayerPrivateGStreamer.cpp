@@ -218,6 +218,10 @@ MediaPlayerPrivateGStreamer::MediaPlayerPrivateGStreamer(MediaPlayer* player)
 #endif
 
     fprintf(stderr, "HTML5 video: Player constructed [%p]\n", this);
+
+#if ENABLE(ENCRYPTED_MEDIA)
+    m_tracker = makeUnique<MediaPlayerGStreamerEncryptedPlayTracker>();
+#endif
 }
 
 MediaPlayerPrivateGStreamer::~MediaPlayerPrivateGStreamer()
@@ -1043,6 +1047,10 @@ void MediaPlayerPrivateGStreamer::setPlaybinURL(const URL& url)
     m_url = URL { cleanURLString };
     GST_INFO_OBJECT(pipeline(), "Load %s", m_url.string().utf8().data());
     g_object_set(m_pipeline.get(), "uri", m_url.string().utf8().data(), nullptr);
+
+#if ENABLE(ENCRYPTED_MEDIA)
+    m_tracker->setURL(m_url.string());
+#endif
 }
 
 static void setSyncOnClock(GstElement* element, bool sync)
@@ -1982,6 +1990,9 @@ void MediaPlayerPrivateGStreamer::handleMessage(GstMessage* message)
         updateStates();
         checkPlayingConsistency();
 
+#if ENABLE(ENCRYPTED_MEDIA)
+        m_tracker->notifyStateChange(currentState, newState);
+#endif
         break;
     }
     case GST_MESSAGE_BUFFERING:
@@ -2116,6 +2127,10 @@ void MediaPlayerPrivateGStreamer::handleMessage(GstMessage* message)
         } else if (gst_structure_has_name(structure, "webkit-web-src-has-eos")) {
             GST_DEBUG_OBJECT(pipeline(), "WebKitWebSrc has EOS");
             m_hasWebKitWebSrcSentEOS = true;
+        } else if (gst_structure_has_name(structure, "drm-decryption-started")) {
+#if ENABLE(ENCRYPTED_MEDIA)
+            m_tracker->notifyDecryptionStarted(gst_structure_get_string(structure, "key-system"));
+#endif
         } else
             GST_DEBUG_OBJECT(pipeline(), "Unhandled element message: %" GST_PTR_FORMAT, structure);
         break;
