@@ -40,7 +40,23 @@ void installBreakpadExceptionHandler()
 {
     static std::once_flag onceFlag;
     static MainThreadLazyNeverDestroyed<google_breakpad::ExceptionHandler> exceptionHandler;
+
+    // Check for BREAKPAD_FD env and install the handler if it is set.
+    const char* breakpadFd = getenv("BREAKPAD_FD");
+    if (breakpadFd) {
+        std::call_once(onceFlag, [breakpadFd]() {
+            exceptionHandler.construct(google_breakpad::MinidumpDescriptor(atoi(breakpadFd)), nullptr,
+                [](const google_breakpad::MinidumpDescriptor&, void*, bool succeeded) -> bool {
+                    return succeeded;
+                }, nullptr, true, -1);
+        });
+        return;
+    }
+
     static String breakpadMinidumpDir = String::fromUTF8(getenv("BREAKPAD_MINIDUMP_DIR"));
+
+    if (breakpadMinidumpDir.isEmpty() && FileSystem::fileExists("/tmp/.SecureDumpEnable"_s))
+        breakpadMinidumpDir = "/opt/secure/minidumps"_s;
 
 #ifdef BREAKPAD_MINIDUMP_DIR
     if (breakpadMinidumpDir.isEmpty())
