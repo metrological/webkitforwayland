@@ -236,6 +236,19 @@ public:
         logVerbose(channel, WTFLogLevel::Debug, file, function, line, arguments...);
     }
 
+    inline bool alwaysLogAllowed() const {
+        static const bool isAlwaysLogAllowed = []() {
+            // Put all "always/release logging" behind WEBKIT_DEBUG env.
+            // Muted by default.
+            const auto* webkit_debug_env = getenv("WEBKIT_DEBUG");
+            if (webkit_debug_env && strlen(webkit_debug_env))
+                return true;
+            return false;
+        }();
+
+        return isAlwaysLogAllowed;
+    }
+
     inline bool willLog(const WTFLogChannel& channel, WTFLogLevel level) const
     {
         if (!m_enabled)
@@ -245,6 +258,9 @@ public:
         if (channel.state == WTFLogChannelState::Off)
             return false;
 #endif
+
+        if (level <= WTFLogLevel::Always)
+            return alwaysLogAllowed();
 
         if (level <= WTFLogLevel::Error)
             return true;
