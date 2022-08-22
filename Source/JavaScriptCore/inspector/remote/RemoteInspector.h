@@ -208,6 +208,7 @@ private:
 
     bool updateTargetMap(RemoteControllableTarget*);
 
+    bool shouldInhibitLocalHostInspection(TargetID targetId);
     void pushListingsNow();
     void pushListingsSoon();
 
