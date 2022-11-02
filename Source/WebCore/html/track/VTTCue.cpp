@@ -91,6 +91,12 @@ static const String& centerKeyword()
     return center;
 }
 
+static const String& middleKeyword()
+{
+    static NeverDestroyed<const String> middle(MAKE_STATIC_STRING_IMPL("middle"));
+    return middle;
+}
+
 static const String& endKeyword()
 {
     static NeverDestroyed<const String> end(MAKE_STATIC_STRING_IMPL("end"));
@@ -554,7 +560,7 @@ ExceptionOr<void> VTTCue::setAlign(const String& value)
     CueAlignment alignment;
     if (value == startKeyword())
         alignment = Start;
-    else if (value == centerKeyword())
+    else if (value == centerKeyword() || value == middleKeyword())
         alignment = Center;
     else if (value == endKeyword())
         alignment = End;
@@ -1250,7 +1256,7 @@ void VTTCue::setCueSettings(const String& inputString)
                 m_cueAlignment = Start;
 
             // 2. If value is a case-sensitive match for the string "center", then let cue's text track cue alignment be center alignment.
-            else if (input.scanRun(valueRun, centerKeyword()))
+            else if (input.scanRun(valueRun, centerKeyword()) || input.scanRun(valueRun, middleKeyword()))
                 m_cueAlignment = Center;
 
             // 3. If value is a case-sensitive match for the string "end", then let cue's text track cue alignment be end alignment.
