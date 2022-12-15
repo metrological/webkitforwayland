@@ -2218,6 +2218,9 @@ void MediaPlayerPrivateGStreamer::updateBufferingStatus(GstBufferingMode mode, d
     else
         m_fillTimer.stop();
 
+    // Force buffering flag to be always false so we don't enter buffering state at all
+    m_isBuffering = false;
+
     m_bufferingPercentage = percentage;
     switch (mode) {
     case GST_BUFFERING_STREAM: {
@@ -3001,6 +3004,13 @@ void MediaPlayerPrivateGStreamer::createGSTPlayBin(const URL& url)
         GST_WARNING("%s not found, make sure to install gst-plugins-base", playbinName);
         loadingFailed(MediaPlayer::NetworkState::FormatError, MediaPlayer::ReadyState::HaveNothing, true);
         return;
+    }
+
+    if (!isMediaSource() && !isMediaStream) { // for progressive playback only
+        // set fixed playbin buffer-size to disable uridecodebin estimations
+        // that could be platform dependent. Use default queue2 elem max size value
+        static constexpr gint kDefaultQueue2BufferSize = 2 * 1024 * 1024;   // Default queue2 size - 2 MB
+        g_object_set(G_OBJECT(pipeline()), "buffer-size", kDefaultQueue2BufferSize, nullptr);
     }
 
     setStreamVolumeElement(GST_STREAM_VOLUME(m_pipeline.get()));
