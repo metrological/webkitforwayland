@@ -717,6 +717,10 @@ private:
 
     RefPtr<GStreamerQuirksManager> m_quirksManagerForTesting;
     HashMap<const GStreamerQuirk*, std::unique_ptr<GStreamerQuirkBase::GStreamerQuirkState>> m_quirkStates;
+
+public:
+    gulong debugProbeIds[10] = { 0 };
+
 };
 
 }
