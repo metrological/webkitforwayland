@@ -113,6 +113,7 @@ namespace WebCore {
     M(ServiceWorker) \
     M(SharedWorker) \
     M(SpellingAndGrammar) \
+    M(SpeechSynthesis) \
     M(SQLDatabase) \
     M(Storage) \
     M(StorageAPI) \

@@ -1875,6 +1875,8 @@ public:
     void speechSynthesisPause(CompletionHandler<void()>&&);
     void speechSynthesisResume(CompletionHandler<void()>&&);
     void speechSynthesisResetState();
+    double getPageMediaVolume() override { return 0.0; }
+    void setPageMediaVolume(double volume) override {}
 #endif
 
     void configureLoggingChannel(const String&, WTFLogChannelState, WTFLogLevel);

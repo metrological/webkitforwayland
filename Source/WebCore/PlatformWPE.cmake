@@ -35,6 +35,7 @@ list(APPEND WebCore_PRIVATE_INCLUDE_DIRECTORIES
     "${WEBCORE_DIR}/platform/mediastream/gstreamer"
     "${WEBCORE_DIR}/platform/network/glib"
     "${WEBCORE_DIR}/platform/text/icu"
+    "${WEBCORE_DIR}/platform/ttsclient"
     "${WEBCORE_DIR}/platform/wpe"
 )
 if (USE_ATK)
@@ -162,4 +163,8 @@ if (ENABLE_GAMEPAD)
     list(APPEND WebCore_PRIVATE_FRAMEWORK_HEADERS
         platform/gamepad/wpe/WPEGamepadProvider.h
     )
+endif ()
+
+if (ENABLE_SPEECH_SYNTHESIS AND USE_TTS_CLIENT)
+    list(APPEND WebCore_LIBRARIES TTSClient)
 endif ()

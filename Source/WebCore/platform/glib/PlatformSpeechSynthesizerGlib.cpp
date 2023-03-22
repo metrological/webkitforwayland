@@ -21,7 +21,7 @@
 
 #include <wtf/Assertions.h>
 
-#if ENABLE(SPEECH_SYNTHESIS) && USE(GLIB)
+#if ENABLE(SPEECH_SYNTHESIS) && USE(GLIB) && !USE(TTS_CLIENT)
 
 namespace WebCore {
 

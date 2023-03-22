@@ -76,6 +76,8 @@ private:
     void didFinishSpeaking(PlatformSpeechSynthesisUtterance&) override;
     void speakingErrorOccurred(PlatformSpeechSynthesisUtterance&, std::optional<SpeechSynthesisErrorCode>) override;
     void boundaryEventOccurred(PlatformSpeechSynthesisUtterance&, SpeechBoundary, unsigned charIndex, unsigned charLength) override;
+    virtual double getPageMediaVolume() override;
+    virtual void setPageMediaVolume(double volume) override;
 
     // SpeechSynthesisClient override methods
     void didStartSpeaking() override;

@@ -93,7 +93,7 @@ void SpeechSynthesis::voicesDidChange()
 PlatformSpeechSynthesizer& SpeechSynthesis::ensurePlatformSpeechSynthesizer()
 {
     if (!m_platformSpeechSynthesizer)
-        m_platformSpeechSynthesizer = makeUnique<PlatformSpeechSynthesizer>(this);
+        m_platformSpeechSynthesizer = PlatformSpeechSynthesizer::create(this);
     return *m_platformSpeechSynthesizer;
 }
 
@@ -162,8 +162,9 @@ void SpeechSynthesis::cancel()
     // Remove all the items from the utterance queue.
     // Hold on to the current utterance so the platform synthesizer can have a chance to clean up.
     RefPtr<SpeechSynthesisUtterance> current = m_currentSpeechUtterance;
-    m_utteranceQueue.clear();
+    Deque<Ref<SpeechSynthesisUtterance>> utteranceQueue = WTFMove(m_utteranceQueue);
     if (m_speechSynthesisClient) {
+        utteranceQueue.clear();
         m_speechSynthesisClient->cancel();
         // If we wait for cancel to callback speakingErrorOccurred, then m_currentSpeechUtterance will be null
         // and the event won't be processed. Instead we process the error immediately.
@@ -171,6 +172,17 @@ void SpeechSynthesis::cancel()
         m_currentSpeechUtterance = nullptr;
     } else if (m_platformSpeechSynthesizer) {
         m_platformSpeechSynthesizer->cancel();
+
+        // Trigger canceled events for queued utterances
+        while(utteranceQueue.size() > 0) {
+            Ref<SpeechSynthesisUtterance> utterance = utteranceQueue.takeFirst();
+            if(m_currentSpeechUtterance != utterance.ptr())
+                fireErrorEvent(eventNames().errorEvent, utterance, SpeechSynthesisErrorCode::Canceled);
+        }
+        utteranceQueue.clear();
+        setPageMediaVolume(1);
+        m_currentSpeechUtterance = nullptr;
+
         // The platform should have called back immediately and cleared the current utterance.
         ASSERT(!m_currentSpeechUtterance);
     }
@@ -246,6 +258,20 @@ void SpeechSynthesis::boundaryEventOccurred(PlatformSpeechSynthesisUtterance& ut
     default:
         ASSERT_NOT_REACHED();
     }
+}
+
+double SpeechSynthesis::getPageMediaVolume()
+{
+    if(m_currentSpeechUtterance)
+        return m_currentSpeechUtterance->getPageMediaVolume();
+
+    return 0.0;
+}
+
+void SpeechSynthesis::setPageMediaVolume(double volume)
+{
+    if(m_currentSpeechUtterance)
+        m_currentSpeechUtterance->setPageMediaVolume(volume);
 }
 
 void SpeechSynthesis::didStartSpeaking()

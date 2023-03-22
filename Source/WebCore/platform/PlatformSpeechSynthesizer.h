@@ -56,6 +56,8 @@ public:
     virtual void speakingErrorOccurred(PlatformSpeechSynthesisUtterance&, std::optional<SpeechSynthesisErrorCode>) = 0;
     virtual void boundaryEventOccurred(PlatformSpeechSynthesisUtterance&, SpeechBoundary, unsigned charIndex, unsigned charLength) = 0;
     virtual void voicesDidChange() = 0;
+    virtual double getPageMediaVolume() = 0;
+    virtual void setPageMediaVolume(double volume) = 0;
 protected:
     virtual ~PlatformSpeechSynthesizerClient() = default;
 };
@@ -63,13 +65,14 @@ protected:
 class WEBCORE_EXPORT PlatformSpeechSynthesizer {
     WTF_MAKE_FAST_ALLOCATED;
 public:
+    WEBCORE_EXPORT static std::unique_ptr<PlatformSpeechSynthesizer> create(PlatformSpeechSynthesizerClient*);
     WEBCORE_EXPORT explicit PlatformSpeechSynthesizer(PlatformSpeechSynthesizerClient*);
 
     // FIXME: We have multiple virtual functions just so we can support a mock for testing.
     // Seems wasteful. Would be nice to find a better way.
     WEBCORE_EXPORT virtual ~PlatformSpeechSynthesizer();
 
-    const Vector<RefPtr<PlatformSpeechSynthesisVoice>>& voiceList() const;
+    virtual const Vector<RefPtr<PlatformSpeechSynthesisVoice>>& voiceList() const;
     virtual void speak(RefPtr<PlatformSpeechSynthesisUtterance>&&);
     virtual void pause();
     virtual void resume();
@@ -81,7 +84,7 @@ public:
 protected:
     Vector<RefPtr<PlatformSpeechSynthesisVoice>> m_voiceList;
 
-private:
+// private:
     virtual void initializeVoiceList();
 
     bool m_voiceListIsInitialized { false };
