@@ -107,6 +107,9 @@ WEBKIT_OPTION_DEFINE(USE_EXTERNAL_HOLEPUNCH "Whether to enable external holepunc
 WEBKIT_OPTION_DEFINE(ENABLE_ACCELERATED_2D_CANVAS "Whether to enable accelerated 2D canvas" PRIVATE OFF)
 WEBKIT_OPTION_DEFINE(ENABLE_OIPF_VK "Whether to enable OIPF keys for DAE applications" PRIVATE OFF)
 
+# Debug memory heap breakdown with malloc-zone allocator
+WEBKIT_OPTION_DEFINE(ENABLE_MALLOC_HEAP_BREAKDOWN "Whether to enable malloc heap breakdown" PRIVATE OFF)
+
 # Supported platforms.
 WEBKIT_OPTION_DEFINE(USE_WPEWEBKIT_PLATFORM_WESTEROS "Whether to enable support for the Westeros platform" PUBLIC OFF)
 WEBKIT_OPTION_DEFINE(USE_WPEWEBKIT_PLATFORM_BCM_NEXUS "Whether to enable support for the Broadcom Nexus platform" PUBLIC OFF)
@@ -441,3 +444,9 @@ if (USE_LIBBACKTRACE)
 
     set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG}${CMAKE_COMPILER_SIZE_OPT_FLAGS} -funwind-tables")
 endif ()
+
+if (ENABLE_MALLOC_HEAP_BREAKDOWN)
+# Enable the same on bmalloc side
+  add_definitions(-DBENABLE_MALLOC_HEAP_BREAKDOWN=1)
+  set(MALLOC_ZONE_LIBRARIES malloc-zone)
+endif()
