@@ -49,7 +49,7 @@
 #endif
 
 #if USE(ATK)
-#include "WebKitAccessible.h"
+#include <wtf/glib/GRefPtr.h>
 #endif
 
 #if PLATFORM(COCOA)

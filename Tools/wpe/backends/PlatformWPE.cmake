@@ -65,7 +65,6 @@ if (ENABLE_ACCESSIBILITY)
     )
     if (USE_ATK)
         list(APPEND WPEToolingBackends_DEFINITIONS USE_ATK=1)
-        list(APPEND WPEToolingBackends_LIBRARIES ATK::Bridge)
         list(APPEND WPEToolingBackends_SOURCES
           atk/ViewBackendAtk.cpp
         )

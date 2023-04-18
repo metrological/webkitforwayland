@@ -402,6 +402,10 @@
 #import <pal/spi/cg/CoreGraphicsSPI.h>
 #endif
 
+#if ENABLE(ACCESSIBILITY)
+#include <rdkat.h>
+#endif
+
 static void adjustCoreGraphicsForCaptivePortal()
 {
 #if HAVE(LOCKDOWN_MODE_PDF_ADDITIONS)
@@ -409,6 +413,16 @@ static void adjustCoreGraphicsForCaptivePortal()
     CGEnterLockdownModeForFonts();
 #endif
 }
+
+#if ENABLE(ACCESSIBILITY)
+#if PLATFORM(BROADCOM)
+WTF::WeakPtr<WebKit::WebPage> g_pageHandle;
+static void SetMediaVolume(void *data, float volume) {
+    if(data && g_pageHandle && data == g_pageHandle.get())
+        g_pageHandle->setMediaVolume(volume);
+}
+#endif
+#endif
 
 namespace WebKit {
 using namespace JSC;
@@ -586,6 +600,10 @@ WebPage::WebPage(PageIdentifier pageID, WebPageCreationParameters&& parameters)
 {
     ASSERT(m_identifier);
     WEBPAGE_RELEASE_LOG(Loading, "constructor:");
+
+#if ENABLE(ACCESSIBILITY)
+    RDK_AT::Initialize();
+#endif
 
     m_pageGroup = WebProcess::singleton().webPageGroup(parameters.pageGroupData);
 
@@ -6682,6 +6700,18 @@ void WebPage::didCommitLoad(WebFrame* frame)
 
     if (!frame->isMainFrame())
         return;
+
+#if ENABLE(ACCESSIBILITY)
+    // Always enable ATK processing in WebKik to trigger ATK related events
+    WebCore::AXObjectCache::enableAccessibility();
+    // Enable RDKAT to process WebKit event into real speach (if TTS enabled)
+    WTFLogAlways("Enable RDKAT processing for WPE");
+    RDK_AT::EnableProcessing(true);
+#if PLATFORM(BROADCOM)
+    g_pageHandle = WeakPtr { *this };
+    RDK_AT::SetVolumeControlCallback(SetMediaVolume, this);
+#endif
+#endif
 
     if (m_drawingArea)
         m_drawingArea->sendEnterAcceleratedCompositingModeIfNeeded();

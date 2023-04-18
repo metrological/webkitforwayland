@@ -28,7 +28,6 @@
 #if defined(ENABLE_ACCESSIBILITY) && ENABLE_ACCESSIBILITY
 
 #include "WebKitAccessibleApplication.h"
-#include <atk-bridge.h>
 #include <atk/atk.h>
 #include <glib.h>
 
@@ -149,8 +148,6 @@ void ViewBackend::initializeAccessibility()
     atkUtilClass->get_toolkit_version = []() -> const gchar* {
         return "";
     };
-
-    atk_bridge_adaptor_init(nullptr, nullptr);
 }
 
 void ViewBackend::updateAccessibilityState(uint32_t previousFlags)

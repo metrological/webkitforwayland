@@ -62,7 +62,11 @@ void WebPage::platformInitialize(const WebPageCreationParameters&)
         m_accessibilityRootObject = AccessibilityRootAtspi::create(*page);
         m_accessibilityRootObject->registerObject([&](const String& plugID) {
             if (!plugID.isEmpty())
-                send(Messages::WebPageProxy::BindAccessibilityTree(plugID));
+                // We enable accessibility explicitly for WebProcess so no need
+                // to connect UI process any more, as it requires IPC impl (at-spi3 bridge)
+                // that we don't use anyway.
+                // send(Messages::WebPageProxy::BindAccessibilityTree(plugID));
+
         });
     }
 #endif

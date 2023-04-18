@@ -363,10 +363,6 @@ list(APPEND WebKit_LIBRARIES
     ${LIBSOUP_LIBRARIES}
 )
 
-if (USE_ATK)
-    list(APPEND WebKit_LIBRARIES ATK::Bridge)
-endif ()
-
 if (ENABLE_BUBBLEWRAP_SANDBOX)
     list(APPEND WebKit_LIBRARIES Libseccomp::Libseccomp)
 endif ()

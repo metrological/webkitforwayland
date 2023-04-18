@@ -2421,15 +2421,33 @@ String AccessibilityNodeObject::ariaDescribedByAttribute() const
     return descriptionForElements(elementsFromAttribute(aria_describedbyAttr));
 }
 
-Vector<Element*> AccessibilityNodeObject::ariaLabeledByElements() const
-{
-    // FIXME: should walk the DOM elements only once.
-    auto elements = elementsFromAttribute(aria_labelledbyAttr);
-    if (elements.size())
-        return elements;
-    return elementsFromAttribute(aria_labeledbyAttr);
+void AccessibilityNodeObject::ariaLabeledByElements(Vector<Element*>& elements) const
+ {
+     // FIXME: should walk the DOM elements only once.
+    auto lelements = elementsFromAttribute(aria_labelledbyAttr);
+    if (!lelements.size())
+        lelements = elementsFromAttribute(aria_labeledbyAttr);
+
+    for (unsigned i = 0; i < lelements.size(); ++i) {
+        if(elements.contains(lelements[i]))
+            continue;
+
+        elements.append(lelements[i]);
+        AXObjectCache* cache = axObjectCache();
+        if (AccessibilityObject* axObject = (cache ? cache->getOrCreate(lelements[i]) : nullptr))
+            downcast<AccessibilityNodeObject>(*axObject).ariaLabeledByElements(elements);
+
+        if(!lelements.isEmpty() && node())
+            elements.removeAll(&downcast<Element>(*node()));
+    }
 }
 
+Vector<Element*> AccessibilityNodeObject::ariaLabeledByElements() const
+{
+    Vector<Element*> elements;
+    ariaLabeledByElements(elements);
+    return elements;
+}
 
 String AccessibilityNodeObject::ariaLabeledByAttribute() const
 {
