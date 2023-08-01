@@ -380,6 +380,8 @@ protected:
     bool isPipelineWaitingPreroll(GstState current, GstState pending, GstStateChangeReturn) const;
     bool isPipelineWaitingPreroll() const;
 
+    const URL& url() const { return m_url; }
+
     Ref<MainThreadNotifier<MainThreadNotification>> m_notifier;
     MediaPlayer* m_player;
     String m_referrer;
@@ -562,6 +564,10 @@ private:
 
     void configureMediaStreamAudioTracks();
     void invalidateCachedPositionOnNextIteration() const;
+
+    bool m_reportedPlaybackStarted { false };
+    bool m_reportedPlaybackFailed { false };
+    bool m_reportedPlaybackEOS { false };
 
     Atomic<bool> m_isPlayerShuttingDown;
     GRefPtr<GstElement> m_textSink;

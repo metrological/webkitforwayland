@@ -41,6 +41,9 @@
 
 namespace WebCore {
 
+// Implemented in GStreamerQuirkWesteros.cpp
+void noticeEnterKeyDownEvent();
+
 UserInputBridge::UserInputBridge(Page& page)
     : m_page(page)
 {
@@ -80,6 +83,8 @@ bool UserInputBridge::handleMouseForceEvent(const PlatformMouseEvent& mouseEvent
 
 bool UserInputBridge::handleKeyEvent(const PlatformKeyboardEvent& keyEvent, InputSource)
 {
+    if (keyEvent.type() == PlatformEvent::KeyDown && keyEvent.keyIdentifier() == "Enter"_s)
+        noticeEnterKeyDownEvent();
     return Ref(m_page.focusController().focusedOrMainFrame())->eventHandler().keyEvent(keyEvent);
 }
 
