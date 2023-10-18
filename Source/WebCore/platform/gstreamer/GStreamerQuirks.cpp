@@ -343,6 +343,16 @@ void GStreamerQuirksManager::processWebAudioSilentBuffer(GstBuffer* buffer) cons
     }
 }
 
+bool GStreamerQuirksManager::shouldUseCustomInstantRateChange() const
+{
+    for (auto& quirk : m_quirks) {
+        if (quirk->shouldUseCustomInstantRateChange())
+            return true;
+    }
+    return false;
+}
+
+
 #undef GST_CAT_DEFAULT
 
 } // namespace WebCore

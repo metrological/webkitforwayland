@@ -79,6 +79,11 @@ std::optional<bool> GStreamerQuirkRealtek::isHardwareAccelerated(GstElementFacto
     return std::nullopt;
 }
 
+bool GStreamerQuirkRealtek::shouldUseCustomInstantRateChange() const
+{
+    return true;
+}
+
 #undef GST_CAT_DEFAULT
 
 } // namespace WebCore

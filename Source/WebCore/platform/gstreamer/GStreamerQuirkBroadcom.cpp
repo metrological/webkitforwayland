@@ -64,6 +64,11 @@ std::optional<bool> GStreamerQuirkBroadcom::isHardwareAccelerated(GstElementFact
     return std::nullopt;
 }
 
+bool GStreamerQuirkBroadcom::shouldUseCustomInstantRateChange() const
+{
+    return true;
+}
+
 #undef GST_CAT_DEFAULT
 
 } // namespace WebCore

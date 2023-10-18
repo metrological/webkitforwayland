@@ -61,6 +61,11 @@ void GStreamerQuirkAmLogic::configureElement(GstElement* element, const OptionSe
     }
 }
 
+bool GStreamerQuirkAmLogic::shouldUseCustomInstantRateChange() const
+{
+    return true;
+}
+
 #undef GST_CAT_DEFAULT
 
 } // namespace WebCore

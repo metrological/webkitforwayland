@@ -79,6 +79,11 @@ std::optional<bool> GStreamerQuirkWesteros::isHardwareAccelerated(GstElementFact
     return std::nullopt;
 }
 
+bool GStreamerQuirkWesteros::shouldUseCustomInstantRateChange() const
+{
+    return true;
+}
+
 #undef GST_CAT_DEFAULT
 
 } // namespace WebCore

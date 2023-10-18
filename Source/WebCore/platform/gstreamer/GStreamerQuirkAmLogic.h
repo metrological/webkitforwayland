@@ -33,6 +33,7 @@ public:
 
     GstElement* createWebAudioSink() final;
     void configureElement(GstElement*, const OptionSet<ElementRuntimeCharacteristics>&) final;
+    bool shouldUseCustomInstantRateChange() const final;
 };
 
 } // namespace WebCore

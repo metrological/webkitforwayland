@@ -100,6 +100,11 @@ std::optional<bool> GStreamerQuirkRialto::isHardwareAccelerated(GstElementFactor
     return std::nullopt;
 }
 
+bool GStreamerQuirkRialto::shouldUseCustomInstantRateChange() const
+{
+    return true;
+}
+
 #undef GST_CAT_DEFAULT
 
 } // namespace WebCore

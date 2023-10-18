@@ -94,6 +94,8 @@ public:
         GST_BUFFER_FLAG_SET(buffer, GST_BUFFER_FLAG_DROPPABLE);
         return false;
     }
+
+    virtual bool shouldUseCustomInstantRateChange() const { return false; }
 };
 
 class GStreamerHolePunchQuirk : public GStreamerQuirkBase {
@@ -147,6 +149,8 @@ public:
     void setupBufferingPercentageCorrection(MediaPlayerPrivateGStreamer*, GstState currentState, GstState newState, GRefPtr<GstElement>&&) const;
 
     void processWebAudioSilentBuffer(GstBuffer*) const;
+
+    bool shouldUseCustomInstantRateChange() const;
 private:
     GStreamerQuirksManager(bool, bool);
 
