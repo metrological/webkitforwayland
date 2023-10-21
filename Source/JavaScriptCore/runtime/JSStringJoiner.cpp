@@ -27,11 +27,19 @@
 #include "JSStringJoiner.h"
 
 #include "JSCJSValueInlines.h"
+#include "wtf/Span.h"
 
 namespace JSC {
 
 JSStringJoiner::~JSStringJoiner()
 {
+}
+
+template<typename OutputCharacterType, typename SeparatorCharacterType>
+static inline void appendStringToData(OutputCharacterType*& data, WTF::Span<const SeparatorCharacterType> separator)
+{
+    StringImpl::copyCharacters(data, separator.data(), separator.size());
+    data += separator.size();
 }
 
 template<typename CharacterType>
@@ -41,12 +49,12 @@ static inline void appendStringToData(CharacterType*& data, StringView string)
     data += string.length();
 }
 
-template<typename CharacterType>
-static inline String joinStrings(const Vector<StringViewWithUnderlyingString>& strings, StringView separator, unsigned joinedLength)
+template<typename OutputCharacterType, typename SeparatorCharacterType>
+static inline String joinStrings(const Vector<StringViewWithUnderlyingString>& strings, WTF::Span<const SeparatorCharacterType> separator, unsigned joinedLength)
 {
     ASSERT(joinedLength);
 
-    CharacterType* data;
+    OutputCharacterType* data;
     String result = StringImpl::tryCreateUninitialized(joinedLength, data);
     if (UNLIKELY(result.isNull()))
         return result;
@@ -55,13 +63,13 @@ static inline String joinStrings(const Vector<StringViewWithUnderlyingString>& s
 
     unsigned size = strings.size();
 
-    switch (separator.length()) {
+    switch (separator.size()) {
     case 0:
         for (unsigned i = 1; i < size; ++i)
             appendStringToData(data, strings[i].view);
         break;
     case 1: {
-        CharacterType separatorCharacter = separator[0];
+        OutputCharacterType separatorCharacter = separator.data()[0];
         for (unsigned i = 1; i < size; ++i) {
             *data++ = separatorCharacter;
             appendStringToData(data, strings[i].view);
@@ -74,7 +82,7 @@ static inline String joinStrings(const Vector<StringViewWithUnderlyingString>& s
             appendStringToData(data, strings[i].view);
         }
     }
-    ASSERT(data == result.characters<CharacterType>() + joinedLength);
+    ASSERT(data == result.characters<OutputCharacterType>() + joinedLength);
 
     return result;
 }
@@ -113,9 +121,13 @@ JSValue JSStringJoiner::join(JSGlobalObject* globalObject)
 
     String result;
     if (m_isAll8Bit)
-        result = joinStrings<LChar>(m_strings, m_separator, length);
-    else
-        result = joinStrings<UChar>(m_strings, m_separator, length);
+        result = joinStrings<LChar>(m_strings, m_separator.span8(), length);
+    else {
+        if (m_separator.is8Bit())
+            result = joinStrings<UChar>(m_strings, m_separator.span8(), length);
+        else
+            result = joinStrings<UChar>(m_strings, m_separator.span16(), length);
+    }
 
     if (result.isNull())
         return throwOutOfMemoryError(globalObject, scope);
