@@ -629,6 +629,9 @@ static void webKitMediaSrcStreamFlush(Stream* stream, bool isSeekingFlush)
         }
     }
 
+    if (!isSeekingFlush && skipFlush)
+        return;
+
     if (!skipFlush) {
         // Signal the loop() function to stop waiting for any condition variable, pause the task and return,
         // which will keeping the streaming thread idle.
