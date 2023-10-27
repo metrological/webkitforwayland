@@ -1408,7 +1408,8 @@ bool Quirks::hasBrokenPermissionsAPISupportQuirk() const
 
     if (!m_hasBrokenPermissionsAPISupportQuirk) {
         auto domain = m_document->securityOrigin().domain().convertToASCIILowercase();
-        m_hasBrokenPermissionsAPISupportQuirk = domain.endsWith(".nfl.com"_s);
+        m_hasBrokenPermissionsAPISupportQuirk = domain.endsWith(".radioplayer.org"_s) ||
+                                                domain.endsWith(".nfl.com"_s);
     }
 
     return m_hasBrokenPermissionsAPISupportQuirk.value();
