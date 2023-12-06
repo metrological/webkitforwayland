@@ -774,6 +774,11 @@ GRefPtr<GstElement> createOptionalParserForFormat(GstBin* bin, const AtomString&
             GST_WARNING_OBJECT(bin, "Unsupported audio mpeg caps: %" GST_PTR_FORMAT, caps);
         }
     }
+#if ENABLE(THUNDER)
+    // Disable opitonal parser in AppendPipeline to support changeing caps to encrpyted ones
+    // that are not supported by parser (x-cenc)
+    elementClass = "identity";
+#endif
 
     GST_DEBUG_OBJECT(bin, "Creating %s parser for stream with caps %" GST_PTR_FORMAT, elementClass, caps);
     GRefPtr<GstElement> result(makeGStreamerElement(elementClass, parserName.ascii().data()));
