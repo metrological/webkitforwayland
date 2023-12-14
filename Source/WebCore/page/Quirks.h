@@ -161,6 +161,8 @@ public:
     bool needsVideoShouldMaintainAspectRatioQuirk() const;
 
     bool shouldDisableLazyImageLoadingQuirk() const;
+
+    bool shouldNotChangePlaybackPositionOnPlayerStartup() const;
     
 #if ENABLE(MEDIA_SOURCE)
     bool shouldBypassAudioFlushOnSampleReplacement() const;
@@ -221,6 +223,7 @@ private:
     mutable std::optional<bool> m_needsVideoShouldMaintainAspectRatioQuirk;
     mutable std::optional<bool> m_shouldExposeShowModalDialog;
     mutable std::optional<bool> m_shouldDisableLazyImageLoadingQuirk;
+    mutable std::optional<bool> m_shouldNotChangePlaybackPositionOnPlayerStartupQuirk;
 #if ENABLE(MEDIA_SOURCE)
     mutable std::optional<bool> m_shouldBypassAudioFlushOnSampleReplacementQuirk;
 #endif

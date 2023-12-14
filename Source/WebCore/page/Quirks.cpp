@@ -1509,4 +1509,21 @@ bool Quirks::shouldBypassAudioFlushOnSampleReplacement() const
 }
 #endif
 
+bool Quirks::shouldNotChangePlaybackPositionOnPlayerStartup() const
+{
+    // RTLPlay app confuses itself by setting playback position to duration before starting playback.
+
+    if (!needsQuirks())
+        return false;
+
+    // Return true until Seek to Duration is properly fixed
+    return true;
+
+    if (!m_shouldNotChangePlaybackPositionOnPlayerStartupQuirk) {
+        auto domain = RegistrableDomain(m_document->url()).string();
+        m_shouldNotChangePlaybackPositionOnPlayerStartupQuirk = domain == "rtl.it"_s;
+    }
+
+    return *m_shouldNotChangePlaybackPositionOnPlayerStartupQuirk;
+}
 }
