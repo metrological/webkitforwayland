@@ -278,20 +278,30 @@ bool MediaPlayerPrivateGStreamerMSE::doSeek(const SeekTarget& target, float rate
             m_mediaSourcePrivate->seekToTime(*result);
 
         auto player = m_player.get();
-        if (player && !player->isVideoPlayer() && m_audioSink) {
+        if (player && !hasVideo() && m_audioSink) {
             gboolean audioSinkPerformsAsyncStateChanges;
             g_object_get(m_audioSink.get(), "async", &audioSinkPerformsAsyncStateChanges, nullptr);
             if (!audioSinkPerformsAsyncStateChanges) {
                 // If audio-only pipeline's sink is not performing async state changes
                 // we must simulate preroll right away as otherwise nothing will trigger it.
-                bool mustPreventPositionReset = m_isWaitingForPreroll && m_isSeeking;
-                if (mustPreventPositionReset)
-                    m_cachedPosition = currentTime();
-                didPreroll();
-                if (mustPreventPositionReset) {
-                    propagateReadyStateToPlayer();
-                    invalidateCachedPosition();
-                }
+
+                // Post this on HTML media element queue so it will be executed
+                // synchonously with media events (e.g. seeking). This will ensure
+                // that HTML element attributes (like HTMLmedia.seeking) are not reseted
+                // before app receives "seeking" event
+                player->queueTaskOnEventLoop([weakThis = ThreadSafeWeakPtr { *this }, this] {
+                    RefPtr self = weakThis.get();
+                    if (!self)
+                        return;
+                    bool mustPreventPositionReset = m_isWaitingForPreroll && m_isSeeking;
+                    if (mustPreventPositionReset)
+                        m_cachedPosition = currentTime();
+                    didPreroll();
+                    if (mustPreventPositionReset) {
+                        propagateReadyStateToPlayer();
+                        invalidateCachedPosition();
+                    }
+                });
             }
         }
     });
