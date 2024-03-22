@@ -322,8 +322,10 @@ DecodingMode RenderBoxModelObject::decodingModeForImageDraw(const Image& image, 
     auto defaultDecodingMode = [&]() -> DecodingMode {
         // First tile paint.
         if (paintInfo.paintBehavior.contains(PaintBehavior::TileFirstPaint)) {
-            // And the images has not been painted in this element yet.
-            if (element() && !element()->hasEverPaintedImages())
+            // No image has been painted in this element yet and it should not flicker with previous painting.
+            auto observer = bitmapImage.imageObserver();
+            bool mayOverlapOtherClients = observer && observer->numberOfClients() > 1 && bitmapImage.lastDecodingOptions().isAsynchronous();
+            if (element() && !element()->hasEverPaintedImages() && !mayOverlapOtherClients)
                 return DecodingMode::Asynchronous;
         }
 

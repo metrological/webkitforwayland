@@ -158,6 +158,7 @@ public:
 
     void imageFrameAvailableAtIndex(size_t);
     void decode(Function<void()>&&);
+    WEBCORE_EXPORT DecodingOptions lastDecodingOptions() const;
 
 private:
     WEBCORE_EXPORT BitmapImage(Ref<NativeImage>&&);
@@ -258,6 +259,7 @@ private:
 #endif
 
     unsigned m_decodeCountForTesting { 0 };
+    DecodingOptions m_lastDecodingOptions { DecodingMode::Auto };
 
 #if USE(APPKIT)
     mutable RetainPtr<NSImage> m_nsImage; // A cached NSImage of all the frames. Only built lazily if someone actually queries for one.
