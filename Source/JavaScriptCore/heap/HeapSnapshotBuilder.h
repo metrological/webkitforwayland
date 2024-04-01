@@ -31,6 +31,7 @@
 #include <wtf/HashSet.h>
 #include <wtf/Lock.h>
 #include <wtf/Vector.h>
+#include <wtf/FileSystem.h>
 
 namespace JSC {
 
@@ -130,6 +131,7 @@ public:
 
     String json();
     String json(Function<bool (const HeapSnapshotNode&)> allowNodeCallback);
+    void writeJsonToFile(FileSystem::PlatformFileHandle fileHandle);
 
 private:
     static NodeIdentifier nextAvailableObjectIdentifier;
@@ -140,6 +142,9 @@ private:
     bool previousSnapshotHasNodeForCell(JSCell*, NodeIdentifier&);
     
     String descriptionForCell(JSCell*) const;
+
+    template<typename OutputStingBuilder>
+    void writeJson(Function<bool (const HeapSnapshotNode&)>&& allowNodeCallback, OutputStingBuilder &json);
     
     struct RootData {
         const char* reachabilityFromOpaqueRootReasons { nullptr };
