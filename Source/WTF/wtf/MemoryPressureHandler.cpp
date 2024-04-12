@@ -36,6 +36,10 @@
 #include <wtf/RAMSize.h>
 #include <wtf/text/StringToIntegerConversion.h>
 
+#if ENABLE(MALLOC_HEAP_BREAKDOWN)
+#include <malloc-zone/malloc_zone_ext.h>
+#endif
+
 namespace WTF {
 
 WTF_EXPORT_PRIVATE bool MemoryPressureHandler::ReliefLogger::s_loggingEnabled = false;
@@ -333,6 +337,9 @@ void MemoryPressureHandler::measurementTimerFired()
                      footprint / MB, s_videoMemoryInFootprint ? "(including video)" : "", m_configuration.baseThreshold / MB,
                      footprintVideo / MB, m_configuration.baseThresholdVideo / MB);
         releaseMemory(Critical::Yes, Synchronous::Yes);
+#if ENABLE(MALLOC_HEAP_BREAKDOWN)
+        malloc_zone_ext_print_stats();
+#endif
         break;
     }
 
