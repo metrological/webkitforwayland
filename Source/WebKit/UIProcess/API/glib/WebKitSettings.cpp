@@ -1751,7 +1751,7 @@ static void webkit_settings_class_init(WebKitSettingsClass* klass)
         "enable-service-worker",
         _("Enable service worker"),
         _("Whether service worker support should be enabled."),
-        TRUE,
+        FALSE,
         readWriteConstructParamFlags);
 
     g_object_class_install_properties(gObjectClass, N_PROPERTIES, sObjProperties);
