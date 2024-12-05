@@ -237,6 +237,7 @@ GStreamerRegistryScanner::RegistryLookupResult GStreamerRegistryScanner::Element
         }
     }
 
+    shouldCheckHardwareClassifier = CheckHardwareClassifier::Yes;
     if (shouldCheckHardwareClassifier == CheckHardwareClassifier::Yes) {
         for (GList* factories = candidates; factories; factories = g_list_next(factories)) {
             auto* factory = reinterpret_cast<GstElementFactory*>(factories->data);
