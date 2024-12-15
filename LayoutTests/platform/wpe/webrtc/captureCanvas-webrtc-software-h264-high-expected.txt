@@ -1,0 +1,7 @@
+CONSOLE MESSAGE: Unhandled Promise Rejection: TypeError: undefined is not an object (evaluating 'h264Lines[0].substring')
+
+
+Harness Error (FAIL), message = Unhandled rejection: undefined is not an object (evaluating 'h264Lines[0].substring')
+
+FAIL captureStream with webrtc - h264 high profile promise_test: Unhandled rejection with value: "Test timed out"
+

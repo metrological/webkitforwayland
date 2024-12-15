@@ -1,0 +1,33 @@
+layer at (0,0) size 800x600
+  RenderView at (0,0) size 800x600
+layer at (0,0) size 800x205
+  RenderBlock {head} at (0,0) size 800x205
+    RenderBlock {parsererror} at (16,16) size 768x137 [bgcolor=#FFDDDD] [border: (2px solid #CC7777)]
+      RenderBlock {h3} at (18,20) size 732x23
+        RenderText {#text} at (0,0) size 324x21
+          text run at (0,0) width 324: "This page contains the following errors:"
+      RenderBlock {div} at (18,61) size 732x15
+        RenderText {#text} at (0,0) size 490x14
+          text run at (0,0) width 490: "error on line 17 at column 1: Extra content at the end of the document"
+          text run at (490,0) width 0: " "
+      RenderBlock {h3} at (18,94) size 732x23
+        RenderText {#text} at (0,0) size 429x21
+          text run at (0,0) width 429: "Below is a rendering of the page up to the first error."
+    RenderBlock (anonymous) at (0,168) size 800x37
+      RenderInline {style} at (0,0) size 358x17
+        RenderText {#text} at (0,0) size 326x17
+          text run at (0,0) width 40: "img { "
+          text run at (40,0) width 286: "background-image: url(\"data:image/svg+xml,"
+        RenderInline {svg} at (0,0) size 0x17
+        RenderText {#text} at (326,0) size 32x17
+          text run at (326,0) width 32: "\"); } "
+      RenderText {#text} at (0,0) size 0x0
+      RenderInline {script} at (0,0) size 777x35
+        RenderText {#text} at (358,0) size 777x35
+          text run at (358,0) width 232: "function changeStyleAndLayout() { "
+          text run at (590,0) width 187: "document.body.style.height ="
+          text run at (0,18) width 54: "'100px'; "
+          text run at (54,18) width 302: "var forceLayout = document.body.offsetWidth; "
+          text run at (356,18) width 151: "if (window.testRunner) "
+          text run at (507,18) width 181: "testRunner.dumpAsText(); }"
+      RenderText {#text} at (0,0) size 0x0

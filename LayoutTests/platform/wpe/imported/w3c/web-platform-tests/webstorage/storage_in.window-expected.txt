@@ -1,0 +1,6 @@
+
+FAIL The in operator in localStorage: property access The quota has been exceeded.
+FAIL The in operator in localStorage: method access The quota has been exceeded.
+PASS The in operator in sessionStorage: property access
+PASS The in operator in sessionStorage: method access
+

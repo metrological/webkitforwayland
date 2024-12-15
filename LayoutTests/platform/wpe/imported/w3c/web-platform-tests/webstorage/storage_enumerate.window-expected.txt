@@ -1,0 +1,6 @@
+
+FAIL localStorage: enumerate a Storage object and get only the keys as a result and the built-in properties of the Storage object should be ignored The quota has been exceeded.
+FAIL localStorage: test enumeration of numeric and non-numeric keys The quota has been exceeded.
+PASS sessionStorage: enumerate a Storage object and get only the keys as a result and the built-in properties of the Storage object should be ignored
+PASS sessionStorage: test enumeration of numeric and non-numeric keys
+

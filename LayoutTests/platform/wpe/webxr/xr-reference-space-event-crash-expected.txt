@@ -1,0 +1,12 @@
+CONSOLE MESSAGE: TypeError: undefined is not an object (evaluating 'navigator.xr.requestSession')
+Makes sure that constructing a XRReferenceSpaceEvent without a transform member doesn't crash
+
+On success, you will see a series of "PASS" messages, followed by "TEST COMPLETE".
+
+
+FAIL Unexpected error: TypeError: undefined is not an object (evaluating 'navigator.xr.requestSession')
+FAIL successfullyParsed should be true. Was false.
+Some tests failed.
+
+TEST COMPLETE
+

@@ -1,0 +1,32 @@
+layer at (0,0) size 800x600
+  RenderView at (0,0) size 800x600
+layer at (0,0) size 800x190
+  RenderBlock {html} at (0,0) size 800x190
+    RenderInline {body} at (0,0) size 796x53
+      RenderText {#text} at (0,0) size 0x0
+      RenderText {#text} at (0,0) size 0x0
+      RenderSVGRoot {svg} at (0,0) size 0x0
+        RenderSVGRect {rect} at (0,0) size 300x150 [fill={[type=SOLID] [color=#000000]}] [x=0.00] [y=0.00] [width=0.00] [height=0.00]
+          [filter="filter"] RenderSVGResourceFilter {filter} at (-30,-15) size 360x180
+        RenderSVGResourceFilter {filter} [id="filter"] [filterUnits=objectBoundingBox] [primitiveUnits=userSpaceOnUse]
+        RenderSVGResourceMarker {marker} [id="marker"] [markerUnits=strokeWidth] [ref at (0,0)] [angle=0.00]
+      RenderText {#text} at (300,136) size 4x17
+        text run at (300,136) width 4: " "
+      RenderInline {div} at (0,0) size 136x17
+        RenderText {#text} at (304,136) size 136x17
+          text run at (304,136) width 136: "PASS: Did not crash."
+      RenderText {#text} at (440,136) size 4x17
+        text run at (440,136) width 4: " "
+      RenderInline {script} at (0,0) size 796x53
+        RenderText {#text} at (444,136) size 796x53
+          text run at (444,136) width 163: "if (window.testRunner) { "
+          text run at (607,136) width 169: "testRunner.dumpAsText();"
+          text run at (0,154) width 184: "testRunner.waitUntilDone(); "
+          text run at (184,154) width 12: "} "
+          text run at (196,154) width 235: "requestAnimationFrame(function() { "
+          text run at (431,154) width 365: "document.styleSheets[0].insertRule(\"#foobarbaz { } \", 0);"
+          text run at (0,172) width 151: "if (window.testRunner) "
+          text run at (151,172) width 162: "testRunner.notifyDone(); "
+          text run at (313,172) width 17: "});"
+      RenderText {#text} at (0,0) size 0x0
+    RenderText {#text} at (0,0) size 0x0

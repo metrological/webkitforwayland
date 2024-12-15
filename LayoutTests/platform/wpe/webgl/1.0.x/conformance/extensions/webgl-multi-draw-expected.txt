@@ -1,0 +1,50 @@
+This test runs the WebGL Test listed below in an iframe and reports PASS or FAIL.
+
+Test: ../../../resources/webgl_test_files/conformance/extensions/webgl-multi-draw.html
+
+[ 1: PASS ] WEBGL_multi_draw not listed as supported and getExtension failed -- this is legal
+[ 2: PASS ] getError was expected value: INVALID_ENUM : divisor enum unknown
+[ 3: PASS ] getError was expected value: NO_ERROR : there should be no errors
+[ 4: PASS ] canvas should be zero
+[ 5: PASS ] canvas should be red
+[ 6: PASS ] getError was expected value: NO_ERROR : there should be no errors
+[ 7: PASS ] canvas should be zero
+[ 8: PASS ] getError was expected value: INVALID_OPERATION : should generate INVALID_OPERATION
+[ 9: PASS ] canvas should be zero
+[ 10: PASS ] getError was expected value: NO_ERROR : there should be no errors
+[ 11: PASS ] canvas should be zero
+[ 12: PASS ] canvas should be red
+[ 13: PASS ] getError was expected value: NO_ERROR : there should be no errors
+[ 14: PASS ] canvas should be zero
+[ 15: PASS ] getError was expected value: INVALID_OPERATION : should generate INVALID_OPERATION
+[ 16: PASS ] canvas should be zero
+[ 17: PASS ] canvas should be red
+[ 18: PASS ] cleared corner should be blue, stencil should be preserved
+[ 19: PASS ] remainder of buffer should be cleared
+[ 20: PASS ] getError was expected value: NO_ERROR : there should be no errors
+[ 21: PASS ] canvas should be red
+[ 22: PASS ] cleared corner should be blue, stencil should be preserved
+[ 23: PASS ] remainder of buffer should be cleared
+[ 24: PASS ] getError was expected value: NO_ERROR : there should be no errors
+[ 25: PASS ] canvas should be red
+[ 26: FAIL ] canvas should be red at (0, 0) expected: 255,0,0,255 was 0,0,0,0
+[ 27: PASS ] getError was expected value: NO_ERROR : there should be no errors
+[ 28: PASS ] canvas should be red
+[ 29: FAIL ] canvas should be red at (0, 0) expected: 255,0,0,255 was 0,0,0,0
+[ 30: PASS ] getError was expected value: NO_ERROR : there should be no errors
+[ 31: PASS ] canvas should be red
+[ 32: PASS ] cleared corner should be blue, stencil should be preserved
+[ 33: PASS ] remainder of buffer should be cleared
+[ 34: PASS ] getError was expected value: NO_ERROR : there should be no errors
+[ 35: PASS ] canvas should be red
+[ 36: PASS ] cleared corner should be blue, stencil should be preserved
+[ 37: PASS ] remainder of buffer should be cleared
+[ 38: PASS ] getError was expected value: NO_ERROR : there should be no errors
+[ 39: PASS ] canvas should be red
+[ 40: PASS ] canvas should be red
+[ 41: PASS ] getError was expected value: NO_ERROR : there should be no errors
+[ 42: PASS ] canvas should be red
+[ 43: PASS ] canvas should be red
+[ 44: PASS ] getError was expected value: NO_ERROR : there should be no errors
+[ 45: PASS ] successfullyParsed is true
+[ FAIL ] 2 failures reported

@@ -1,0 +1,6 @@
+CONSOLE MESSAGE: TypeError: null is not an object (evaluating 'webgl_ctx.getIndexedParameter')
+FAIL successfullyParsed should be true. Was false.
+Some tests failed.
+
+TEST COMPLETE
+

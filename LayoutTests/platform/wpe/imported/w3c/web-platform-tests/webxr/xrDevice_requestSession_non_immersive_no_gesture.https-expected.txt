@@ -1,0 +1,3 @@
+
+FAIL Requesting non-immersive session outside of a user gesture succeeds assert_implements: missing navigator.xr - ensure test is run in a secure context. undefined
+

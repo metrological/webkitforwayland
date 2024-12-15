@@ -1,0 +1,12 @@
+[Worker] This test checks getFile() of FileSystemFileHandle.
+
+On success, you will see a series of "PASS" messages, followed by "TEST COMPLETE".
+
+
+Starting worker: resources/file-handle-getfile.js
+FAIL [Worker] NotSupportedError: Backend does not support this operation
+PASS successfullyParsed is true
+Some tests failed.
+
+TEST COMPLETE
+

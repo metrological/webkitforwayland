@@ -1,0 +1,10 @@
+This test ensures that document links appropriately respect a link's visibility.
+
+On success, you will see a series of "PASS" messages, followed by "TEST COMPLETE".
+
+
+PASS successfullyParsed is true
+
+TEST COMPLETE
+more
+

@@ -1,0 +1,26 @@
+layer at (0,0) size 800x600
+  RenderView at (0,0) size 800x600
+layer at (0,0) size 800x190
+  RenderBlock {html} at (0,0) size 800x190
+    RenderInline {body} at (0,0) size 760x53
+      RenderText {#text} at (0,0) size 0x0
+      RenderText {#text} at (0,0) size 0x0
+      RenderInline {div} at (0,0) size 132x17
+        RenderText {#text} at (0,136) size 132x17
+          text run at (0,136) width 132: "PASS: did not crash."
+      RenderText {#text} at (132,136) size 4x17
+        text run at (132,136) width 4: " "
+      RenderSVGRoot {svg} at (136,0) size 0x0
+        RenderSVGText {text}
+      RenderText {#text} at (436,136) size 4x17
+        text run at (436,136) width 4: " "
+      RenderInline {script} at (0,0) size 760x53
+        RenderText {#text} at (440,136) size 760x53
+          text run at (440,136) width 151: "if (window.testRunner) "
+          text run at (591,136) width 169: "testRunner.dumpAsText();"
+          text run at (0,154) width 130: "function runTest() { "
+          text run at (130,154) width 414: "document.getElementById('svg').systemLanguage.initialize(\"X\");"
+          text run at (0,172) width 370: "document.getElementById('text').systemLanguage.clear(); "
+          text run at (370,172) width 8: "}"
+      RenderText {#text} at (0,0) size 0x0
+    RenderText {#text} at (0,0) size 0x0

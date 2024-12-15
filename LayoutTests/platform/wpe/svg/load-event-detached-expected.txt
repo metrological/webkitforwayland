@@ -1,0 +1,36 @@
+layer at (0,0) size 800x600
+  RenderView at (0,0) size 800x600
+layer at (0,0) size 800x341
+  RenderBlock {html} at (0,0) size 800x341
+    RenderBlock {parsererror} at (16,16) size 768x137 [bgcolor=#FFDDDD] [border: (2px solid #CC7777)]
+      RenderBlock {h3} at (18,20) size 732x23
+        RenderText {#text} at (0,0) size 324x21
+          text run at (0,0) width 324: "This page contains the following errors:"
+      RenderBlock {div} at (18,61) size 732x15
+        RenderText {#text} at (0,0) size 392x14
+          text run at (0,0) width 392: "error on line 11 at column 56: AttValue: \" or ' expected"
+          text run at (392,0) width 0: " "
+      RenderBlock {h3} at (18,94) size 732x23
+        RenderText {#text} at (0,0) size 429x21
+          text run at (0,0) width 429: "Below is a rendering of the page up to the first error."
+    RenderBlock (anonymous) at (0,168) size 800x173
+      RenderInline {body} at (0,0) size 733x171
+        RenderText {#text} at (0,0) size 0x0
+        RenderInline {p} at (0,0) size 493x17
+          RenderText {#text} at (0,0) size 493x17
+            text run at (0,0) width 493: "Test that we do not fire the svg load event when the SVGElement is detached."
+        RenderText {#text} at (493,0) size 4x17
+          text run at (493,0) width 4: " "
+        RenderInline {p} at (0,0) size 217x17
+          RenderText {#text} at (497,0) size 217x17
+            text run at (497,0) width 217: "This test passes if you see no alert."
+        RenderText {#text} at (714,0) size 4x17
+          text run at (714,0) width 4: " "
+        RenderInline {script} at (0,0) size 733x171
+          RenderText {#text} at (718,0) size 727x171
+            text run at (718,0) width 9: "if"
+            text run at (0,154) width 138: "(window.testRunner) "
+            text run at (138,154) width 173: "testRunner.dumpAsText(); "
+            text run at (311,154) width 119: "const payloads = [ "
+            text run at (430,154) width 3: "'"
+          RenderSVGRoot {svg} at (433,186) size 0x0

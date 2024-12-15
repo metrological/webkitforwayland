@@ -1,0 +1,4 @@
+
+FAIL Unscrollable element horizontal scroll test with overscroll-behavior: none. assert_equals: Propagate horizontal scroll expected true but got false
+PASS Unscrollable element vertical scroll test with overscroll-behavior: none.
+

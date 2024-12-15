@@ -1,0 +1,16 @@
+
+Test tab with <video> moving to background when playback is not allowed in background.
+
+RUN(internals.setMediaSessionRestrictions('videoaudio', 'BackgroundTabPlaybackRestricted'))
+
+EVENT(canplaythrough)
+
+RUN(video.play())
+EVENT(playing)
+
+** Simulate switching the tab to background, video should pause.
+RUN(testRunner.setPageVisibility('hidden'))
+
+Video did not pause after switching to backgound. FAIL
+END OF TEST
+

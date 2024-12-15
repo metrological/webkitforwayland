@@ -1,0 +1,3 @@
+CONSOLE MESSAGE: There are too many active WebGL contexts on this page, the oldest context will be lost.
+CONSOLE MESSAGE: WebGL: INVALID_OPERATION: loseContext: context already lost
+PASS if the first context was lost due to creating too many WebGL contexts.

@@ -1,0 +1,6 @@
+CONSOLE MESSAGE: QuotaExceededError: The quota has been exceeded.
+
+Harness Error (TIMEOUT), message = null
+
+TIMEOUT window.open() with "noreferrer" tests Test timed out
+

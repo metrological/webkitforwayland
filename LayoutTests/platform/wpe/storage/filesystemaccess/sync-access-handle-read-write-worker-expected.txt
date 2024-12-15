@@ -1,0 +1,12 @@
+[Worker] This test checks read and write capabilities of FileSystemSyncAccessHandle.
+
+On success, you will see a series of "PASS" messages, followed by "TEST COMPLETE".
+
+
+Starting worker: resources/sync-access-handle-read-write.js
+FAIL [Worker] InvalidStateError: The object is in an invalid state.
+PASS successfullyParsed is true
+Some tests failed.
+
+TEST COMPLETE
+

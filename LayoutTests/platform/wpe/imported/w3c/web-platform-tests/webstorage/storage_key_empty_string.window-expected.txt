@@ -1,0 +1,4 @@
+
+FAIL localStorage.key with empty string The quota has been exceeded.
+PASS sessionStorage.key with empty string
+

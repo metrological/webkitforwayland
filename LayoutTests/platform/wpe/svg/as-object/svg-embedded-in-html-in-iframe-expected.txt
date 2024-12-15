@@ -1,0 +1,20 @@
+layer at (0,0) size 800x600
+  RenderView at (0,0) size 800x600
+layer at (0,0) size 800x183
+  RenderBlock {html} at (0,0) size 800x183
+    RenderBlock {parsererror} at (16,16) size 768x151 [bgcolor=#FFDDDD] [border: (2px solid #CC7777)]
+      RenderBlock {h3} at (18,20) size 732x23
+        RenderText {#text} at (0,0) size 324x21
+          text run at (0,0) width 324: "This page contains the following errors:"
+      RenderBlock {div} at (18,61) size 732x29
+        RenderText {#text} at (0,0) size 567x28
+          text run at (0,0) width 567: "error on line 7 at column 5: internal error: detected an error in element content"
+          text run at (567,0) width 0: " "
+          text run at (0,14) width 0: " "
+      RenderBlock {h3} at (18,108) size 732x23
+        RenderText {#text} at (0,0) size 429x21
+          text run at (0,0) width 429: "Below is a rendering of the page up to the first error."
+    RenderBlock (anonymous) at (0,182) size 800x0
+      RenderInline {head} at (0,0) size 0x0
+        RenderText {#text} at (0,0) size 0x0
+        RenderInline {script} at (0,0) size 0x0

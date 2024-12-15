@@ -1,4 +1,4 @@
 
-PASS Input sources are re-created when handedness or target ray mode changes - webgl
+FAIL Input sources are re-created when handedness or target ray mode changes - webgl assert_implements: missing navigator.xr - ensure test is run in a secure context. undefined
 FAIL Input sources are re-created when handedness or target ray mode changes - webgl2 assert_implements: webgl2 not supported. undefined
 

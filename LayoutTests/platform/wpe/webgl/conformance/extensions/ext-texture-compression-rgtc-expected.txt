@@ -1,0 +1,96 @@
+This test runs the WebGL Test listed below in an iframe and reports PASS or FAIL.
+
+Test: ../../resources/webgl_test_files/conformance/extensions/ext-texture-compression-rgtc.html
+
+[ 1: PASS ] context exists
+[ 2: PASS ] getError was expected value: INVALID_ENUM : Trying to use format COMPRESSED_RED_RGTC1_EXT with extension disabled.
+[ 3: PASS ] getError was expected value: INVALID_ENUM : Trying to use format COMPRESSED_SIGNED_RED_RGTC1_EXT with extension disabled.
+[ 4: PASS ] getError was expected value: INVALID_ENUM : Trying to use format COMPRESSED_RED_GREEN_RGTC2_EXT with extension disabled.
+[ 5: PASS ] getError was expected value: INVALID_ENUM : Trying to use format COMPRESSED_SIGNED_RED_GREEN_RGTC2_EXT with extension disabled.
+[ 6: PASS ] EXT_texture_compression_rgtc listed as supported and getExtension succeeded
+[ 7: PASS ] supported format COMPRESSED_RED_RGTC1_EXT exists
+[ 8: PASS ] supported format COMPRESSED_SIGNED_RED_RGTC1_EXT exists
+[ 9: PASS ] supported format COMPRESSED_RED_GREEN_RGTC2_EXT exists
+[ 10: PASS ] supported format COMPRESSED_SIGNED_RED_GREEN_RGTC2_EXT exists
+[ 11: PASS ] Enum value for COMPRESSED_RED_RGTC1_EXT matches 0x8dbb
+[ 12: PASS ] Enum value for COMPRESSED_SIGNED_RED_RGTC1_EXT matches 0x8dbc
+[ 13: PASS ] Enum value for COMPRESSED_RED_GREEN_RGTC2_EXT matches 0x8dbd
+[ 14: PASS ] Enum value for COMPRESSED_SIGNED_RED_GREEN_RGTC2_EXT matches 0x8dbe
+[ 15: FAIL ] getError expected: INVALID_VALUE. Was NO_ERROR : COMPRESSED_RED_RGTC1_EXT data size does not match dimensions (too small width)
+[ 16: FAIL ] getError expected: INVALID_VALUE. Was NO_ERROR : COMPRESSED_RED_RGTC1_EXT data size does not match dimensions (too large width)
+[ 17: FAIL ] getError expected: INVALID_VALUE. Was NO_ERROR : COMPRESSED_RED_RGTC1_EXT data size does not match dimensions (too small height)
+[ 18: FAIL ] getError expected: INVALID_VALUE. Was NO_ERROR : COMPRESSED_RED_RGTC1_EXT data size does not match dimensions (too large height)
+[ 19: FAIL ] getError expected: INVALID_VALUE. Was NO_ERROR : COMPRESSED_SIGNED_RED_RGTC1_EXT data size does not match dimensions (too small width)
+[ 20: FAIL ] getError expected: INVALID_VALUE. Was NO_ERROR : COMPRESSED_SIGNED_RED_RGTC1_EXT data size does not match dimensions (too large width)
+[ 21: FAIL ] getError expected: INVALID_VALUE. Was NO_ERROR : COMPRESSED_SIGNED_RED_RGTC1_EXT data size does not match dimensions (too small height)
+[ 22: FAIL ] getError expected: INVALID_VALUE. Was NO_ERROR : COMPRESSED_SIGNED_RED_RGTC1_EXT data size does not match dimensions (too large height)
+[ 23: FAIL ] getError expected: INVALID_VALUE. Was NO_ERROR : COMPRESSED_RED_GREEN_RGTC2_EXT data size does not match dimensions (too small width)
+[ 24: FAIL ] getError expected: INVALID_VALUE. Was NO_ERROR : COMPRESSED_RED_GREEN_RGTC2_EXT data size does not match dimensions (too large width)
+[ 25: FAIL ] getError expected: INVALID_VALUE. Was NO_ERROR : COMPRESSED_RED_GREEN_RGTC2_EXT data size does not match dimensions (too small height)
+[ 26: FAIL ] getError expected: INVALID_VALUE. Was NO_ERROR : COMPRESSED_RED_GREEN_RGTC2_EXT data size does not match dimensions (too large height)
+[ 27: FAIL ] getError expected: INVALID_VALUE. Was NO_ERROR : COMPRESSED_SIGNED_RED_GREEN_RGTC2_EXT data size does not match dimensions (too small width)
+[ 28: FAIL ] getError expected: INVALID_VALUE. Was NO_ERROR : COMPRESSED_SIGNED_RED_GREEN_RGTC2_EXT data size does not match dimensions (too large width)
+[ 29: FAIL ] getError expected: INVALID_VALUE. Was NO_ERROR : COMPRESSED_SIGNED_RED_GREEN_RGTC2_EXT data size does not match dimensions (too small height)
+[ 30: FAIL ] getError expected: INVALID_VALUE. Was NO_ERROR : COMPRESSED_SIGNED_RED_GREEN_RGTC2_EXT data size does not match dimensions (too large height)
+[ 31: PASS ] getError was expected value: NO_ERROR : setting up compressed texture
+[ 32: PASS ] getError was expected value: INVALID_OPERATION : height is not a multiple of 4
+[ 33: PASS ] getError was expected value: INVALID_OPERATION : width is not a multiple of 4
+[ 34: PASS ] getError was expected value: INVALID_OPERATION : xoffset is not a multiple of 4
+[ 35: PASS ] getError was expected value: INVALID_OPERATION : yoffset is not a multiple of 4
+[ 36: FAIL ] getError expected: NO_ERROR. Was INVALID_OPERATION : is valid
+[ 37: PASS ] getError was expected value: NO_ERROR : setting up compressed texture
+[ 38: PASS ] getError was expected value: INVALID_OPERATION : height is not a multiple of 4
+[ 39: PASS ] getError was expected value: INVALID_OPERATION : width is not a multiple of 4
+[ 40: PASS ] getError was expected value: INVALID_OPERATION : xoffset is not a multiple of 4
+[ 41: PASS ] getError was expected value: INVALID_OPERATION : yoffset is not a multiple of 4
+[ 42: FAIL ] getError expected: NO_ERROR. Was INVALID_OPERATION : is valid
+[ 43: PASS ] getError was expected value: NO_ERROR : setting up compressed texture
+[ 44: PASS ] getError was expected value: INVALID_OPERATION : height is not a multiple of 4
+[ 45: PASS ] getError was expected value: INVALID_OPERATION : width is not a multiple of 4
+[ 46: PASS ] getError was expected value: INVALID_OPERATION : xoffset is not a multiple of 4
+[ 47: PASS ] getError was expected value: INVALID_OPERATION : yoffset is not a multiple of 4
+[ 48: FAIL ] getError expected: NO_ERROR. Was INVALID_OPERATION : is valid
+[ 49: PASS ] getError was expected value: NO_ERROR : setting up compressed texture
+[ 50: PASS ] getError was expected value: INVALID_OPERATION : height is not a multiple of 4
+[ 51: PASS ] getError was expected value: INVALID_OPERATION : width is not a multiple of 4
+[ 52: PASS ] getError was expected value: INVALID_OPERATION : xoffset is not a multiple of 4
+[ 53: PASS ] getError was expected value: INVALID_OPERATION : yoffset is not a multiple of 4
+[ 54: FAIL ] getError expected: NO_ERROR. Was INVALID_OPERATION : is valid
+[ 55: FAIL ] getError expected: INVALID_OPERATION. Was NO_ERROR : level is 0, height is not a multiple of 4
+[ 56: FAIL ] getError expected: INVALID_OPERATION. Was NO_ERROR : level is 0, width is not a multiple of 4
+[ 57: FAIL ] getError expected: INVALID_OPERATION. Was NO_ERROR : level is 0, width is not a multiple of 4
+[ 58: PASS ] getError was expected value: NO_ERROR : is valid
+[ 59: FAIL ] getError expected: INVALID_OPERATION. Was NO_ERROR : implied base mip 2x2 is invalid
+[ 60: FAIL ] getError expected: INVALID_OPERATION. Was NO_ERROR : implied base mip 2x4 is invalid
+[ 61: FAIL ] getError expected: INVALID_OPERATION. Was NO_ERROR : implied base mip 4x2 is invalid
+[ 62: PASS ] getError was expected value: NO_ERROR : implied base mip 4x4 is valid
+[ 63: FAIL ] getError expected: INVALID_VALUE. Was NO_ERROR : implied base mip 4x12 is invalid
+[ 64: FAIL ] getError expected: INVALID_OPERATION. Was NO_ERROR : level is 0, height is not a multiple of 4
+[ 65: FAIL ] getError expected: INVALID_OPERATION. Was NO_ERROR : level is 0, width is not a multiple of 4
+[ 66: FAIL ] getError expected: INVALID_OPERATION. Was NO_ERROR : level is 0, width is not a multiple of 4
+[ 67: PASS ] getError was expected value: NO_ERROR : is valid
+[ 68: FAIL ] getError expected: INVALID_OPERATION. Was NO_ERROR : implied base mip 2x2 is invalid
+[ 69: FAIL ] getError expected: INVALID_OPERATION. Was NO_ERROR : implied base mip 2x4 is invalid
+[ 70: FAIL ] getError expected: INVALID_OPERATION. Was NO_ERROR : implied base mip 4x2 is invalid
+[ 71: PASS ] getError was expected value: NO_ERROR : implied base mip 4x4 is valid
+[ 72: FAIL ] getError expected: INVALID_VALUE. Was NO_ERROR : implied base mip 4x12 is invalid
+[ 73: FAIL ] getError expected: INVALID_OPERATION. Was NO_ERROR : level is 0, height is not a multiple of 4
+[ 74: FAIL ] getError expected: INVALID_OPERATION. Was NO_ERROR : level is 0, width is not a multiple of 4
+[ 75: FAIL ] getError expected: INVALID_OPERATION. Was NO_ERROR : level is 0, width is not a multiple of 4
+[ 76: PASS ] getError was expected value: NO_ERROR : is valid
+[ 77: FAIL ] getError expected: INVALID_OPERATION. Was NO_ERROR : implied base mip 2x2 is invalid
+[ 78: FAIL ] getError expected: INVALID_OPERATION. Was NO_ERROR : implied base mip 2x4 is invalid
+[ 79: FAIL ] getError expected: INVALID_OPERATION. Was NO_ERROR : implied base mip 4x2 is invalid
+[ 80: PASS ] getError was expected value: NO_ERROR : implied base mip 4x4 is valid
+[ 81: FAIL ] getError expected: INVALID_VALUE. Was NO_ERROR : implied base mip 4x12 is invalid
+[ 82: FAIL ] getError expected: INVALID_OPERATION. Was NO_ERROR : level is 0, height is not a multiple of 4
+[ 83: FAIL ] getError expected: INVALID_OPERATION. Was NO_ERROR : level is 0, width is not a multiple of 4
+[ 84: FAIL ] getError expected: INVALID_OPERATION. Was NO_ERROR : level is 0, width is not a multiple of 4
+[ 85: PASS ] getError was expected value: NO_ERROR : is valid
+[ 86: FAIL ] getError expected: INVALID_OPERATION. Was NO_ERROR : implied base mip 2x2 is invalid
+[ 87: FAIL ] getError expected: INVALID_OPERATION. Was NO_ERROR : implied base mip 2x4 is invalid
+[ 88: FAIL ] getError expected: INVALID_OPERATION. Was NO_ERROR : implied base mip 4x2 is invalid
+[ 89: PASS ] getError was expected value: NO_ERROR : implied base mip 4x4 is valid
+[ 90: FAIL ] getError expected: INVALID_VALUE. Was NO_ERROR : implied base mip 4x12 is invalid
+[ 91: PASS ] successfullyParsed is true
+[ FAIL ] 48 failures reported

@@ -1,0 +1,6 @@
+
+FAIL localStorage.length (method access) The quota has been exceeded.
+FAIL localStorage.length (proprty access) The quota has been exceeded.
+PASS sessionStorage.length (method access)
+PASS sessionStorage.length (proprty access)
+

@@ -1,0 +1,27 @@
+layer at (0,0) size 800x600
+  RenderView at (0,0) size 800x600
+layer at (0,0) size 800x208
+  RenderBlock {html} at (0,0) size 800x208
+    RenderInline {body} at (0,0) size 774x71
+      RenderText {#text} at (0,136) size 404x17
+        text run at (0,136) width 404: "Test for crbug.com/276111: This test passes if it does not crash. "
+      RenderSVGRoot {svg} at (404,0) size 0x0
+        RenderSVGRect {rect} at (404,0) size 0x0 [fill={[type=SOLID] [color=#000000]}] [x=0.00] [y=0.00] [width=0.00] [height=0.00]
+      RenderText {#text} at (704,136) size 4x17
+        text run at (704,136) width 4: " "
+      RenderInline {script} at (0,0) size 774x71
+        RenderText {#text} at (708,136) size 774x71
+          text run at (708,136) width 9: "if"
+          text run at (0,154) width 150: "(window.testRunner) { "
+          text run at (150,154) width 173: "testRunner.dumpAsText(); "
+          text run at (323,154) width 196: "testRunner.waitUntilDone(); } "
+          text run at (519,154) width 247: "function removePathAndFinishTest() {"
+          text run at (0,172) width 305: "animateMotionElement.removeAttribute('path'); "
+          text run at (305,172) width 153: "setTimeout(function() { "
+          text run at (458,172) width 169: "document.write(\"PASS\"); "
+          text run at (627,172) width 147: "if (window.testRunner)"
+          text run at (0,190) width 162: "testRunner.notifyDone(); "
+          text run at (162,190) width 49: "}, 0); } "
+          text run at (211,190) width 285: "setTimeout('removePathAndFinishTest()', 0);"
+      RenderText {#text} at (0,0) size 0x0
+    RenderText {#text} at (0,0) size 0x0

@@ -1,0 +1,6 @@
+
+FAIL Test flush on an empty file. promise_test: Unhandled rejection with value: object "InvalidStateError: The object is in an invalid state."
+FAIL SyncAccessHandle.read returns bytes written by SyncAccessHandle.write after SyncAccessHandle.flush promise_test: Unhandled rejection with value: object "InvalidStateError: The object is in an invalid state."
+FAIL SyncAccessHandle.read fails when there is a pending SyncAccessHandle.flush promise_test: Unhandled rejection with value: object "InvalidStateError: The object is in an invalid state."
+FAIL SyncAccessHandle.write fails when there is a pending SyncAccessHandle.flush promise_test: Unhandled rejection with value: object "InvalidStateError: The object is in an invalid state."
+

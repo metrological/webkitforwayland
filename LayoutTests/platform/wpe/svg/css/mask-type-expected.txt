@@ -1,0 +1,48 @@
+layer at (0,0) size 800x600
+  RenderView at (0,0) size 800x600
+layer at (0,0) size 800x295
+  RenderBlock {html} at (0,0) size 800x295
+    RenderBlock {parsererror} at (16,16) size 768x137 [bgcolor=#FFDDDD] [border: (2px solid #CC7777)]
+      RenderBlock {h3} at (18,20) size 732x23
+        RenderText {#text} at (0,0) size 324x21
+          text run at (0,0) width 324: "This page contains the following errors:"
+      RenderBlock {div} at (18,61) size 732x15
+        RenderText {#text} at (0,0) size 574x14
+          text run at (0,0) width 574: "error on line 38 at column 7: Opening and ending tag mismatch: body line 0 and svg"
+          text run at (574,0) width 0: " "
+      RenderBlock {h3} at (18,94) size 732x23
+        RenderText {#text} at (0,0) size 429x21
+          text run at (0,0) width 429: "Below is a rendering of the page up to the first error."
+    RenderBlock (anonymous) at (0,168) size 800x127
+      RenderInline {style} at (0,0) size 280x17
+        RenderText {#text} at (0,0) size 280x17
+          text run at (0,0) width 280: "* { font-size: 16px; } div { font-size: 8px; } "
+      RenderText {#text} at (0,0) size 0x0
+      RenderInline {body} at (0,0) size 800x125
+        RenderText {#text} at (0,0) size 0x0
+        RenderInline {svg} at (0,0) size 0x17
+          RenderInline {mask} at (0,0) size 0x0
+        RenderText {#text} at (0,0) size 0x0
+        RenderInline {script} at (0,0) size 0x17
+        RenderText {#text} at (0,0) size 0x0
+        RenderInline {script} at (0,0) size 800x125
+          RenderText {#text} at (280,0) size 800x125
+            text run at (280,0) width 430: "description('Test that clip-path shapes accept different length units'); "
+            text run at (710,0) width 70: "var mask ="
+            text run at (0,18) width 226: "document.getElementById('mask'); "
+            text run at (226,18) width 271: "function computedStyle(property, value) { "
+            text run at (497,18) width 254: "mask.style.setProperty(property, value); "
+            text run at (751,18) width 37: "return"
+            text run at (0,36) width 358: "getComputedStyle(mask).getPropertyValue(property); } "
+            text run at (358,36) width 262: "function test(property, value, expected) { "
+            text run at (620,36) width 138: "if (expected === null)"
+            text run at (0,54) width 419: "shouldBeNull('computedStyle(\"' + property + '\", \"' + value + '\")'); "
+            text run at (419,54) width 28: "else "
+            text run at (447,54) width 353: "shouldBeEqualToString('computedStyle(\"' + property +"
+            text run at (0,72) width 203: "'\", \"' + value + '\")', expected); } "
+            text run at (203,72) width 566: "test(\"mask-type\", \"\", \"luminance\"); test(\"mask-type\", \"alpha\", \"alpha\"); test(\"mask-type\","
+            text run at (0,90) width 179: "\"luminance\", \"luminance\"); "
+            text run at (179,90) width 566: "// negative tests test(\"mask-type\", \"0\", \"luminance\"); test(\"mask-type\", \"1\", \"luminance\");"
+            text run at (0,108) width 292: "test(\"mask-type\", \"linearRGB\", \"luminance\");"
+        RenderText {#text} at (0,0) size 0x0
+        RenderInline {script} at (0,0) size 0x17

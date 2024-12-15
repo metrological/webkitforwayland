@@ -1,0 +1,11 @@
+CONSOLE MESSAGE: TypeError: undefined is not an object (evaluating 'speech.getVoices')
+This tests that we can get synthesizer voices.
+
+On success, you will see a series of "PASS" messages, followed by "TEST COMPLETE".
+
+
+FAIL successfullyParsed should be true. Was false.
+Some tests failed.
+
+TEST COMPLETE
+

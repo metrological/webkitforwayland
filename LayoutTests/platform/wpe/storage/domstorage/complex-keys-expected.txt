@@ -1,0 +1,262 @@
+Test dom storage with many different types of keys (as opposed to values)
+
+On success, you will see a series of "PASS" messages, followed by "TEST COMPLETE".
+
+
+Testing sessionStorage
+storage.clear()
+PASS storage.length is 0
+
+PASS storage.getItem('FOO') is null
+storage.setItem('FOO', 'BAR')
+PASS storage.length is 1
+PASS storage.getItem('FOO') is "BAR"
+PASS storage.getItem('foo') is null
+PASS storage.foo is undefined.
+PASS storage['foo'] is undefined.
+storage.foo = 'x'
+PASS storage.foo is "x"
+PASS storage['foo'] is "x"
+PASS storage.getItem('foo') is "x"
+storage['foo'] = 'y'
+PASS storage.foo is "y"
+PASS storage['foo'] is "y"
+PASS storage.getItem('foo') is "y"
+storage.setItem('foo', 'z')
+PASS storage.foo is "z"
+PASS storage['foo'] is "z"
+PASS storage.getItem('foo') is "z"
+PASS storage.length is 2
+
+Testing a null key
+storage.setItem(null, 'asdf')
+PASS storage.getItem('null') is "asdf"
+PASS storage.getItem(null) is "asdf"
+PASS storage['null'] is "asdf"
+PASS storage[null] is "asdf"
+PASS storage.length is 3
+storage[null] = 1
+PASS storage.getItem(null) is "1"
+storage['null'] = 2
+PASS storage.getItem(null) is "2"
+storage.setItem('null', 3)
+PASS storage.getItem(null) is "3"
+PASS storage.length is 3
+
+Testing an undefined key
+storage[undefined] = 'xyz'
+PASS storage.getItem('undefined') is "xyz"
+PASS storage.getItem(undefined) is "xyz"
+PASS storage['undefined'] is "xyz"
+PASS storage[undefined] is "xyz"
+PASS storage.length is 4
+storage['undefined'] = 4
+PASS storage.getItem(undefined) is "4"
+storage.setItem(undefined, 5)
+PASS storage.getItem(undefined) is "5"
+storage.setItem('undefined', 6)
+PASS storage.getItem(undefined) is "6"
+PASS storage.length is 4
+
+Testing a numeric key
+storage['2'] = 'ppp'
+PASS storage.getItem('2') is "ppp"
+PASS storage.getItem(2) is "ppp"
+PASS storage['2'] is "ppp"
+PASS storage[2] is "ppp"
+PASS storage.length is 5
+storage[2] = 7
+PASS storage.getItem(2) is "7"
+storage.setItem(2, 8)
+PASS storage.getItem(2) is "8"
+storage.setItem('2', 9)
+PASS storage.getItem(2) is "9"
+PASS storage.length is 5
+
+Setting a non-ascii string to foo
+storage[k] = 'hello'
+PASS storage.getItem(k) is "hello"
+PASS storage[k] is "hello"
+PASS storage.length is 6
+
+Testing case differences
+storage.foo1 = 'lower1'
+storage.FOO1 = 'UPPER1'
+storage['foo2'] = 'lower2'
+storage['FOO2'] = 'UPPER2'
+storage.setItem('foo3', 'lower3')
+storage.setItem('FOO3', 'UPPER3')
+PASS storage.foo1 is "lower1"
+PASS storage.FOO1 is "UPPER1"
+PASS storage['foo2'] is "lower2"
+PASS storage['FOO2'] is "UPPER2"
+PASS storage.getItem('foo3') is "lower3"
+PASS storage.getItem('FOO3') is "UPPER3"
+PASS storage.length is 12
+
+Testing overriding length
+PASS storage.length is 12
+PASS storage['length'] is 12
+PASS storage.getItem('length') is null
+storage.length = 0
+PASS storage.length is 12
+PASS storage['length'] is 12
+PASS storage.getItem('length') is null
+storage['length'] = 0
+PASS storage.length is 12
+PASS storage['length'] is 12
+PASS storage.getItem('length') is null
+storage.setItem('length', 0)
+PASS storage.length is 13
+PASS storage['length'] is 13
+PASS storage.getItem('length') is "0"
+storage.removeItem('length')
+PASS storage.length is 12
+PASS storage['length'] is 12
+PASS storage.getItem('length') is null
+storage.setItem('length', 0)
+PASS storage.length is 13
+
+
+Testing localStorage
+storage.clear()
+PASS storage.length is 0
+
+PASS storage.getItem('FOO') is null
+storage.setItem('FOO', 'BAR')
+FAIL storage.setItem('FOO', 'BAR') threw exception QuotaExceededError: The quota has been exceeded.
+FAIL storage.length should be 1. Was 0.
+FAIL storage.getItem('FOO') should be BAR (of type string). Was null (of type object).
+PASS storage.getItem('foo') is null
+PASS storage.foo is undefined.
+PASS storage['foo'] is undefined.
+storage.foo = 'x'
+FAIL storage.foo = 'x' threw exception QuotaExceededError: The quota has been exceeded.
+FAIL storage.foo should be x (of type string). Was undefined (of type undefined).
+FAIL storage['foo'] should be x (of type string). Was undefined (of type undefined).
+FAIL storage.getItem('foo') should be x (of type string). Was null (of type object).
+storage['foo'] = 'y'
+FAIL storage['foo'] = 'y' threw exception QuotaExceededError: The quota has been exceeded.
+FAIL storage.foo should be y (of type string). Was undefined (of type undefined).
+FAIL storage['foo'] should be y (of type string). Was undefined (of type undefined).
+FAIL storage.getItem('foo') should be y (of type string). Was null (of type object).
+storage.setItem('foo', 'z')
+FAIL storage.setItem('foo', 'z') threw exception QuotaExceededError: The quota has been exceeded.
+FAIL storage.foo should be z (of type string). Was undefined (of type undefined).
+FAIL storage['foo'] should be z (of type string). Was undefined (of type undefined).
+FAIL storage.getItem('foo') should be z (of type string). Was null (of type object).
+FAIL storage.length should be 2. Was 0.
+
+Testing a null key
+storage.setItem(null, 'asdf')
+FAIL storage.setItem(null, 'asdf') threw exception QuotaExceededError: The quota has been exceeded.
+FAIL storage.getItem('null') should be asdf (of type string). Was null (of type object).
+FAIL storage.getItem(null) should be asdf (of type string). Was null (of type object).
+FAIL storage['null'] should be asdf (of type string). Was undefined (of type undefined).
+FAIL storage[null] should be asdf (of type string). Was undefined (of type undefined).
+FAIL storage.length should be 3. Was 0.
+storage[null] = 1
+FAIL storage[null] = 1 threw exception QuotaExceededError: The quota has been exceeded.
+FAIL storage.getItem(null) should be 1 (of type string). Was null (of type object).
+storage['null'] = 2
+FAIL storage['null'] = 2 threw exception QuotaExceededError: The quota has been exceeded.
+FAIL storage.getItem(null) should be 2 (of type string). Was null (of type object).
+storage.setItem('null', 3)
+FAIL storage.setItem('null', 3) threw exception QuotaExceededError: The quota has been exceeded.
+FAIL storage.getItem(null) should be 3 (of type string). Was null (of type object).
+FAIL storage.length should be 3. Was 0.
+
+Testing an undefined key
+storage[undefined] = 'xyz'
+FAIL storage[undefined] = 'xyz' threw exception QuotaExceededError: The quota has been exceeded.
+FAIL storage.getItem('undefined') should be xyz (of type string). Was null (of type object).
+FAIL storage.getItem(undefined) should be xyz (of type string). Was null (of type object).
+FAIL storage['undefined'] should be xyz (of type string). Was undefined (of type undefined).
+FAIL storage[undefined] should be xyz (of type string). Was undefined (of type undefined).
+FAIL storage.length should be 4. Was 0.
+storage['undefined'] = 4
+FAIL storage['undefined'] = 4 threw exception QuotaExceededError: The quota has been exceeded.
+FAIL storage.getItem(undefined) should be 4 (of type string). Was null (of type object).
+storage.setItem(undefined, 5)
+FAIL storage.setItem(undefined, 5) threw exception QuotaExceededError: The quota has been exceeded.
+FAIL storage.getItem(undefined) should be 5 (of type string). Was null (of type object).
+storage.setItem('undefined', 6)
+FAIL storage.setItem('undefined', 6) threw exception QuotaExceededError: The quota has been exceeded.
+FAIL storage.getItem(undefined) should be 6 (of type string). Was null (of type object).
+FAIL storage.length should be 4. Was 0.
+
+Testing a numeric key
+storage['2'] = 'ppp'
+FAIL storage['2'] = 'ppp' threw exception QuotaExceededError: The quota has been exceeded.
+FAIL storage.getItem('2') should be ppp (of type string). Was null (of type object).
+FAIL storage.getItem(2) should be ppp (of type string). Was null (of type object).
+FAIL storage['2'] should be ppp (of type string). Was undefined (of type undefined).
+FAIL storage[2] should be ppp (of type string). Was undefined (of type undefined).
+FAIL storage.length should be 5. Was 0.
+storage[2] = 7
+FAIL storage[2] = 7 threw exception QuotaExceededError: The quota has been exceeded.
+FAIL storage.getItem(2) should be 7 (of type string). Was null (of type object).
+storage.setItem(2, 8)
+FAIL storage.setItem(2, 8) threw exception QuotaExceededError: The quota has been exceeded.
+FAIL storage.getItem(2) should be 8 (of type string). Was null (of type object).
+storage.setItem('2', 9)
+FAIL storage.setItem('2', 9) threw exception QuotaExceededError: The quota has been exceeded.
+FAIL storage.getItem(2) should be 9 (of type string). Was null (of type object).
+FAIL storage.length should be 5. Was 0.
+
+Setting a non-ascii string to foo
+storage[k] = 'hello'
+FAIL storage[k] = 'hello' threw exception QuotaExceededError: The quota has been exceeded.
+FAIL storage.getItem(k) should be hello (of type string). Was null (of type object).
+FAIL storage[k] should be hello (of type string). Was undefined (of type undefined).
+FAIL storage.length should be 6. Was 0.
+
+Testing case differences
+storage.foo1 = 'lower1'
+FAIL storage.foo1 = 'lower1' threw exception QuotaExceededError: The quota has been exceeded.
+storage.FOO1 = 'UPPER1'
+FAIL storage.FOO1 = 'UPPER1' threw exception QuotaExceededError: The quota has been exceeded.
+storage['foo2'] = 'lower2'
+FAIL storage['foo2'] = 'lower2' threw exception QuotaExceededError: The quota has been exceeded.
+storage['FOO2'] = 'UPPER2'
+FAIL storage['FOO2'] = 'UPPER2' threw exception QuotaExceededError: The quota has been exceeded.
+storage.setItem('foo3', 'lower3')
+FAIL storage.setItem('foo3', 'lower3') threw exception QuotaExceededError: The quota has been exceeded.
+storage.setItem('FOO3', 'UPPER3')
+FAIL storage.setItem('FOO3', 'UPPER3') threw exception QuotaExceededError: The quota has been exceeded.
+FAIL storage.foo1 should be lower1 (of type string). Was undefined (of type undefined).
+FAIL storage.FOO1 should be UPPER1 (of type string). Was undefined (of type undefined).
+FAIL storage['foo2'] should be lower2 (of type string). Was undefined (of type undefined).
+FAIL storage['FOO2'] should be UPPER2 (of type string). Was undefined (of type undefined).
+FAIL storage.getItem('foo3') should be lower3 (of type string). Was null (of type object).
+FAIL storage.getItem('FOO3') should be UPPER3 (of type string). Was null (of type object).
+FAIL storage.length should be 12. Was 0.
+
+Testing overriding length
+FAIL storage.length should be 12. Was 0.
+FAIL storage['length'] should be 12. Was 0.
+PASS storage.getItem('length') is null
+storage.length = 0
+FAIL storage.length should be 12. Was 0.
+FAIL storage['length'] should be 12. Was 0.
+PASS storage.getItem('length') is null
+storage['length'] = 0
+FAIL storage.length should be 12. Was 0.
+FAIL storage['length'] should be 12. Was 0.
+PASS storage.getItem('length') is null
+storage.setItem('length', 0)
+FAIL storage.setItem('length', 0) threw exception QuotaExceededError: The quota has been exceeded.
+FAIL storage.length should be 13. Was 0.
+FAIL storage['length'] should be 13. Was 0.
+FAIL storage.getItem('length') should be 0 (of type string). Was null (of type object).
+storage.removeItem('length')
+FAIL storage.length should be 12. Was 0.
+FAIL storage['length'] should be 12. Was 0.
+PASS storage.getItem('length') is null
+storage.setItem('length', 0)
+FAIL storage.setItem('length', 0) threw exception QuotaExceededError: The quota has been exceeded.
+FAIL storage.length should be 13. Was 0.
+PASS successfullyParsed is true
+
+TEST COMPLETE
+

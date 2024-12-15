@@ -1,4 +1,4 @@
 
-PASS XRView projection matrices update near and far depths on the next frame - webgl
+FAIL XRView projection matrices update near and far depths on the next frame - webgl assert_implements: missing navigator.xr - ensure test is run in a secure context. undefined
 FAIL XRView projection matrices update near and far depths on the next frame - webgl2 assert_implements: webgl2 not supported. undefined
 

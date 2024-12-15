@@ -1,0 +1,69 @@
+This test runs the WebGL Test listed below in an iframe and reports PASS or FAIL.
+
+Test: ../../../resources/webgl_test_files/conformance/misc/invalid-passed-params.html
+
+[ 1: PASS ] getError was expected value: NO_ERROR : after evaluating: context.createShader(context.FRAGMENT_SHADER)
+[ 2: PASS ] getError was expected value: NO_ERROR : after evaluating: context.createShader(context.VERTEX_SHADER)
+[ 3: PASS ] getError was expected value: INVALID_ENUM : after evaluating: context.createShader(0)
+[ 4: PASS ] getError was expected value: INVALID_ENUM : after evaluating: context.createShader(context.TRIANGLES)
+[ 5: PASS ] getError was expected value: INVALID_VALUE : after evaluating: context.clear(desktopGL['ACCUM_BUFFER_BIT'])
+[ 6: PASS ] getError was expected value: INVALID_VALUE : after evaluating: context.clear(desktopGL['ACCUM_BUFFER_BIT'] | context.COLOR_BUFFER_BIT)
+[ 7: PASS ] getError was expected value: INVALID_VALUE : after evaluating: context.clear(desktopGL['ACCUM_BUFFER_BIT'] | context.COLOR_BUFFER_BIT | context.DEPTH_BUFFER_BIT | context.STENCIL_BUFFER_BIT)
+[ 8: PASS ] getError was expected value: NO_ERROR : after evaluating: context.clear(context.COLOR_BUFFER_BIT | context.DEPTH_BUFFER_BIT | context.STENCIL_BUFFER_BIT)
+[ 9: PASS ] getError was expected value: NO_ERROR : after evaluating: context.bindTexture(context.TEXTURE_2D, tex)
+[ 10: PASS ] getError was expected value: INVALID_VALUE : after evaluating: context.texImage2D(context.TEXTURE_2D, 0, context.RGBA, -16, -16, 0, context.RGBA, context.UNSIGNED_BYTE, null)
+[ 11: PASS ] getError was expected value: NO_ERROR : after evaluating: context.texImage2D(context.TEXTURE_2D, 0, context.RGBA, 16, 16, 0, context.RGBA, context.UNSIGNED_BYTE, null)
+[ 12: PASS ] getError was expected value: INVALID_VALUE : after evaluating: context.texSubImage2D(context.TEXTURE_2D, 0, -1, -1, 2, 2, context.RGBA, context.UNSIGNED_BYTE, pixels)
+[ 13: PASS ] getError was expected value: INVALID_VALUE : after evaluating: context.texSubImage2D(context.TEXTURE_2D, 0, 0, 0, -1, -1, context.RGBA, context.UNSIGNED_BYTE, pixels)
+[ 14: PASS ] getError was expected value: NO_ERROR : after evaluating: context.texSubImage2D(context.TEXTURE_2D, 0, 0, 0, 2, 2, context.RGBA, context.UNSIGNED_BYTE, pixels)
+[ 15: PASS ] getError was expected value: INVALID_VALUE : after evaluating: context.copyTexImage2D(context.TEXTURE_2D, 0, context.RGBA, 0, 0, -1, -1, 0)
+[ 16: PASS ] getError was expected value: NO_ERROR : after evaluating: context.copyTexImage2D(context.TEXTURE_2D, 0, context.RGBA, 0, 0, 16, 16, 0)
+[ 17: PASS ] getError was expected value: INVALID_VALUE : after evaluating: context.copyTexSubImage2D(context.TEXTURE_2D, 0, -1, -1, 0, 0, 2, 2)
+[ 18: PASS ] getError was expected value: INVALID_VALUE : after evaluating: context.copyTexSubImage2D(context.TEXTURE_2D, 0, 0, 0, 0, 0, -1, -1)
+[ 19: PASS ] getError was expected value: NO_ERROR : after evaluating: context.copyTexSubImage2D(context.TEXTURE_2D, 0, 0, 0, 0, 0, 2, 2)
+[ 20: PASS ] getError was expected value: NO_ERROR : after evaluating: context.bindRenderbuffer(context.RENDERBUFFER, renderbuffer)
+[ 21: PASS ] getError was expected value: INVALID_VALUE : after evaluating: context.renderbufferStorage(context.RENDERBUFFER, context.RGBA4, -2, -2)
+[ 22: PASS ] getError was expected value: NO_ERROR : after evaluating: context.renderbufferStorage(context.RENDERBUFFER, context.RGBA4, 16, 16)
+[ 23: PASS ] getError was expected value: INVALID_VALUE : after evaluating: context.scissor(0, 0, -2, -2)
+[ 24: PASS ] getError was expected value: NO_ERROR : after evaluating: context.scissor(0, 0, 16, 16)
+[ 25: PASS ] getError was expected value: INVALID_VALUE : after evaluating: context.viewport(0, 0, -2, -2)
+[ 26: PASS ] getError was expected value: NO_ERROR : after evaluating: context.viewport(0, 0, 16, 16)
+[ 27: PASS ] context.getError() is context.NO_ERROR
+[ 28: PASS ] context.getError() is context.NO_ERROR
+[ 29: PASS ] linkStatus is true
+[ 30: PASS ] context.getError() is context.NO_ERROR
+[ 31: PASS ] context.getError() is context.NO_ERROR
+[ 32: PASS ] context.getError() is context.NO_ERROR
+[ 33: PASS ] context.getError() is context.NO_ERROR
+[ 34: PASS ] context.getError() is context.NO_ERROR
+[ 35: FAIL ] context.getError() should be 0. Was 1281.
+[ 36: PASS ] context.getError() is context.NO_ERROR
+[ 37: FAIL ] context.getError() should be 0. Was 1281.
+[ 38: PASS ] context.getError() is context.NO_ERROR
+[ 39: FAIL ] context.getError() should be 0. Was 1281.
+[ 40: PASS ] context.getError() is context.NO_ERROR
+[ 41: FAIL ] context.getError() should be 0. Was 1281.
+[ 42: PASS ] context.getError() is context.NO_ERROR
+[ 43: FAIL ] context.getError() should be 0. Was 1281.
+[ 44: PASS ] context.getError() is context.NO_ERROR
+[ 45: FAIL ] context.getError() should be 0. Was 1281.
+[ 46: PASS ] context.getError() is context.INVALID_VALUE
+[ 47: PASS ] context.getError() is context.INVALID_VALUE
+[ 48: PASS ] context.getError() is context.INVALID_VALUE
+[ 49: PASS ] context.getError() is context.INVALID_VALUE
+[ 50: PASS ] context.getError() is context.INVALID_VALUE
+[ 51: PASS ] context.getError() is context.INVALID_VALUE
+[ 52: PASS ] context.getError() is context.INVALID_VALUE
+[ 53: PASS ] context.getError() is context.INVALID_VALUE
+[ 54: PASS ] context.getError() is context.INVALID_VALUE
+[ 55: PASS ] context.getError() is context.INVALID_VALUE
+[ 56: PASS ] context.getError() is context.INVALID_VALUE
+[ 57: PASS ] context.getError() is context.INVALID_VALUE
+[ 58: PASS ] context.getError() is context.INVALID_VALUE
+[ 59: PASS ] context.getError() is context.INVALID_VALUE
+[ 60: PASS ] context.getError() is context.INVALID_VALUE
+[ 61: PASS ] context.getError() is context.INVALID_VALUE
+[ 62: PASS ] context.getError() is context.INVALID_VALUE
+[ 63: PASS ] context.getError() is context.INVALID_VALUE
+[ 64: PASS ] successfullyParsed is true
+[ FAIL ] 6 failures reported

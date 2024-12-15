@@ -1,0 +1,12 @@
+CONSOLE MESSAGE: TypeError: null is not an object (evaluating 'gl.getExtension("WEBGL_debug_shaders").getTranslatedShaderSource')
+This test outputs WebGL GLSL implementation language when using WebGLUsingMetal=false.
+
+On success, you will see a series of "PASS" messages, followed by "TEST COMPLETE".
+
+TEST COMPLETE: 0 PASS, 1 FAIL
+
+
+FAIL successfullyParsed should be true (of type boolean). Was undefined (of type undefined).
+
+TEST COMPLETE
+

@@ -1,0 +1,39 @@
+layer at (0,0) size 800x600
+  RenderView at (0,0) size 800x600
+layer at (0,0) size 800x312
+  RenderBlock {html} at (0,0) size 800x312
+    RenderInline {head} at (0,0) size 0x0
+      RenderText {#text} at (0,0) size 0x0
+      RenderInline {script} at (0,0) size 0x0
+      RenderText {#text} at (0,0) size 0x0
+    RenderText {#text} at (0,0) size 0x0
+    RenderInline {body} at (0,0) size 732x125
+      RenderText {#text} at (0,0) size 0x0
+      RenderInline {p} at (0,0) size 0x0
+      RenderText {#text} at (0,0) size 0x0
+      RenderInline {div} at (0,0) size 0x0
+      RenderText {#text} at (0,0) size 0x0
+      RenderInline {div} at (0,0) size 200x17
+        RenderSVGRoot {svg} at (0,0) size 0x0
+      RenderText {#text} at (200,186) size 4x17
+        text run at (200,186) width 4: " "
+      RenderInline {script} at (0,0) size 732x125
+        RenderText {#text} at (204,186) size 732x125
+          text run at (204,186) width 517: "description(\"Confirm that null is returned when an SVGViewSpec is used after its"
+          text run at (0,204) width 285: "corresponding element has been removed.\"); "
+          text run at (285,204) width 172: "successfullyParsed = false; "
+          text run at (457,204) width 94: "var svgView ="
+          text run at (0,222) width 432: "document.getElementById(\"container\").childNodes[0].currentView;"
+          text run at (0,240) width 700: "document.getElementById(\"container\").removeChild(document.getElementById(\"container\").childNodes[0]); "
+          text run at (700,240) width 29: "gc();"
+          text run at (0,258) width 496: "shouldBeNull(\"viewPreserveAspectRatio = svgView.preserveAspectRatio;\"); "
+          text run at (496,258) width 210: "shouldBeNull(\"viewTransform ="
+          text run at (0,276) width 145: "svgView.transform;\"); "
+          text run at (145,276) width 381: "shouldBeNull(\"viewViewTarget = svgView.viewTarget;\"); "
+          text run at (526,276) width 206: "shouldBeNull(\"viewViewBox ="
+          text run at (0,294) width 143: "svgView.viewBox;\"); "
+          text run at (143,294) width 163: "successfullyParsed = true;"
+      RenderText {#text} at (0,0) size 0x0
+      RenderInline {script} at (0,0) size 0x0
+      RenderText {#text} at (0,0) size 0x0
+    RenderText {#text} at (0,0) size 0x0

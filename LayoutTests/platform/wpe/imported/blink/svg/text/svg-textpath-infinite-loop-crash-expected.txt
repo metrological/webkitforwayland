@@ -1,0 +1,28 @@
+layer at (0,0) size 800x600
+  RenderView at (0,0) size 800x600
+layer at (0,0) size 800x172
+  RenderBlock {html} at (0,0) size 800x172
+    RenderInline {body} at (0,0) size 652x171
+      RenderText {#text} at (0,0) size 0x0
+      RenderInline {div} at (0,0) size 204x17
+        RenderText {#text} at (0,0) size 204x17
+          text run at (0,0) width 204: "Test for infinite loop in textPath."
+      RenderText {#text} at (204,0) size 4x17
+        text run at (204,0) width 4: " "
+      RenderInline {div} at (0,0) size 444x17
+        RenderText {#text} at (208,0) size 444x17
+          text run at (208,0) width 444: "See bug: https://code.google.com/p/chromium/issues/detail?id=232903"
+      RenderText {#text} at (0,0) size 0x0
+      RenderSVGRoot {svg} at (0,18) size 0x0
+        RenderSVGText {text} at (0,0) size 0x0 contains 1 chunk(s)
+          RenderSVGTextPath {textPath} at (0,0) size 0x0
+            RenderSVGInlineText {#text} at (0,0) size 0x0
+          RenderSVGInlineText {#text} at (0,0) size 0x0
+      RenderText {#text} at (300,154) size 4x17
+        text run at (300,154) width 4: " "
+      RenderInline {script} at (0,0) size 320x17
+        RenderText {#text} at (304,154) size 320x17
+          text run at (304,154) width 151: "if (window.testRunner) "
+          text run at (455,154) width 169: "testRunner.dumpAsText();"
+      RenderText {#text} at (0,0) size 0x0
+    RenderText {#text} at (0,0) size 0x0

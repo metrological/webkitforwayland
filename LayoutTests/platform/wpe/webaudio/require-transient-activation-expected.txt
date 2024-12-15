@@ -1,0 +1,17 @@
+Tests that starting Web Audio rendering requires a transient user activation.
+
+On success, you will see a series of "PASS" messages, followed by "TEST COMPLETE".
+
+
+PASS context.state is "suspended"
+node.connect(context.destination)
+PASS context.state is "suspended"
+FAIL navigator.userActivation.isActive should be true. Threw exception TypeError: undefined is not an object (evaluating 'navigator.userActivation.isActive')
+PASS resume() promise was resolved
+PASS context.state is "running"
+FAIL navigator.userActivation.isActive should be true. Threw exception TypeError: undefined is not an object (evaluating 'navigator.userActivation.isActive')
+PASS successfullyParsed is true
+Some tests failed.
+
+TEST COMPLETE
+

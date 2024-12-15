@@ -1,0 +1,13 @@
+Hover and click me
+Focus me
+Focus me
+Focus me
+subject
+Focus me
+subject
+
+Harness Error (TIMEOUT), message = null
+
+TIMEOUT Invalidation with :focus, :focus-within, :focus-visible in :has() Test timed out
+PASS ancestor should be black
+

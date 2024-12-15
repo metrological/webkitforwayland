@@ -1,4 +1,4 @@
 
-PASS RequestAnimationFrame resolves with good data - webgl
+FAIL RequestAnimationFrame resolves with good data - webgl assert_implements: missing navigator.xr - ensure test is run in a secure context. undefined
 FAIL RequestAnimationFrame resolves with good data - webgl2 assert_implements: webgl2 not supported. undefined
 

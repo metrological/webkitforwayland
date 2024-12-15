@@ -1,0 +1,4 @@
+
+FAIL enumerate a localStorage object with the key and get the values The quota has been exceeded.
+PASS enumerate a sessionStorage object with the key and get the values
+

@@ -1,0 +1,26 @@
+When prompted, accept to share your video stream.
+
+Description
+
+This test checks that the MediaStream object returned by the success callback in getUserMedia can be properly assigned to a video element via the srcObject attribute.
+
+
+
+PASS Tests that a MediaStream can be assigned to a video element with srcObject
+PASS Tests that a MediaStream assigned to a video element is not seekable
+FAIL Tests that a MediaStream assigned to a video element is in readyState HAVE_NOTHING initially assert_equals: Upon having loaded a media stream, the UA sets readyState to HAVE_ENOUGH_DATA expected 4 but got 3
+FAIL Tests that a MediaStream assigned to a video element has expected duration assert_equals: After ending playback, duration gets set to currentTime expected 56034309.998046 but got Infinity
+FAIL Tests that a video element with a MediaStream assigned is not preloaded assert_equals: preload must always be none expected "none" but got "metadata"
+FAIL Tests that a video element with a MediaStream assigned ignores playbackRate attributes (defaultPlaybackRate is identical) assert_equals: playback rate is always 1 expected 1 but got 0.3
+FAIL Tests that a video element with a MediaStream assigned ignores playbackRate attributes (defaultPlaybackRate is different) assert_equals: playback rate is always 1 expected 1 but got 0.3
+FAIL Tests that a media element with an assigned MediaStream reports the played attribute as expected assert_equals: A MediaStream's end MUST return the last known currentTime expected 56034310.312228 but got 56034310.312224
+FAIL Tests that a media element with an assigned MediaStream reports the currentTime attribute as expected assert_equals: The UA MUST ignore attempts to set the currentTime attribute (default playback start position) expected 0 but got 42
+FAIL Tests that a media element with an assigned MediaStream starts its timeline at 0 regardless of when the MediaStream was created assert_between_exclusive: currentTime starts at 0 and has progressed at first timeupdate expected a number greater than 0 and less than 0.5 but got 56034310.87632
+FAIL Tests that a media element with an assigned MediaStream does not advance currentTime while paused assert_between_exclusive: currentTime does not skip ahead after pause expected a number greater than 0 and less than 0.5 but got 0.752248004078865
+FAIL Tests that a media element with an assigned MediaStream does not start advancing currentTime until potentially playing assert_between_inclusive: currentTime has not advanced more than twice it took to dispatch canplay expected a number greater than or equal to 0 and less than or equal to 0.1 but got 56034312.975222
+PASS Tests that the loop attribute has no effect on a media element with an assigned MediaStream
+FAIL Tests that a media element with an assigned MediaStream ends when the MediaStream becomes inactive through tracks ending assert_false: HTMLMediaElement reports ended the next time the event loop reaches step 1 (sync) expected false got true
+FAIL Tests that an audio element with an assigned MediaStream ends when the MediaStream becomes inaudible through audio tracks ending assert_true: HTMLAudioElement becomes ended asynchronously when its MediaStream provider becomes inaudible expected true got false
+FAIL Tests that a media element with an assigned MediaStream ends when the MediaStream becomes inactive through track removal assert_false: HTMLMediaElement reports ended the next time the event loop reaches step 1 (sync) expected false got true
+FAIL Tests that an audio element with an assigned MediaStream ends when the MediaStream becomes inaudible through track removal assert_true: HTMLAudioElement becomes ended asynchronously when its MediaStream provider becomes inaudible expected true got false
+

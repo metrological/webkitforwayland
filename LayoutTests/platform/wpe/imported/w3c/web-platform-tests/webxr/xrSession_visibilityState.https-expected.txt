@@ -1,0 +1,4 @@
+
+FAIL Ensures that the XRSession's visibilityState is correctly reported and that the associated visibilitychange event fires. - webgl assert_implements: missing navigator.xr - ensure test is run in a secure context. undefined
+FAIL Ensures that the XRSession's visibilityState is correctly reported and that the associated visibilitychange event fires. - webgl2 assert_implements: webgl2 not supported. undefined
+

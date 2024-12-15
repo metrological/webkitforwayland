@@ -1,6 +1,6 @@
 
-PASS XRSession requestAnimationFrame calls the provided callback for an immersive session - webgl
+FAIL XRSession requestAnimationFrame calls the provided callback for an immersive session - webgl assert_implements: missing navigator.xr - ensure test is run in a secure context. undefined
 FAIL XRSession requestAnimationFrame calls the provided callback for an immersive session - webgl2 assert_implements: webgl2 not supported. undefined
-PASS XRSession requestAnimationFrame calls the provided callback a non-immersive session - webgl
+FAIL XRSession requestAnimationFrame calls the provided callback a non-immersive session - webgl assert_implements: missing navigator.xr - ensure test is run in a secure context. undefined
 FAIL XRSession requestAnimationFrame calls the provided callback a non-immersive session - webgl2 assert_implements: webgl2 not supported. undefined
 

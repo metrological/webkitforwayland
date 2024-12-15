@@ -1,0 +1,17 @@
+CONSOLE MESSAGE: QuotaExceededError: The quota has been exceeded.
+Tests storage with named item access and Symbol properties.
+
+On success, you will see a series of "PASS" messages, followed by "TEST COMPLETE".
+
+
+PASS localStorage.length === 0 is true
+PASS localStorage[Symbol()] === undefined is true
+PASS localStorage.length === 0 is true
+PASS localStorage[knownSymbol] === 2 is true
+PASS delete localStorage[knownSymbol] did not throw exception.
+PASS localStorage.length === 0 is true
+PASS localStorage[knownSymbol] === undefined is true
+FAIL successfullyParsed should be true (of type boolean). Was undefined (of type undefined).
+
+TEST COMPLETE
+

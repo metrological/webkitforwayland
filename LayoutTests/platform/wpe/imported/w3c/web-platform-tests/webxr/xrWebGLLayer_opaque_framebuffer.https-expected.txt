@@ -1,0 +1,6 @@
+
+FAIL Ensure that the framebuffer given by the WebGL layer is opaque for immersive - webgl assert_implements: missing navigator.xr - ensure test is run in a secure context. undefined
+FAIL Ensure that the framebuffer given by the WebGL layer is opaque for immersive - webgl2 assert_implements: webgl2 not supported. undefined
+FAIL Ensure that the framebuffer given by the WebGL layer is opaque for non-immersive - webgl assert_implements: missing navigator.xr - ensure test is run in a secure context. undefined
+FAIL Ensure that the framebuffer given by the WebGL layer is opaque for non-immersive - webgl2 assert_implements: webgl2 not supported. undefined
+

@@ -1,0 +1,3 @@
+
+FAIL Verify that cross origin resources' timings are exposed when the final resource at the end of an HTTP redirect chain is same-origin. assert_equals: redirectStart should be 0 expected 0 but got 15
+

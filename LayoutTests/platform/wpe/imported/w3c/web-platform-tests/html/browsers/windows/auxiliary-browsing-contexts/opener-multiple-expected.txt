@@ -1,0 +1,5 @@
+
+Harness Error (FAIL), message = Test named 'An auxiliary browsing context should be able to open another auxiliary browsing context' specified 1 'cleanup' function, and 1 failed.
+
+PASS An auxiliary browsing context should be able to open another auxiliary browsing context
+

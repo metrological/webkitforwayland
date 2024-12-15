@@ -1,0 +1,42 @@
+layer at (0,0) size 800x600
+  RenderView at (0,0) size 800x600
+layer at (0,0) size 800x359
+  RenderBlock {html} at (0,0) size 800x359
+    RenderBlock {parsererror} at (16,16) size 768x137 [bgcolor=#FFDDDD] [border: (2px solid #CC7777)]
+      RenderBlock {h3} at (18,20) size 732x23
+        RenderText {#text} at (0,0) size 324x21
+          text run at (0,0) width 324: "This page contains the following errors:"
+      RenderBlock {div} at (18,61) size 732x15
+        RenderText {#text} at (0,0) size 427x14
+          text run at (0,0) width 427: "error on line 22 at column 52: StartTag: invalid element name"
+          text run at (427,0) width 0: " "
+      RenderBlock {h3} at (18,94) size 732x23
+        RenderText {#text} at (0,0) size 429x21
+          text run at (0,0) width 429: "Below is a rendering of the page up to the first error."
+    RenderBlock (anonymous) at (0,168) size 800x191
+      RenderInline {body} at (0,0) size 792x53
+        RenderText {#text} at (0,0) size 0x0
+        RenderText {#text} at (0,0) size 0x0
+        RenderInline {input} at (0,0) size 0x0
+        RenderText {#text} at (0,0) size 0x0
+        RenderSVGRoot {svg} at (0,168) size 0x0
+          RenderSVGContainer {g} at (0,168) size 0x0
+            RenderSVGContainer {g} at (0,168) size 0x0
+        RenderText {#text} at (300,136) size 4x17
+          text run at (300,136) width 4: " "
+        RenderInline {input} at (0,0) size 0x0
+        RenderText {#text} at (0,0) size 0x0
+        RenderInline {div} at (0,0) size 132x17
+          RenderText {#text} at (304,136) size 132x17
+            text run at (304,136) width 132: "PASS: did not crash."
+        RenderText {#text} at (436,136) size 4x17
+          text run at (436,136) width 4: " "
+        RenderInline {script} at (0,0) size 792x53
+          RenderText {#text} at (440,136) size 792x53
+            text run at (440,136) width 151: "if (window.testRunner) "
+            text run at (591,136) width 169: "testRunner.dumpAsText();"
+            text run at (0,154) width 115: "function crash() { "
+            text run at (115,154) width 183: "document.designMode='on'; "
+            text run at (298,154) width 235: "document.execCommand('selectall'); "
+            text run at (533,154) width 259: "document.execCommand('FormatBlock',"
+            text run at (0,172) width 40: "false, '"

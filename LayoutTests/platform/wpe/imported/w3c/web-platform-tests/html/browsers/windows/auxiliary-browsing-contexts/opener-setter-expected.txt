@@ -1,0 +1,8 @@
+CONSOLE MESSAGE: QuotaExceededError: The quota has been exceeded.
+CONSOLE MESSAGE: QuotaExceededError: The quota has been exceeded.
+
+Harness Error (TIMEOUT), message = null
+
+TIMEOUT Auxiliary browsing context created via `window.open` and setting `window.opener` to `null` should report `window.opener` `null` Test timed out
+TIMEOUT Auxiliary browsing context created via `window.open` and setting `window.opener` to `test` should report `test` Test timed out
+

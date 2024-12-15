@@ -1,0 +1,23 @@
+layer at (0,0) size 800x600
+  RenderView at (0,0) size 800x600
+layer at (0,0) size 800x205
+  RenderBlock {script} at (0,0) size 800x205
+    RenderBlock {parsererror} at (16,16) size 768x137 [bgcolor=#FFDDDD] [border: (2px solid #CC7777)]
+      RenderBlock {h3} at (18,20) size 732x23
+        RenderText {#text} at (0,0) size 324x21
+          text run at (0,0) width 324: "This page contains the following errors:"
+      RenderBlock {div} at (18,61) size 732x15
+        RenderText {#text} at (0,0) size 490x14
+          text run at (0,0) width 490: "error on line 11 at column 1: Extra content at the end of the document"
+          text run at (490,0) width 0: " "
+      RenderBlock {h3} at (18,94) size 732x23
+        RenderText {#text} at (0,0) size 429x21
+          text run at (0,0) width 429: "Below is a rendering of the page up to the first error."
+    RenderBlock (anonymous) at (0,168) size 800x37
+      RenderText {#text} at (0,0) size 710x35
+        text run at (0,0) width 163: "if (window.testRunner) { "
+        text run at (163,0) width 173: "testRunner.dumpAsText(); "
+        text run at (336,0) width 184: "testRunner.waitUntilDone(); "
+        text run at (520,0) width 190: "window.onload = function() {"
+        text run at (0,18) width 162: "testRunner.notifyDone(); "
+        text run at (162,18) width 24: "}; }"

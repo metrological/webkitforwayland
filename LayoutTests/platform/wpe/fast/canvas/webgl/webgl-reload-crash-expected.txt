@@ -1,0 +1,12 @@
+CONSOLE MESSAGE: WebGL: INVALID_OPERATION: loseContext: context already lost
+CONSOLE MESSAGE: WebGL: INVALID_OPERATION: loseContext: context already lost
+CONSOLE MESSAGE: WebGL: INVALID_OPERATION: loseContext: context already lost
+CONSOLE MESSAGE: WebGL: INVALID_OPERATION: loseContext: context already lost
+CONSOLE MESSAGE: WebGL: INVALID_OPERATION: loseContext: context already lost
+CONSOLE MESSAGE: WebGL: INVALID_OPERATION: loseContext: context already lost
+CONSOLE MESSAGE: WebGL: INVALID_OPERATION: loseContext: context already lost
+CONSOLE MESSAGE: WebGL: INVALID_OPERATION: loseContext: context already lost
+CONSOLE MESSAGE: WebGL: INVALID_OPERATION: loseContext: context already lost
+CONSOLE MESSAGE: WebGL: INVALID_OPERATION: loseContext: context already lost
+PASS. You didn't crash.
+

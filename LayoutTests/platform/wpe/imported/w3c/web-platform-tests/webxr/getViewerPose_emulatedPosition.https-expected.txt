@@ -1,4 +1,4 @@
 
-PASS XRFrame getViewerPose has emulatedPosition set properly. - webgl
+FAIL XRFrame getViewerPose has emulatedPosition set properly. - webgl assert_implements: missing navigator.xr - ensure test is run in a secure context. undefined
 FAIL XRFrame getViewerPose has emulatedPosition set properly. - webgl2 assert_implements: webgl2 not supported. undefined
 

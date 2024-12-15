@@ -1,0 +1,79 @@
+layer at (0,0) size 800x600
+  RenderView at (0,0) size 800x600
+layer at (0,0) size 800x277
+  RenderBlock {html} at (0,0) size 800x277
+    RenderBlock {parsererror} at (16,16) size 768x137 [bgcolor=#FFDDDD] [border: (2px solid #CC7777)]
+      RenderBlock {h3} at (18,20) size 732x23
+        RenderText {#text} at (0,0) size 324x21
+          text run at (0,0) width 324: "This page contains the following errors:"
+      RenderBlock {div} at (18,61) size 732x15
+        RenderText {#text} at (0,0) size 427x14
+          text run at (0,0) width 427: "error on line 34 at column 28: StartTag: invalid element name"
+          text run at (427,0) width 0: " "
+      RenderBlock {h3} at (18,94) size 732x23
+        RenderText {#text} at (0,0) size 429x21
+          text run at (0,0) width 429: "Below is a rendering of the page up to the first error."
+    RenderBlock (anonymous) at (0,168) size 800x109
+      RenderInline {style} at (0,0) size 135x17
+        RenderText {#text} at (0,0) size 135x17
+          text run at (0,0) width 44: "html { "
+          text run at (44,0) width 79: "zoom: 1.25; "
+          text run at (123,0) width 12: "} "
+      RenderText {#text} at (0,0) size 0x0
+      RenderInline {body} at (0,0) size 792x107
+        RenderText {#text} at (135,0) size 501x17
+          text run at (135,0) width 501: "Test for crbug.com/405468: zoom should not affect getComputedTextLength()."
+        RenderInline {br} at (0,0) size 792x107
+          RenderText {#text} at (636,0) size 4x17
+            text run at (636,0) width 4: " "
+          RenderInline {svg} at (0,0) size 792x35
+            RenderText {#text} at (0,0) size 0x0
+            RenderInline {text} at (0,0) size 126x17
+              RenderText {#text} at (640,0) size 126x17
+                text run at (640,0) width 126: "1 regular 16px abcd"
+            RenderText {#text} at (766,0) size 4x17
+              text run at (766,0) width 4: " "
+            RenderInline {text} at (0,0) size 778x35
+              RenderText {#text} at (770,0) size 778x35
+                text run at (770,0) width 8: "1"
+                text run at (0,18) width 193: "geometric precision 16px abcd"
+            RenderText {#text} at (193,18) size 4x17
+              text run at (193,18) width 4: " "
+            RenderInline {text} at (0,0) size 126x17
+              RenderText {#text} at (197,18) size 126x17
+                text run at (197,18) width 126: "1 regular 12px abcd"
+            RenderText {#text} at (323,18) size 4x17
+              text run at (323,18) width 4: " "
+            RenderInline {text} at (0,0) size 126x17
+              RenderText {#text} at (327,18) size 126x17
+                text run at (327,18) width 126: "2 regular 16px abcd"
+            RenderText {#text} at (453,18) size 4x17
+              text run at (453,18) width 4: " "
+            RenderInline {text} at (0,0) size 205x17
+              RenderText {#text} at (457,18) size 205x17
+                text run at (457,18) width 205: "2 geometric precision 16px abcd"
+            RenderText {#text} at (662,18) size 4x17
+              text run at (662,18) width 4: " "
+            RenderInline {text} at (0,0) size 126x17
+              RenderText {#text} at (666,18) size 126x17
+                text run at (666,18) width 126: "2 regular 12px abcd"
+            RenderText {#text} at (0,0) size 0x0
+          RenderText {#text} at (0,0) size 0x0
+          RenderInline {script} at (0,0) size 753x71
+            RenderText {#text} at (0,36) size 753x71
+              text run at (0,36) width 163: "if (window.testRunner) { "
+              text run at (163,36) width 184: "testRunner.waitUntilDone(); "
+              text run at (347,36) width 173: "testRunner.dumpAsText(); "
+              text run at (520,36) width 233: "testRunner.setBackingScaleFactor(1,"
+              text run at (0,54) width 78: "function() { "
+              text run at (78,54) width 149: "runTest('testLowDPI'); "
+              text run at (227,54) width 315: "testRunner.setBackingScaleFactor(2, function() { "
+              text run at (542,54) width 147: "runTest('testHighDPI');"
+              text run at (0,72) width 162: "testRunner.notifyDone(); "
+              text run at (162,72) width 21: "}); "
+              text run at (183,72) width 21: "}); "
+              text run at (204,72) width 12: "} "
+              text run at (216,72) width 198: "function runTest(className) { "
+              text run at (414,72) width 118: "var textElements ="
+              text run at (0,90) width 320: "document.getElementsByClassName(className); "
+              text run at (320,90) width 92: "for (var t = 0; t"
