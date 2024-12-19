@@ -1,0 +1,33 @@
+This test runs the WebGL Test listed below in an iframe and reports PASS or FAIL.
+
+Test: ../../resources/webgl_test_files/conformance/textures/tex-image-and-sub-image-2d-with-video.html
+[ 1: PASS ] shouldBe 0,255,0
+[ 2: PASS ] shouldBe 255,0,0
+[ 3: PASS ] shouldBe 255,0,0
+[ 4: PASS ] shouldBe 0,255,0
+[ 5: PASS ] shouldBe 0,255,0
+[ 6: PASS ] shouldBe 255,0,0
+[ 7: PASS ] shouldBe 255,0,0
+[ 8: PASS ] shouldBe 0,255,0
+[ 9: PASS ] getError was expected value: NO_ERROR : should be no errors
+[ 10: PASS ] shouldBe 0,255,0
+[ 11: PASS ] shouldBe 255,0,0
+[ 12: FAIL ] at (4, 4) expected: 255,0,0 was 0,0,255
+[ 13: PASS ] shouldBe 0,255,0
+[ 14: PASS ] shouldBe 0,255,0
+[ 15: PASS ] shouldBe 255,0,0
+[ 16: PASS ] shouldBe 255,0,0
+[ 17: PASS ] shouldBe 0,255,0
+[ 18: PASS ] getError was expected value: NO_ERROR : should be no errors
+[ 19: PASS ] shouldBe 0,255,0
+[ 20: PASS ] shouldBe 255,0,0
+[ 21: FAIL ] at (4, 4) expected: 255,0,0 was 0,0,255
+[ 22: PASS ] shouldBe 0,255,0
+[ 23: PASS ] shouldBe 0,255,0
+[ 24: PASS ] shouldBe 255,0,0
+[ 25: PASS ] shouldBe 255,0,0
+[ 26: PASS ] shouldBe 0,255,0
+[ 27: PASS ] getError was expected value: NO_ERROR : should be no errors
+[ 28: PASS ] successfullyParsed is true
+[ FAIL ] 2 failures reported
+

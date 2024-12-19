@@ -1,0 +1,4 @@
+
+FAIL isSessionSupported resolves to true for immersive-ar on a supported device assert_implements: missing navigator.xr - ensure test is run in a secure context. undefined
+FAIL isSessionSupported resolves to false for immersive-ar on an unsupported device assert_implements: missing navigator.xr - ensure test is run in a secure context. undefined
+

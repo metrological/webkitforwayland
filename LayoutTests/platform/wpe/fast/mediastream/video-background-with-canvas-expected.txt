@@ -1,0 +1,5 @@
+
+
+FAIL Ensure that video elements that get drawn on canvas do not get paused due to being backgrounded promise_test: Unhandled rejection with value: "waitForPaused timed out for: video2 should be paused"
+FAIL Ensure that video elements that get drawn on canvas get resumed even if backgrounded promise_test: Unhandled rejection with value: "waitForPaused timed out for: video1 should be paused"
+

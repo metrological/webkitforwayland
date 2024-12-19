@@ -1,0 +1,82 @@
+layer at (0,0) size 785x835
+  RenderView at (0,0) size 785x600
+layer at (0,0) size 785x835
+  RenderBlock {html} at (0,0) size 785x835
+    RenderBlock {parsererror} at (16,16) size 753x137 [bgcolor=#FFDDDD] [border: (2px solid #CC7777)]
+      RenderBlock {h3} at (18,20) size 717x23
+        RenderText {#text} at (0,0) size 324x21
+          text run at (0,0) width 324: "This page contains the following errors:"
+      RenderBlock {div} at (18,61) size 717x15
+        RenderText {#text} at (0,0) size 588x14
+          text run at (0,0) width 588: "error on line 101 at column 8: Opening and ending tag mismatch: html line 0 and body"
+          text run at (588,0) width 0: " "
+      RenderBlock {h3} at (18,94) size 717x23
+        RenderText {#text} at (0,0) size 429x21
+          text run at (0,0) width 429: "Below is a rendering of the page up to the first error."
+    RenderBlock (anonymous) at (0,168) size 785x667
+      RenderInline {style} at (0,0) size 492x17
+        RenderText {#text} at (0,0) size 492x17
+          text run at (0,0) width 492: "* { font-size: 16px; } svg, rect { font-family: 'Ahem'; } div { font-size: 8px; } "
+      RenderText {#text} at (0,0) size 0x0
+      RenderInline {html} at (0,0) size 780x665
+        RenderText {#text} at (0,0) size 0x0
+        RenderInline {svg} at (0,0) size 0x17
+        RenderText {#text} at (0,0) size 0x0
+        RenderInline {script} at (0,0) size 0x17
+        RenderText {#text} at (0,0) size 0x0
+        RenderInline {script} at (0,0) size 780x665
+          RenderText {#text} at (492,0) size 780x665
+            text run at (492,0) width 244: "description(\"Test that length values for"
+            text run at (0,18) width 228: "presentation attribute accept calc.\"); "
+            text run at (228,18) width 271: "function computedStyle(property, value) { "
+            text run at (499,18) width 60: "var rect ="
+            text run at (0,36) width 420: "document.createElementNS('http://www.w3.org/2000/svg', 'rect'); "
+            text run at (420,36) width 329: "document.getElementById('svg').appendChild(rect);"
+            text run at (0,54) width 213: "rect.setAttribute(property, value); "
+            text run at (213,54) width 473: "var computedValue = getComputedStyle(rect).getPropertyValue(property);"
+            text run at (0,72) width 334: "document.getElementById('svg').removeChild(rect); "
+            text run at (334,72) width 161: "return computedValue; } "
+            text run at (495,72) width 247: "function testComputed(property, value,"
+            text run at (0,90) width 77: "expected) { "
+            text run at (77,90) width 560: "shouldBeEqualToString('computedStyle(\"' + property + '\", \"' + value + '\")', expected); } "
+            text run at (637,90) width 52: "function"
+            text run at (0,108) width 201: "negativeTest(property, value) { "
+            text run at (201,108) width 261: "testComputed(property, value, \"auto\"); } "
+            text run at (462,108) width 283: "function negativeTestZero(property, value) {"
+            text run at (0,126) width 258: "testComputed(property, value, \"0px\"); } "
+            text run at (258,126) width 468: "// Test 'calc(500px - 400px)'. testComputed(\"baseline-shift\", \"calc(500px -"
+            text run at (0,144) width 748: "400px)\", \"100px\"); testComputed(\"cx\", \"calc(500px - 400px)\", \"100px\"); testComputed(\"cy\", \"calc(500px - 400px)\","
+            text run at (0,162) width 745: "\"100px\"); testComputed(\"height\", \"calc(500px - 400px)\", \"100px\"); testComputed(\"kerning\", \"calc(500px - 400px)\","
+            text run at (0,180) width 743: "\"100px\"); testComputed(\"r\", \"calc(500px - 400px)\", \"100px\"); testComputed(\"rx\", \"calc(500px - 400px)\", \"100px\");"
+            text run at (0,198) width 750: "testComputed(\"ry\", \"calc(500px - 400px)\", \"100px\"); testComputed(\"stroke-width\", \"calc(500px - 400px)\", \"100px\");"
+            text run at (0,216) width 734: "testComputed(\"stroke-dashoffset\", \"calc(500px - 400px)\", \"100px\"); testComputed(\"width\", \"calc(500px - 400px)\","
+            text run at (0,234) width 741: "\"100px\") testComputed(\"x\", \"calc(500px - 400px)\", \"100px\"); testComputed(\"y\", \"calc(500px - 400px)\", \"100px\"); "
+            text run at (741,234) width 39: "// Test"
+            text run at (0,252) width 743: "'calc(40px + 60px)'. testComputed(\"baseline-shift\", \"calc(40px + 60px)\", \"100px\"); testComputed(\"cx\", \"calc(40px +"
+            text run at (0,270) width 740: "60px)\", \"100px\"); testComputed(\"cy\", \"calc(40px + 60px)\", \"100px\"); testComputed(\"height\", \"calc(40px + 60px)\","
+            text run at (0,288) width 754: "\"100px\"); testComputed(\"kerning\", \"calc(40px + 60px)\", \"100px\"); testComputed(\"r\", \"calc(40px + 60px)\", \"100px\");"
+            text run at (0,306) width 660: "testComputed(\"rx\", \"calc(40px + 60px)\", \"100px\"); testComputed(\"ry\", \"calc(40px + 60px)\", \"100px\");"
+            text run at (0,324) width 753: "testComputed(\"stroke-width\", \"calc(40px + 60px)\", \"100px\"); testComputed(\"stroke-dashoffset\", \"calc(40px + 60px)\","
+            text run at (0,342) width 741: "\"100px\"); testComputed(\"width\", \"calc(40px + 60px)\", \"100px\") testComputed(\"x\", \"calc(40px + 60px)\", \"100px\");"
+            text run at (0,360) width 327: "testComputed(\"y\", \"calc(40px + 60px)\", \"100px\"); "
+            text run at (327,360) width 438: "// Test 'calc(0% + 100px)'. testComputed(\"baseline-shift\", \"calc(0% +"
+            text run at (0,378) width 759: "100px)\", \"0\"); testComputed(\"cx\", \"calc(0% + 100px)\", \"calc(0% + 100px)\"); testComputed(\"cy\", \"calc(0% + 100px)\","
+            text run at (0,396) width 726: "\"calc(0% + 100px)\"); testComputed(\"height\", \"calc(0% + 100px)\", \"calc(0% + 100px)\"); testComputed(\"kerning\","
+            text run at (0,414) width 762: "\"calc(0% + 100px)\", \"0\"); testComputed(\"r\", \"calc(0% + 100px)\", \"calc(0% + 100px)\"); testComputed(\"rx\", \"calc(0% +"
+            text run at (0,432) width 744: "100px)\", \"calc(0% + 100px)\"); testComputed(\"ry\", \"calc(0% + 100px)\", \"calc(0% + 100px)\"); testComputed(\"stroke-"
+            text run at (0,450) width 753: "width\", \"calc(0% + 100px)\", \"calc(0% + 100px)\"); testComputed(\"stroke-dashoffset\", \"calc(0% + 100px)\", \"calc(0% +"
+            text run at (0,468) width 739: "100px)\"); testComputed(\"width\", \"calc(0% + 100px)\", \"calc(0% + 100px)\") testComputed(\"x\", \"calc(0% + 100px)\","
+            text run at (0,486) width 537: "\"calc(0% + 100px)\"); testComputed(\"y\", \"calc(0% + 100px)\", \"calc(0% + 100px)\"); "
+            text run at (537,486) width 178: "// Test 'calc(100% - 100px)'."
+            text run at (0,504) width 738: "testComputed(\"baseline-shift\", \"calc(100% - 100px)\", \"0\"); testComputed(\"cx\", \"calc(100% - 100px)\", \"calc(100% -"
+            text run at (0,522) width 729: "100px)\"); testComputed(\"cy\", \"calc(100% - 100px)\", \"calc(100% - 100px)\"); testComputed(\"height\", \"calc(100% -"
+            text run at (0,540) width 758: "100px)\", \"calc(100% - 100px)\"); testComputed(\"kerning\", \"calc(100% - 100px)\", \"0\"); testComputed(\"r\", \"calc(100% -"
+            text run at (0,558) width 761: "100px)\", \"calc(100% - 100px)\"); testComputed(\"rx\", \"calc(100% - 100px)\", \"calc(100% - 100px)\"); testComputed(\"ry\","
+            text run at (0,576) width 722: "\"calc(100% - 100px)\", \"calc(100% - 100px)\"); testComputed(\"stroke-width\", \"calc(100% - 100px)\", \"calc(100% -"
+            text run at (0,594) width 731: "100px)\"); testComputed(\"stroke-dashoffset\", \"calc(100% - 100px)\", \"calc(100% - 100px)\"); testComputed(\"width\","
+            text run at (0,612) width 712: "\"calc(100% - 100px)\", \"calc(100% - 100px)\") testComputed(\"x\", \"calc(100% - 100px)\", \"calc(100% - 100px)\");"
+            text run at (0,630) width 421: "testComputed(\"y\", \"calc(100% - 100px)\", \"calc(100% - 100px)\"); "
+            text run at (421,630) width 318: "// Number value properties. testComputed(\"stroke-"
+            text run at (0,648) width 611: "miterlimit\", \"calc(500 - 400)\", \"100\"); testComputed(\"flood-opacity\", \"calc(0.75 - 0.25)\", \"0.5\");"
+        RenderText {#text} at (0,0) size 0x0
+        RenderInline {script} at (0,0) size 0x17

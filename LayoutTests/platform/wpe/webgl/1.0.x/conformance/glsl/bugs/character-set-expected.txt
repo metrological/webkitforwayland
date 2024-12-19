@@ -1,0 +1,55 @@
+This test runs the WebGL Test listed below in an iframe and reports PASS or FAIL.
+
+Test: ../../../../resources/webgl_test_files/conformance/glsl/bugs/character-set.html
+
+[ 1: PASS ] context exists
+[ 2: FAIL ] getError expected: NO_ERROR. Was INVALID_VALUE : shaderSource allows Out-of-charset string '$' in identifier until compilation.
+[ 3: PASS ] getError was expected value: NO_ERROR : shaderSource allows Out-of-charset string '$' in comment until compilation.
+[ 4: FAIL ] getError expected: NO_ERROR. Was INVALID_VALUE : shaderSource allows Out-of-charset string '$' in ifdef-out until compilation.
+[ 5: FAIL ] getError expected: NO_ERROR. Was INVALID_VALUE : shaderSource allows Out-of-charset string '$' in ifdef-out #preproc until compilation.
+[ 6: FAIL ] getError expected: NO_ERROR. Was INVALID_VALUE : shaderSource allows Out-of-charset string '$' in #preproc until compilation.
+[ 7: FAIL ] getError expected: NO_ERROR. Was INVALID_VALUE : shaderSource allows Out-of-charset string '$' in comment after #define until compilation.
+[ 8: FAIL ] getError expected: NO_ERROR. Was INVALID_VALUE : shaderSource allows Out-of-charset string '"' in identifier until compilation.
+[ 9: PASS ] getError was expected value: NO_ERROR : shaderSource allows Out-of-charset string '"' in comment until compilation.
+[ 10: FAIL ] getError expected: NO_ERROR. Was INVALID_VALUE : shaderSource allows Out-of-charset string '"' in ifdef-out until compilation.
+[ 11: FAIL ] getError expected: NO_ERROR. Was INVALID_VALUE : shaderSource allows Out-of-charset string '"' in ifdef-out #preproc until compilation.
+[ 12: FAIL ] getError expected: NO_ERROR. Was INVALID_VALUE : shaderSource allows Out-of-charset string '"' in #preproc until compilation.
+[ 13: FAIL ] getError expected: NO_ERROR. Was INVALID_VALUE : shaderSource allows Out-of-charset string '"' in comment after #define until compilation.
+[ 14: FAIL ] getError expected: NO_ERROR. Was INVALID_VALUE : shaderSource allows Out-of-charset string '一些注释' in identifier until compilation.
+[ 15: PASS ] getError was expected value: NO_ERROR : shaderSource allows Out-of-charset string '一些注释' in comment until compilation.
+[ 16: FAIL ] getError expected: NO_ERROR. Was INVALID_VALUE : shaderSource allows Out-of-charset string '一些注释' in ifdef-out until compilation.
+[ 17: FAIL ] getError expected: NO_ERROR. Was INVALID_VALUE : shaderSource allows Out-of-charset string '一些注释' in ifdef-out #preproc until compilation.
+[ 18: FAIL ] getError expected: NO_ERROR. Was INVALID_VALUE : shaderSource allows Out-of-charset string '一些注释' in #preproc until compilation.
+[ 19: FAIL ] getError expected: NO_ERROR. Was INVALID_VALUE : shaderSource allows Out-of-charset string '一些注释' in comment after #define until compilation.
+[ 20: FAIL ] getError expected: NO_ERROR. Was INVALID_VALUE : shaderSource allows Out-of-charset string '#line 42 "foo.glsl"' in identifier until compilation.
+[ 21: PASS ] getError was expected value: NO_ERROR : shaderSource allows Out-of-charset string '#line 42 "foo.glsl"' in comment until compilation.
+[ 22: FAIL ] getError expected: NO_ERROR. Was INVALID_VALUE : shaderSource allows Out-of-charset string '#line 42 "foo.glsl"' in ifdef-out until compilation.
+[ 23: FAIL ] getError expected: NO_ERROR. Was INVALID_VALUE : shaderSource allows Out-of-charset string '#line 42 "foo.glsl"' in ifdef-out #preproc until compilation.
+[ 24: FAIL ] getError expected: NO_ERROR. Was INVALID_VALUE : shaderSource allows Out-of-charset string '#line 42 "foo.glsl"' in #preproc until compilation.
+[ 25: FAIL ] getError expected: NO_ERROR. Was INVALID_VALUE : shaderSource allows Out-of-charset string '#line 42 "foo.glsl"' in comment after #define until compilation.
+[ 26: PASS ] Out-of-charset string '$' in identifier MUST NOT compile.
+[ 27: PASS ] Out-of-charset string '$' in comment MUST compile.
+[ 28: FAIL ] [unexpected fragment shader compile status] (expected: true) Out-of-charset string '$' in ifdef-out MUST compile.
+[ 29: FAIL ] [unexpected fragment shader compile status] (expected: true) Out-of-charset string '$' in ifdef-out #preproc MUST compile.
+[ 30: PASS ] Out-of-charset string '$' in #preproc MUST NOT compile.
+[ 31: FAIL ] [unexpected fragment shader compile status] (expected: true) Out-of-charset string '$' in comment after #define MUST compile.
+[ 32: PASS ] Out-of-charset string '"' in identifier MUST NOT compile.
+[ 33: PASS ] Out-of-charset string '"' in comment MUST compile.
+[ 34: FAIL ] [unexpected fragment shader compile status] (expected: true) Out-of-charset string '"' in ifdef-out MUST compile.
+[ 35: FAIL ] [unexpected fragment shader compile status] (expected: true) Out-of-charset string '"' in ifdef-out #preproc MUST compile.
+[ 36: PASS ] Out-of-charset string '"' in #preproc MUST NOT compile.
+[ 37: FAIL ] [unexpected fragment shader compile status] (expected: true) Out-of-charset string '"' in comment after #define MUST compile.
+[ 38: PASS ] Out-of-charset string '一些注释' in identifier MUST NOT compile.
+[ 39: PASS ] Out-of-charset string '一些注释' in comment MUST compile.
+[ 40: FAIL ] [unexpected fragment shader compile status] (expected: true) Out-of-charset string '一些注释' in ifdef-out MUST compile.
+[ 41: FAIL ] [unexpected fragment shader compile status] (expected: true) Out-of-charset string '一些注释' in ifdef-out #preproc MUST compile.
+[ 42: PASS ] Out-of-charset string '一些注释' in #preproc MUST NOT compile.
+[ 43: FAIL ] [unexpected fragment shader compile status] (expected: true) Out-of-charset string '一些注释' in comment after #define MUST compile.
+[ 44: PASS ] Out-of-charset string '#line 42 "foo.glsl"' in identifier MUST NOT compile.
+[ 45: PASS ] Out-of-charset string '#line 42 "foo.glsl"' in comment MUST compile.
+[ 46: FAIL ] [unexpected fragment shader compile status] (expected: true) Out-of-charset string '#line 42 "foo.glsl"' in ifdef-out MUST compile.
+[ 47: FAIL ] [unexpected fragment shader compile status] (expected: true) Out-of-charset string '#line 42 "foo.glsl"' in ifdef-out #preproc MUST compile.
+[ 48: PASS ] Out-of-charset string '#line 42 "foo.glsl"' in #preproc MUST NOT compile.
+[ 49: FAIL ] [unexpected fragment shader compile status] (expected: true) Out-of-charset string '#line 42 "foo.glsl"' in comment after #define MUST compile.
+[ 50: PASS ] successfullyParsed is true
+[ FAIL ] 32 failures reported

@@ -1,0 +1,54 @@
+layer at (0,0) size 800x600
+  RenderView at (0,0) size 800x600
+layer at (0,0) size 800x548
+  RenderBlock {html} at (0,0) size 800x548
+    RenderInline {body} at (0,0) size 789x161
+      RenderText {#text} at (0,0) size 0x0
+      RenderInline {div} at (0,0) size 0x0
+      RenderText {#text} at (0,0) size 0x0
+      RenderSVGRoot {svg} at (0,0) size 400x400
+        RenderSVGRect {rect} at (0,0) size 100x100 [fill={[type=SOLID] [color=#008000]}] [x=0.00] [y=0.00] [width=100.00] [height=100.00]
+        RenderSVGViewportContainer {svg} at (100,100) size 300x300
+          RenderSVGRect {rect} at (100,100) size 100x100 [fill={[type=SOLID] [color=#008000]}] [x=0.00] [y=0.00] [width=100.00] [height=100.00]
+          RenderSVGViewportContainer {svg} at (200,200) size 200x200
+            RenderSVGRect {rect} at (200,200) size 100x100 [fill={[type=SOLID] [color=#008000]}] [x=0.00] [y=0.00] [width=100.00] [height=100.00]
+            RenderSVGViewportContainer {svg} at (300,300) size 100x100
+              RenderSVGRect {rect} at (300,300) size 100x100 [fill={[type=SOLID] [color=#008000]}] [x=0.00] [y=0.00] [width=100.00] [height=100.00]
+      RenderText {#text} at (400,386) size 4x17
+        text run at (400,386) width 4: " "
+      RenderInline {script} at (0,0) size 789x161
+        RenderText {#text} at (404,386) size 789x161
+          text run at (404,386) width 131: "var zoomCount = 2; "
+          text run at (535,386) width 159: "if (window.testRunner) {"
+          text run at (0,404) width 184: "testRunner.waitUntilDone(); "
+          text run at (184,404) width 276: "window.postZoomCallback = executeTest; "
+          text run at (460,404) width 12: "} "
+          text run at (472,404) width 184: "function ctmToString(ctm) { "
+          text run at (656,404) width 131: "return [ ctm.a, ctm.b,"
+          text run at (0,422) width 228: "ctm.c, ctm.d, ctm.e, ctm.f ].join(', '); "
+          text run at (228,422) width 12: "} "
+          text run at (240,422) width 157: "function executeTest() { "
+          text run at (397,422) width 56: "CTM1 ="
+          text run at (0,440) width 423: "ctmToString(document.getElementById('svg1').getScreenCTM()); "
+          text run at (423,440) width 56: "CTM2 ="
+          text run at (0,458) width 423: "ctmToString(document.getElementById('svg2').getScreenCTM()); "
+          text run at (423,458) width 56: "CTM3 ="
+          text run at (0,476) width 423: "ctmToString(document.getElementById('svg3').getScreenCTM()); "
+          text run at (423,476) width 56: "CTM4 ="
+          text run at (0,494) width 423: "ctmToString(document.getElementById('svg4').getScreenCTM()); "
+          text run at (423,494) width 366: "description(\"This test checks getScreenCTM() on zoomed"
+          text run at (0,512) width 60: "pages.\"); "
+          text run at (60,512) width 338: "shouldBeEqualToString('CTM1', '1, 0, 0, 1, 0, 100'); "
+          text run at (398,512) width 350: "shouldBeEqualToString('CTM2', '1, 0, 0, 1, 100, 200');"
+          text run at (0,530) width 354: "shouldBeEqualToString('CTM3', '1, 0, 0, 1, 200, 300'); "
+          text run at (354,530) width 354: "shouldBeEqualToString('CTM4', '1, 0, 0, 1, 300, 400'); "
+          text run at (708,530) width 63: "debug(''); "
+          text run at (771,530) width 8: "}"
+      RenderText {#text} at (0,0) size 0x0
+      RenderInline {script} at (0,0) size 0x0
+      RenderText {#text} at (0,0) size 0x0
+      RenderInline {script} at (0,0) size 0x0
+      RenderText {#text} at (0,0) size 0x0
+      RenderInline {script} at (0,0) size 0x0
+      RenderText {#text} at (0,0) size 0x0
+    RenderText {#text} at (0,0) size 0x0

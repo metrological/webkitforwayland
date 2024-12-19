@@ -1,0 +1,7 @@
+
+FAIL Indexed getter on localStorage The quota has been exceeded.
+PASS Indexed getter on sessionStorage
+PASS Getting number properties on sessionStorage
+PASS Getting number-valued string properties on sessionStorage
+PASS Getting existing number-valued properties on sessionStorage
+

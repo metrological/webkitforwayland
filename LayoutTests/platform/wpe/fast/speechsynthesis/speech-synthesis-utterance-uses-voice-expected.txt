@@ -1,0 +1,10 @@
+CONSOLE MESSAGE: TypeError: window.internals.enableMockSpeechSynthesizer is not a function. (In 'window.internals.enableMockSpeechSynthesizer()', 'window.internals.enableMockSpeechSynthesizer' is undefined)
+This tests that we can get synthesizer voices on the Mac
+
+On success, you will see a series of "PASS" messages, followed by "TEST COMPLETE".
+
+
+FAIL successfullyParsed should be true (of type boolean). Was undefined (of type undefined).
+
+TEST COMPLETE
+

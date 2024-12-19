@@ -1,0 +1,5 @@
+
+
+FAIL Unscrollable iframe horizontal scroll test with overscroll-behavior: none. assert_equals: Propagate horizontal scroll expected true but got false
+PASS Unscrollable iframe vertical scroll test with overscroll-behavior: none.
+

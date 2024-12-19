@@ -1,0 +1,5 @@
+
+FAIL update() with invalid response (longer than 64Kb characters) should fail. promise_rejects_js: function "function () { throw e }" threw object "NotSupportedError: The operation is not supported." ("NotSupportedError") expected instance of function "function TypeError() {
+    [native code]
+}" ("TypeError")
+

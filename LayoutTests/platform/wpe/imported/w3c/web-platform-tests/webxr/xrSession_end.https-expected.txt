@@ -1,6 +1,6 @@
 
-PASS end event fires when immersive session ends - webgl
+FAIL end event fires when immersive session ends - webgl assert_implements: missing navigator.xr - ensure test is run in a secure context. undefined
 FAIL end event fires when immersive session ends - webgl2 assert_implements: webgl2 not supported. undefined
-PASS end event fires when non-immersive session ends - webgl
+FAIL end event fires when non-immersive session ends - webgl assert_implements: missing navigator.xr - ensure test is run in a secure context. undefined
 FAIL end event fires when non-immersive session ends - webgl2 assert_implements: webgl2 not supported. undefined
 

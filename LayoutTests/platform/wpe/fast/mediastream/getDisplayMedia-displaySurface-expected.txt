@@ -1,0 +1,3 @@
+
+FAIL Validate displaySurface settings and capabilities assert_equals: displaySurface settings expected (string) "monitor" but got (undefined) undefined
+

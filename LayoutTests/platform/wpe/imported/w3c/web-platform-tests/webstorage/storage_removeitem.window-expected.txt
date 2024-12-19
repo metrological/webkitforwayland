@@ -1,0 +1,10 @@
+
+FAIL localStorage.removeItem() The quota has been exceeded.
+FAIL delete localStorage[] The quota has been exceeded.
+FAIL localStorage.removeItem(null) The quota has been exceeded.
+FAIL localStorage.removeItem(undefined) The quota has been exceeded.
+PASS sessionStorage.removeItem()
+PASS delete sessionStorage[]
+PASS sessionStorage.removeItem(null)
+PASS sessionStorage.removeItem(undefined)
+

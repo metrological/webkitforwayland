@@ -1,0 +1,8 @@
+CONSOLE MESSAGE: TypeError: null is not an object (evaluating 'gl.VERTEX_SHADER')
+This test runs the WebGL Test listed below in an iframe and reports PASS or FAIL.
+
+Test: ../../resources/webgl_test_files/conformance2/uniforms/gl-uniform-arrays-sub-source.html
+
+[ 1: FAIL ] Unable to fetch WebGL rendering context for Canvas
+[ 2: FAIL ] successfullyParsed should be true (of type boolean). Was undefined (of type undefined).
+[ FAIL ] 2 failures reported

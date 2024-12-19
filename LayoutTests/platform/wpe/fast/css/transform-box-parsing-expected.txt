@@ -1,0 +1,92 @@
+layer at (0,0) size 785x676
+  RenderView at (0,0) size 785x600
+layer at (0,0) size 785x676
+  RenderBlock {html} at (0,0) size 785x676
+    RenderInline {head} at (0,0) size 0x0
+      RenderText {#text} at (0,0) size 0x0
+      RenderInline {script} at (0,0) size 0x0
+      RenderText {#text} at (0,0) size 0x0
+    RenderText {#text} at (0,0) size 0x0
+    RenderInline {body} at (0,0) size 781x539
+      RenderText {#text} at (0,0) size 0x0
+      RenderSVGRoot {svg} at (0,0) size 0x0
+        RenderSVGForeignObject {foreignObject} at (0,0) size 0x0
+        RenderSVGForeignObject {foreignObject} at (0,0) size 0x0
+          RenderSVGRoot {svg} at (0,0) size 0x0
+          RenderText {#text} at (0,0) size 0x0
+      RenderText {#text} at (300,136) size 4x17
+        text run at (300,136) width 4: " "
+      RenderInline {script} at (0,0) size 781x539
+        RenderText {#text} at (304,136) size 781x539
+          text run at (304,136) width 449: "description(\"This tests checks parsing of the 'transform-box' property\");"
+          text run at (0,154) width 313: "function testPropertyValue(declaration, property) "
+          text run at (313,154) width 12: "{ "
+          text run at (325,154) width 268: "var div = document.createElement(\"div\"); "
+          text run at (593,154) width 149: "div.setAttribute(\"style\","
+          text run at (0,172) width 82: "declaration); "
+          text run at (82,172) width 221: "document.body.appendChild(div); "
+          text run at (303,172) width 310: "var result = div.style.getPropertyValue(property);"
+          text run at (0,190) width 222: "document.body.removeChild(div); "
+          text run at (222,190) width 83: "return result; "
+          text run at (305,190) width 12: "} "
+          text run at (317,190) width 319: "function testComputedStyle(declaration, property) "
+          text run at (636,190) width 12: "{ "
+          text run at (648,190) width 57: "var div ="
+          text run at (0,208) width 207: "document.createElement(\"div\"); "
+          text run at (207,208) width 235: "div.setAttribute(\"style\", declaration); "
+          text run at (442,208) width 221: "document.body.appendChild(div); "
+          text run at (663,208) width 71: "var result ="
+          text run at (0,226) width 389: "window.getComputedStyle(div).getPropertyValue(property); "
+          text run at (389,226) width 222: "document.body.removeChild(div); "
+          text run at (611,226) width 83: "return result; "
+          text run at (694,226) width 12: "} "
+          text run at (706,226) width 33: "const"
+          text run at (0,244) width 265: "svgNS = \"http://www.w3.org/2000/svg\"; "
+          text run at (265,244) width 352: "function testSVGComputedStyle(declaration, property) "
+          text run at (617,244) width 12: "{ "
+          text run at (629,244) width 90: "var svgRoot ="
+          text run at (0,262) width 246: "document.getElementById('svgRoot'); "
+          text run at (246,262) width 346: "var rect = document.createElementNS(svgNS, \"rect\"); "
+          text run at (592,262) width 152: "rect.setAttribute(\"style\","
+          text run at (0,280) width 82: "declaration); "
+          text run at (82,280) width 179: "svgRoot.appendChild(rect); "
+          text run at (261,280) width 463: "var result = window.getComputedStyle(rect).getPropertyValue(property);"
+          text run at (0,298) width 180: "svgRoot.removeChild(rect); "
+          text run at (180,298) width 83: "return result; "
+          text run at (263,298) width 12: "} "
+          text run at (275,298) width 367: "function testComputedStyleOnElementWithId(elementId) "
+          text run at (642,298) width 12: "{ "
+          text run at (654,298) width 37: "return"
+          text run at (0,316) width 660: "window.getComputedStyle(document.getElementById(elementId)).getPropertyValue(\"transform-box\"); "
+          text run at (660,316) width 8: "}"
+          text run at (0,334) width 672: "shouldBeEqualToString('testPropertyValue(\"transform-box: border-box\", \"transform-box\")', 'border-box');"
+          text run at (0,352) width 624: "shouldBeEqualToString('testPropertyValue(\"transform-box: fill-box\", \"transform-box\")', 'fill-box');"
+          text run at (0,370) width 652: "shouldBeEqualToString('testPropertyValue(\"transform-box: view-box\", \"transform-box\")', 'view-box');"
+          text run at (0,388) width 682: "shouldBeEqualToString('testPropertyValue(\"transform-box: content-box\", \"transform-box\")', 'content-box');"
+          text run at (0,406) width 670: "shouldBeEqualToString('testPropertyValue(\"transform-box: stroke-box\", \"transform-box\")', 'stroke-box'); "
+          text run at (670,406) width 59: "debug('');"
+          text run at (0,424) width 501: "shouldBeEqualToString('testComputedStyle(\"\", \"transform-box\")', 'view-box');"
+          text run at (0,442) width 630: "shouldBeEqualToString('testComputedStyle(\"transform-box: fill-box\", \"transform-box\")', 'fill-box');"
+          text run at (0,460) width 658: "shouldBeEqualToString('testComputedStyle(\"transform-box: view-box\", \"transform-box\")', 'view-box');"
+          text run at (0,478) width 688: "shouldBeEqualToString('testComputedStyle(\"transform-box: content-box\", \"transform-box\")', 'content-box');"
+          text run at (0,496) width 676: "shouldBeEqualToString('testComputedStyle(\"transform-box: stroke-box\", \"transform-box\")', 'stroke-box'); "
+          text run at (676,496) width 59: "debug('');"
+          text run at (0,514) width 534: "shouldBeEqualToString('testSVGComputedStyle(\"\", \"transform-box\")', 'view-box');"
+          text run at (0,532) width 663: "shouldBeEqualToString('testSVGComputedStyle(\"transform-box: fill-box\", \"transform-box\")', 'fill-box');"
+          text run at (0,550) width 711: "shouldBeEqualToString('testSVGComputedStyle(\"transform-box: border-box\", \"transform-box\")', 'border-box');"
+          text run at (0,568) width 721: "shouldBeEqualToString('testSVGComputedStyle(\"transform-box: content-box\", \"transform-box\")', 'content-box');"
+          text run at (0,586) width 709: "shouldBeEqualToString('testSVGComputedStyle(\"transform-box: stroke-box\", \"transform-box\")', 'stroke-box'); "
+          text run at (709,586) width 59: "debug('');"
+          text run at (0,604) width 597: "shouldBeEqualToString('testComputedStyleOnElementWithId(\"foreignObject\")', 'view-box'); "
+          text run at (597,604) width 63: "debug(''); "
+          text run at (660,604) width 121: "debug('Test default"
+          text run at (0,622) width 278: "value on elements with CSS layout boxes'); "
+          text run at (278,622) width 480: "shouldBeEqualToString('testComputedStyleOnElementWithId(\"svgRoot\")',"
+          text run at (0,640) width 79: "'view-box'); "
+          text run at (79,640) width 573: "shouldBeEqualToString('testComputedStyleOnElementWithId(\"nested-svg\")', 'view-box');"
+          text run at (0,658) width 640: "shouldBeEqualToString('testComputedStyleOnElementWithId(\"inside-foreign-object\")', 'view-box'); "
+          text run at (640,658) width 59: "debug('');"
+      RenderText {#text} at (0,0) size 0x0
+      RenderInline {script} at (0,0) size 0x0
+      RenderText {#text} at (0,0) size 0x0
+    RenderText {#text} at (0,0) size 0x0

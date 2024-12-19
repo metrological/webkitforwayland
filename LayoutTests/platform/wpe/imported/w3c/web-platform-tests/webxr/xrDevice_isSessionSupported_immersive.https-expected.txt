@@ -1,0 +1,3 @@
+
+FAIL isSessionSupported resolves to true when immersive options supported assert_implements: missing navigator.xr - ensure test is run in a secure context. undefined
+

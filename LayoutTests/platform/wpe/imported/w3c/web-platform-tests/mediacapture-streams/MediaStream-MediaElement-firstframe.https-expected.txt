@@ -1,0 +1,13 @@
+CONSOLE MESSAGE: Error: assert_unreached: Got unexpected event canplay Reached unreachable code
+CONSOLE MESSAGE: Error: assert_unreached: Got unexpected event canplaythrough Reached unreachable code
+When prompted, accept to share your video stream.
+
+Description
+
+This test checks that a HTMLMediaElement with an assigned MediaStream with a video track fires the appropriate events to reach the "canplay" event and readyState HAVE_ENOUGH_DATA even when not playing or autoplaying.
+
+
+
+FAIL Tests that loading a MediaStream in a media element eventually results in "canplay" even when not playing or autoplaying assert_equals: readyState is HAVE_ENOUGH_DATA after "canplay" expected 4 but got 3
+FAIL Tests that loading a MediaStream in a media element sees all the expected (deterministic) events even when not playing or autoplaying assert_equals: readyState is HAVE_ENOUGH_DATA after "loadeddata" since there's no buffering expected 4 but got 3
+

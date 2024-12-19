@@ -1,0 +1,9 @@
+This test verifies that the increment/decrement actions post keyboard events that appear identical to real keyboard events.
+
+On success, you will see a series of "PASS" messages, followed by "TEST COMPLETE".
+
+
+PASS successfullyParsed is true
+
+TEST COMPLETE
+

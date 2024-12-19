@@ -1,0 +1,69 @@
+layer at (0,0) size 785x947
+  RenderView at (0,0) size 785x600
+layer at (0,0) size 785x947
+  RenderBlock {html} at (0,0) size 785x947
+    RenderInline {head} at (0,0) size 782x35
+      RenderText {#text} at (0,0) size 0x0
+      RenderInline {style} at (0,0) size 782x35
+        RenderText {#text} at (0,713) size 482x17
+          text run at (0,713) width 47: ".icon { "
+          text run at (47,713) width 225: "position: absolute; } .icon::before { "
+          text run at (272,713) width 210: "content: url('data:image/svg+xml,"
+        RenderSVGRoot {svg} at (482,0) size 0x0
+        RenderText {#text} at (0,731) size 28x17
+          text run at (0,731) width 28: "'); } "
+      RenderText {#text} at (0,0) size 0x0
+    RenderText {#text} at (0,0) size 0x0
+    RenderInline {body} at (0,0) size 785x215
+      RenderText {#text} at (0,0) size 0x0
+      RenderInline {div} at (0,0) size 0x0
+      RenderText {#text} at (0,0) size 0x0
+      RenderInline {script} at (0,0) size 785x215
+        RenderText {#text} at (28,731) size 785x215
+          text run at (28,731) width 163: "if (window.testRunner) { "
+          text run at (191,731) width 173: "testRunner.dumpAsText(); "
+          text run at (364,731) width 196: "testRunner.waitUntilDone(); } "
+          text run at (560,731) width 212: "function nodesInRect(x, y, width,"
+          text run at (0,749) width 60: "height) { "
+          text run at (60,749) width 141: "if (!window.internals) "
+          text run at (201,749) width 45: "return; "
+          text run at (246,749) width 249: "let leftPadding = Math.floor(width / 2); "
+          text run at (495,749) width 252: "let topPadding = Math.floor(height / 2); "
+          text run at (747,749) width 15: "let"
+          text run at (0,767) width 249: "centerX = Math.floor(x + leftPadding); "
+          text run at (249,767) width 268: "let centerY = Math.floor(y + topPadding); "
+          text run at (517,767) width 226: "// FIXME: When nodesFromRect is"
+          text run at (0,785) width 442: "changed to not add 1 to width and height, remove the correction here. "
+          text run at (442,785) width 283: "let bottomPadding = Math.floor((height - 1) -"
+          text run at (0,803) width 85: "topPadding); "
+          text run at (85,803) width 354: "let rightPadding = Math.floor((width - 1) - leftPadding); "
+          text run at (439,803) width 186: "const ignoreClipping = false; "
+          text run at (625,803) width 33: "const"
+          text run at (0,821) width 260: "allowUserAgentShadowContent = false; "
+          text run at (260,821) width 251: "const allowChildFrameContent = false; "
+          text run at (511,821) width 269: "return internals.nodesFromRect(document,"
+          text run at (0,839) width 782: "centerX, centerY, topPadding, rightPadding, bottomPadding, leftPadding, ignoreClipping, allowUserAgentShadowContent,"
+          text run at (0,857) width 185: "allowChildFrameContent); } "
+          text run at (185,857) width 130: "function runTest() { "
+          text run at (315,857) width 153: "if (!window.internals) { "
+          text run at (468,857) width 279: "alert(\"This test requires window.internals\"); "
+          text run at (747,857) width 37: "return"
+          text run at (0,875) width 8: "; "
+          text run at (8,875) width 12: "} "
+          text run at (20,875) width 236: "function handleStylesheetLoaded() { "
+          text run at (256,875) width 173: "function actualRunTest() { "
+          text run at (429,875) width 193: "nodesInRect(0, 0, 1061, 552); "
+          text run at (622,875) width 163: "alert(\"PASS: This test did"
+          text run at (0,893) width 173: "not trigger an ASSERT.\"); "
+          text run at (173,893) width 151: "if (window.testRunner) "
+          text run at (324,893) width 162: "testRunner.notifyDone(); "
+          text run at (486,893) width 12: "} "
+          text run at (498,893) width 258: "// Need to use a zero-timer as the ::before"
+          text run at (0,911) width 216: "content may not have loaded, yet. "
+          text run at (216,911) width 251: "window.setTimeout(actualRunTest, 0); "
+          text run at (467,911) width 12: "} "
+          text run at (479,911) width 207: "document.getElementById(\"test-"
+          text run at (0,929) width 432: "styles\").addEventListener(\"load\", handleStylesheetLoaded, false); } "
+          text run at (432,929) width 62: "runTest();"
+      RenderText {#text} at (0,0) size 0x0
+    RenderText {#text} at (0,0) size 0x0

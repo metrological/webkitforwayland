@@ -1,0 +1,12 @@
+CONSOLE MESSAGE: ApplicationCache is deprecated. Please use ServiceWorkers instead.
+CONSOLE MESSAGE: TypeError: testRunner.setUseDeferredFrameLoading is not a function. (In 'testRunner.setUseDeferredFrameLoading(true)', 'testRunner.setUseDeferredFrameLoading' is undefined)
+layer at (0,0) size 800x600
+  RenderView at (0,0) size 800x600
+layer at (0,0) size 800x600
+  RenderBlock {HTML} at (0,0) size 800x600
+    RenderBody {BODY} at (8,8) size 784x576
+      RenderBlock {P} at (0,0) size 784x36
+        RenderText {#text} at (0,0) size 768x35
+          text run at (0,0) width 768: "This test loading the document itself with Application Cache, and deferred load, does not crash WebKit. The most reliable"
+          text run at (0,18) width 347: "way to reproduce is in Debug where you hit assertions."
+      RenderBlock {DIV} at (0,52) size 784x0

@@ -1,4 +1,4 @@
 
-PASS XRRigidTransform position and orientation meet [SameObject] requirements - webgl
+FAIL XRRigidTransform position and orientation meet [SameObject] requirements - webgl assert_implements: missing navigator.xr - ensure test is run in a secure context. undefined
 FAIL XRRigidTransform position and orientation meet [SameObject] requirements - webgl2 assert_implements: webgl2 not supported. undefined
 

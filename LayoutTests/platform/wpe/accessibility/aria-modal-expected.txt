@@ -1,0 +1,15 @@
+This tests that aria-modal on dialog makes other elements inert.
+
+On success, you will see a series of "PASS" messages, followed by "TEST COMPLETE".
+
+
+PASS successfullyParsed is true
+
+TEST COMPLETE
+Other page content with a dummy focusable element
+
+Display a dialog
+
+Just an example.
+
+OK  Cancel

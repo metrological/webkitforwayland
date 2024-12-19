@@ -1,0 +1,4 @@
+
+FAIL Clear in localStorage The quota has been exceeded.
+PASS Clear in sessionStorage
+

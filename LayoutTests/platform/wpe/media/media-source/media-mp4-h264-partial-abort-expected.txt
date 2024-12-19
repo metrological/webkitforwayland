@@ -1,0 +1,25 @@
+
+RUN(video.src = URL.createObjectURL(source))
+EVENT(sourceopen)
+Append the init segment in two chunks
+RUN(sourceBuffer = source.addSourceBuffer(loader.type()))
+Divide the init segment in two.
+RUN(random = randomNumber(1, 720))
+RUN(partial1 = loader.initSegment().slice(0, random))
+RUN(partial2 = loader.initSegment().slice(random))
+RUN(sourceBuffer.appendBuffer(partial1))
+EVENT(update)
+RUN(sourceBuffer.appendBuffer(partial2))
+EVENT(loadedmetadata)
+EVENT(update)
+Append the two partial media segments in reverse order. Separated with an abort
+RUN(sourceBuffer.appendBuffer(loader.mediaSegment(3).slice(0, 45000)))
+EVENT(update)
+RUN(sourceBuffer.abort())
+EXPECTED (sourceBuffer.buffered.length == '1') OK
+EXPECTED (sourceBuffer.buffered.end(0) >= '3.541') OK
+RUN(sourceBuffer.appendBuffer(loader.mediaSegment(0).slice(0, 45000)))
+EVENT(error)
+[object Event] FAIL
+END OF TEST
+

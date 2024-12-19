@@ -1,4 +1,4 @@
 
-PASS XRInputSources properly communicate their handedness - webgl
+FAIL XRInputSources properly communicate their handedness - webgl assert_implements: missing navigator.xr - ensure test is run in a secure context. undefined
 FAIL XRInputSources properly communicate their handedness - webgl2 assert_implements: webgl2 not supported. undefined
 

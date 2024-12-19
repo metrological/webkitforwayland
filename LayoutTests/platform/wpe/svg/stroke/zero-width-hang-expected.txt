@@ -1,0 +1,27 @@
+layer at (0,0) size 800x600
+  RenderView at (0,0) size 800x600
+layer at (0,0) size 800x222
+  RenderBlock {html} at (0,0) size 800x222
+    RenderInline {head} at (0,0) size 113x17
+      RenderText {#text} at (0,0) size 0x0
+      RenderInline {title} at (0,0) size 109x17
+        RenderText {#text} at (0,186) size 109x17
+          text run at (0,186) width 109: "SVG lock up test"
+      RenderText {#text} at (109,186) size 4x17
+        text run at (109,186) width 4: " "
+    RenderText {#text} at (0,0) size 0x0
+    RenderInline {body} at (0,0) size 769x35
+      RenderText {#text} at (113,186) size 331x17
+        text run at (113,186) width 331: "This test PASS if it doesn't cause the page to freeze. "
+      RenderSVGRoot {svg} at (444,0) size 0x0
+        RenderSVGPath {path} at (444,0) size 0x0 [stroke={[type=SOLID] [color=#FFFFFF] [stroke width=0.00] [dash array={0.00, 0.00}]}] [data="M 0 1 L 312 1"]
+      RenderText {#text} at (756,186) size 4x17
+        text run at (756,186) width 4: " "
+      RenderInline {script} at (0,0) size 769x35
+        RenderText {#text} at (760,186) size 769x35
+          text run at (760,186) width 9: "if"
+          text run at (0,204) width 150: "(window.testRunner) { "
+          text run at (150,204) width 173: "testRunner.dumpAsText(); "
+          text run at (323,204) width 8: "}"
+      RenderText {#text} at (0,0) size 0x0
+    RenderText {#text} at (0,0) size 0x0

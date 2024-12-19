@@ -1,0 +1,13 @@
+
+Line1
+
+Line3
+This tests that lineNumberForPosition is reported correctly for textarea and contenteditable elements.
+
+On success, you will see a series of "PASS" messages, followed by "TEST COMPLETE".
+
+
+PASS successfullyParsed is true
+
+TEST COMPLETE
+

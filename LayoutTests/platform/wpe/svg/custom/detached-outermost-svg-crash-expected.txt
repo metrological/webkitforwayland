@@ -1,0 +1,23 @@
+layer at (0,0) size 800x600
+  RenderView at (0,0) size 800x600
+layer at (0,0) size 800x205
+  RenderBlock {script} at (0,0) size 800x205
+    RenderBlock {parsererror} at (16,16) size 768x137 [bgcolor=#FFDDDD] [border: (2px solid #CC7777)]
+      RenderBlock {h3} at (18,20) size 732x23
+        RenderText {#text} at (0,0) size 324x21
+          text run at (0,0) width 324: "This page contains the following errors:"
+      RenderBlock {div} at (18,61) size 732x15
+        RenderText {#text} at (0,0) size 595x14
+          text run at (0,0) width 595: "error on line 12 at column 11: Opening and ending tag mismatch: svg line 0 and script"
+          text run at (595,0) width 0: " "
+      RenderBlock {h3} at (18,94) size 732x23
+        RenderText {#text} at (0,0) size 429x21
+          text run at (0,0) width 429: "Below is a rendering of the page up to the first error."
+    RenderBlock (anonymous) at (0,168) size 800x37
+      RenderText {#text} at (0,0) size 769x35
+        text run at (0,0) width 151: "if (window.testRunner) "
+        text run at (151,0) width 173: "testRunner.dumpAsText(); "
+        text run at (324,0) width 445: "var svg = document.createElementNS(\"http://www.w3.org/2000/svg\","
+        text run at (0,18) width 168: "\"svg\"); for (prop in svg) { "
+        text run at (168,18) width 208: "// Access all the properties on the"
+      RenderInline {svg} at (0,0) size 0x17

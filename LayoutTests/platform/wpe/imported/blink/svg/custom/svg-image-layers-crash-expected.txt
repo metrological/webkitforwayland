@@ -1,0 +1,32 @@
+layer at (0,0) size 800x600
+  RenderView at (0,0) size 800x600
+layer at (0,0) size 800x222
+  RenderBlock {html} at (0,0) size 800x222
+    RenderInline {body} at (0,0) size 796x35
+      RenderText {#text} at (0,186) size 136x17
+        text run at (0,186) width 136: "PASS: did not crash. "
+      RenderInline {script} at (0,0) size 796x35
+        RenderText {#text} at (136,186) size 460x17
+          text run at (136,186) width 153: "var img = new Image(); "
+          text run at (289,186) width 304: "img.src = 'data:image/svg+xml;charset=utf-8,' + "
+          text run at (593,186) width 3: "'"
+        RenderSVGRoot {svg} at (596,0) size 200x200
+          RenderSVGForeignObject {foreignObject} at (0,0) size 200x200
+            RenderBlock (anonymous) at (0,0) size 200x18
+              RenderText {#text} at (0,0) size 23x17
+                text run at (0,0) width 20: "' + "
+                text run at (20,0) width 3: "'"
+            RenderBlock (anonymous) at (0,36) size 200x18
+              RenderText {#text} at (0,0) size 23x17
+                text run at (0,0) width 20: "' + "
+                text run at (20,0) width 3: "'"
+        RenderText {#text} at (0,204) size 331x17
+          text run at (0,204) width 11: "'; "
+          text run at (11,204) width 151: "if (window.testRunner) "
+          text run at (162,204) width 169: "testRunner.dumpAsText();"
+      RenderText {#text} at (0,0) size 0x0
+    RenderText {#text} at (0,0) size 0x0
+layer at (596,18) size 200x18
+  RenderBlock {div} at (0,18) size 200x18
+    RenderText {#text} at (0,0) size 91x17
+      text run at (0,0) width 91: "Transform Me"

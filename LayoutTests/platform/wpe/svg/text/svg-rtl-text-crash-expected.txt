@@ -1,0 +1,115 @@
+layer at (0,0) size 800x600
+  RenderView at (0,0) size 800x600
+layer at (0,0) size 800x228
+  RenderBlock {html} at (0,0) size 800x228
+    RenderBody {body} at (0,10) size 800x218
+      RenderBlock {div} at (10,0) size 780x25 [border: none (2px solid #000000) none]
+        RenderInline {span} at (0,0) size 727x17
+          RenderText {#text} at (0,0) size 727x17
+            text run at (0,0) width 727: "This XML file does not appear to have any style information associated with it. The document tree is shown below."
+        RenderBR {br} at (727,0) size 0x17
+      RenderBlock {div} at (20,38) size 780x180
+        RenderBlock {div} at (0,0) size 780x180
+          RenderBlock {div} at (0,0) size 780x180
+            RenderBlock {div} at (0,0) size 780x15
+              RenderBlock {span} at (-10,5) size 10x10
+              RenderInline {span} at (0,0) size 48x15 [color=#881280]
+                RenderText {#text} at (0,0) size 40x15
+                  text run at (0,0) width 40: "<html"
+                RenderText {#text} at (40,0) size 8x15
+                  text run at (40,0) width 8: ">"
+            RenderBlock {div} at (13,15) size 767x150
+              RenderBlock (anonymous) at (0,0) size 767x0
+                RenderInline {span} at (0,0) size 0x0
+              RenderBlock {div} at (0,0) size 767x45
+                RenderBlock {div} at (0,0) size 767x45
+                  RenderBlock {div} at (0,0) size 767x15
+                    RenderBlock {span} at (-10,5) size 10x10
+                    RenderInline {span} at (0,0) size 64x15 [color=#881280]
+                      RenderText {#text} at (0,0) size 56x15
+                        text run at (0,0) width 56: "<script"
+                      RenderText {#text} at (56,0) size 8x15
+                        text run at (56,0) width 8: ">"
+                  RenderBlock {div} at (13,15) size 754x15
+                    RenderInline {span} at (0,0) size 376x15
+                      RenderText {#text} at (0,0) size 376x15
+                        text run at (0,0) width 184: "if (window.testRunner) "
+                        text run at (184,0) width 192: "testRunner.dumpAsText();"
+                  RenderBlock {div} at (0,30) size 767x15
+                    RenderInline {span} at (0,0) size 72x15 [color=#881280]
+                      RenderText {#text} at (0,0) size 64x15
+                        text run at (0,0) width 64: "</script"
+                      RenderText {#text} at (64,0) size 8x15
+                        text run at (64,0) width 8: ">"
+              RenderBlock (anonymous) at (0,45) size 767x0
+                RenderInline {span} at (0,0) size 0x0
+              RenderBlock {div} at (0,45) size 767x45
+                RenderBlock {div} at (0,0) size 767x45
+                  RenderBlock {div} at (0,0) size 767x15
+                    RenderBlock {span} at (-10,5) size 10x10
+                    RenderInline {span} at (0,0) size 56x15 [color=#881280]
+                      RenderText {#text} at (0,0) size 48x15
+                        text run at (0,0) width 48: "<style"
+                      RenderText {#text} at (48,0) size 8x15
+                        text run at (48,0) width 8: ">"
+                  RenderBlock {div} at (13,15) size 754x15
+                    RenderInline {span} at (0,0) size 392x15
+                      RenderText {#text} at (0,0) size 392x15
+                        text run at (0,0) width 48: "svg { "
+                        text run at (48,0) width 128: "direction: rtl; "
+                        text run at (176,0) width 16: "} "
+                        text run at (192,0) width 80: ":before { "
+                        text run at (272,0) width 112: "content: \"]\"; "
+                        text run at (384,0) width 8: "}"
+                  RenderBlock {div} at (0,30) size 767x15
+                    RenderInline {span} at (0,0) size 64x15 [color=#881280]
+                      RenderText {#text} at (0,0) size 56x15
+                        text run at (0,0) width 56: "</style"
+                      RenderText {#text} at (56,0) size 8x15
+                        text run at (56,0) width 8: ">"
+              RenderBlock (anonymous) at (0,90) size 767x0
+                RenderInline {span} at (0,0) size 0x0
+              RenderBlock {div} at (0,90) size 767x45
+                RenderBlock {div} at (0,0) size 767x45
+                  RenderBlock {div} at (0,0) size 767x15
+                    RenderBlock {span} at (-10,5) size 10x10
+                    RenderInline {span} at (0,0) size 40x15 [color=#881280]
+                      RenderText {#text} at (0,0) size 32x15
+                        text run at (0,0) width 32: "<svg"
+                      RenderText {#text} at (32,0) size 8x15
+                        text run at (32,0) width 8: ">"
+                  RenderBlock {div} at (13,15) size 754x15
+                    RenderBlock (anonymous) at (0,0) size 754x0
+                      RenderInline {span} at (0,0) size 0x0
+                    RenderBlock {div} at (0,0) size 754x15
+                      RenderInline {span} at (0,0) size 48x15 [color=#881280]
+                        RenderText {#text} at (0,0) size 40x15
+                          text run at (0,0) width 40: "<text"
+                        RenderText {#text} at (40,0) size 8x15
+                          text run at (40,0) width 8: ">"
+                      RenderInline {span} at (0,0) size 8x15
+                        RenderText {#text} at (48,0) size 8x15
+                          text run at (48,0) width 8: "*"
+                      RenderInline {span} at (0,0) size 56x15 [color=#881280]
+                        RenderText {#text} at (56,0) size 48x15
+                          text run at (56,0) width 48: "</text"
+                        RenderText {#text} at (104,0) size 8x15
+                          text run at (104,0) width 8: ">"
+                    RenderBlock (anonymous) at (0,15) size 754x0
+                      RenderInline {span} at (0,0) size 0x0
+                  RenderBlock {div} at (0,30) size 767x15
+                    RenderInline {span} at (0,0) size 48x15 [color=#881280]
+                      RenderText {#text} at (0,0) size 40x15
+                        text run at (0,0) width 40: "</svg"
+                      RenderText {#text} at (40,0) size 8x15
+                        text run at (40,0) width 8: ">"
+              RenderBlock (anonymous) at (0,135) size 767x15
+                RenderInline {span} at (0,0) size 32x15
+                  RenderText {#text} at (0,0) size 32x15
+                    text run at (0,0) width 32: "PASS"
+            RenderBlock {div} at (0,165) size 780x15
+              RenderInline {span} at (0,0) size 56x15 [color=#881280]
+                RenderText {#text} at (0,0) size 48x15
+                  text run at (0,0) width 48: "</html"
+                RenderText {#text} at (48,0) size 8x15
+                  text run at (48,0) width 8: ">"

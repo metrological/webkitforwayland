@@ -1,0 +1,12 @@
+
+FAIL getting arraybuffer response within abort event callback assert_true: arraybuffer response must be empty expected true got false
+PASS getting arraybuffer response within abort event callback (aborting in loadend)
+FAIL getting blob response within abort event callback assert_true: blob response must be empty expected true got false
+PASS getting blob response within abort event callback (aborting in loadend)
+FAIL getting json response within abort event callback assert_true: json response must be empty expected true got false
+PASS getting json response within abort event callback (aborting in loadend)
+FAIL getting document response within abort event callback assert_true: document response must be empty expected true got false
+PASS getting document response within abort event callback (aborting in loadend)
+FAIL getting text response within abort event callback assert_true: text response must be an empty string expected true got false
+PASS getting text response within abort event callback (aborting in loadend)
+

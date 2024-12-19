@@ -1,0 +1,36 @@
+layer at (0,0) size 800x600
+  RenderView at (0,0) size 800x600
+layer at (0,0) size 800x244
+  RenderBlock {html} at (0,0) size 800x244
+    RenderInline {body} at (0,0) size 792x107
+      RenderText {#text} at (0,0) size 0x0
+      RenderText {#text} at (0,0) size 0x0
+      RenderInline {div} at (0,0) size 0x0
+      RenderText {#text} at (0,0) size 0x0
+      RenderSVGRoot {svg} at (0,0) size 10x100
+        RenderSVGRect {rect} at (0,0) size 10x100 [fill={[type=SOLID] [color=#008000]}] [x=0.00] [y=0.00] [width=10.00] [height=100.00]
+      RenderText {#text} at (300,136) size 4x17
+        text run at (300,136) width 4: " "
+      RenderInline {script} at (0,0) size 792x107
+        RenderText {#text} at (304,136) size 792x107
+          text run at (304,136) width 163: "if (window.testRunner) { "
+          text run at (467,136) width 169: "testRunner.dumpAsText();"
+          text run at (0,154) width 184: "testRunner.waitUntilDone(); "
+          text run at (184,154) width 12: "} "
+          text run at (196,154) width 119: "function check() { "
+          text run at (315,154) width 425: "var width = document.getElementById('rect').width.animVal.value;"
+          text run at (0,172) width 759: "document.getElementById('result').innerHTML = (width == 100 ? \"PASS: \" : \"FAIL: \") + 'animated width is ' + width; "
+          text run at (759,172) width 9: "if"
+          text run at (0,190) width 138: "(window.testRunner) "
+          text run at (138,190) width 162: "testRunner.notifyDone(); "
+          text run at (300,190) width 12: "} "
+          text run at (312,190) width 209: "window.setTimeout(function() { "
+          text run at (521,190) width 56: "var ani ="
+          text run at (0,208) width 255: "document.getElementById('animation'); "
+          text run at (255,208) width 204: "ani.setAttribute(\"from\", \"100\"); "
+          text run at (459,208) width 128: "ani.beginElement(); "
+          text run at (587,208) width 205: "window.setTimeout(function() {"
+          text run at (0,226) width 92: "check(); }, 0); "
+          text run at (92,226) width 33: "}, 0);"
+      RenderText {#text} at (0,0) size 0x0
+    RenderText {#text} at (0,0) size 0x0

@@ -1,0 +1,4 @@
+
+PASS sessionStorage mutations fire StorageEvents that are caught by the event listener set via window.onstorage.
+FAIL localStorage mutations fire StorageEvents that are caught by the event listener set via window.onstorage. The quota has been exceeded.
+

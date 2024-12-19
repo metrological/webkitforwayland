@@ -1,0 +1,93 @@
+This test runs the WebGL Test listed below in an iframe and reports PASS or FAIL.
+
+Test: ../../../resources/webgl_test_files/conformance/programs/program-test.html
+
+[ 1: PASS ] context exists
+[ 2: PASS ] good vertex shader should compile
+[ 3: PASS ] getError was expected value: NO_ERROR : should be no errors at this point
+[ 4: PASS ] invalid call to getShaderParameter should return null
+[ 5: PASS ] getError was expected value: INVALID_ENUM : INFO_LOG_LENGTH is not a valid argument to getShaderParameter in WebGL
+[ 6: PASS ] invalid call to getShaderParameter should return null
+[ 7: PASS ] getError was expected value: INVALID_ENUM : SHADER_SOURCE_LENGTH is not a valid argument to getShaderParameter in WebGL
+[ 8: PASS ] good vertex shader #2 should compile
+[ 9: PASS ] good fragment shader should compile
+[ 10: PASS ] good fragment shader #2 should compile
+[ 11: PASS ] getError was expected value: NO_ERROR : should be no errors at this point
+[ 12: PASS ] getError was expected value: NO_ERROR : attaching a vertex shader should succeed
+[ 13: PASS ] getError was expected value: INVALID_OPERATION : attaching an already attached vertex shader should generate INVALID_OPERATION
+[ 14: PASS ] getError was expected value: NO_ERROR : attaching a fragment shader should succeed
+[ 15: PASS ] getError was expected value: INVALID_OPERATION : attaching an already attached fragment shader should generate INVALID_OPERATION
+[ 16: PASS ] getError was expected value: INVALID_OPERATION : attaching shaders of the same type to a program should generate INVALID_OPERATION
+[ 17: PASS ] getError was expected value: INVALID_OPERATION : attaching shaders of the same type to a program should generate INVALID_OPERATION
+[ 18: PASS ] getError was expected value: NO_ERROR : detaching a vertex shader should succeed
+[ 19: PASS ] getError was expected value: INVALID_OPERATION : detaching a not already attached vertex shader should generate INVALID_OPERATION
+[ 20: PASS ] getError was expected value: NO_ERROR : detaching a fragment shader should succeed
+[ 21: PASS ] getError was expected value: INVALID_OPERATION : detaching a not already attached fragment shader should generate INVALID_OPERATION
+[ 22: PASS ] getAttachedShaders should return an empty list by default
+[ 23: PASS ] gl.getProgramParameter(prog, gl.ATTACHED_SHADERS) is 0
+[ 24: PASS ] attaching a single shader should give the expected list
+[ 25: PASS ] gl.getProgramParameter(prog, gl.ATTACHED_SHADERS) is 1
+[ 26: PASS ] attaching some shaders should give the expected list
+[ 27: PASS ] gl.getProgramParameter(prog, gl.ATTACHED_SHADERS) is 2
+[ 28: PASS ] attaching a shader and detaching it should leave an empty list
+[ 29: PASS ] gl.getProgramParameter(prog, gl.ATTACHED_SHADERS) is 0
+[ 30: PASS ] attaching some shaders and detaching them in same order should leave an empty list
+[ 31: PASS ] gl.getProgramParameter(prog, gl.ATTACHED_SHADERS) is 0
+[ 32: PASS ] attaching some shaders and detaching them in random order should leave an empty list
+[ 33: PASS ] gl.getProgramParameter(prog, gl.ATTACHED_SHADERS) is 0
+[ 34: PASS ] attaching and detaching some shaders should leave the difference list
+[ 35: PASS ] gl.getProgramParameter(prog, gl.ATTACHED_SHADERS) is 1
+[ 36: PASS ] attaching and detaching some shaders should leave the difference list
+[ 37: PASS ] gl.getProgramParameter(prog, gl.ATTACHED_SHADERS) is 1
+[ 38: PASS ] attaching a shader that failed to compile should still show it in the list
+[ 39: PASS ] gl.getProgramParameter(prog, gl.ATTACHED_SHADERS) is 1
+[ 40: PASS ] attaching shaders, including one that failed to compile, should still show the it in the list
+[ 41: PASS ] gl.getProgramParameter(prog, gl.ATTACHED_SHADERS) is 2
+[ 42: PASS ] valid program should link
+[ 43: PASS ] invalid call to getProgramParameter should return null
+[ 44: PASS ] getError was expected value: INVALID_ENUM : INFO_LOG_LENGTH is not a valid argument to getProgramParameter in WebGL
+[ 45: PASS ] invalid call to getProgramParameter should return null
+[ 46: PASS ] getError was expected value: INVALID_ENUM : ACTIVE_ATTRIBUTE_MAX_LENGTH is not a valid argument to getProgramParameter in WebGL
+[ 47: PASS ] invalid call to getProgramParameter should return null
+[ 48: PASS ] getError was expected value: INVALID_ENUM : ACTIVE_UNIFORM_MAX_LENGTH is not a valid argument to getProgramParameter in WebGL
+[ 49: PASS ] getError was expected value: NO_ERROR : using a valid program should succeed
+[ 50: PASS ] valid program #2 should link
+[ 51: PASS ] getError was expected value: NO_ERROR : using a valid program should succeed
+[ 52: PASS ] program with no fragment shader should fail to link
+[ 53: PASS ] getError was expected value: INVALID_OPERATION : using an invalid program should generate INVALID_OPERATION
+[ 54: PASS ] program with no vertex shader should fail to link
+[ 55: PASS ] getError was expected value: INVALID_OPERATION : using an invalid program should generate INVALID_OPERATION
+[ 56: PASS ] program with bad vertex shader should fail to link
+[ 57: PASS ] getError was expected value: INVALID_OPERATION : using an invalid program should generate INVALID_OPERATION
+[ 58: PASS ] program with bad fragment shader should fail to link
+[ 59: PASS ] getError was expected value: INVALID_OPERATION : using an invalid program should generate INVALID_OPERATION
+[ 60: PASS ] program with bad shaders should fail to link
+[ 61: PASS ] getError was expected value: INVALID_OPERATION : using an invalid program should generate INVALID_OPERATION
+[ 62: PASS ] getError was expected value: NO_ERROR : using a valid program shouldn't generate a GL error
+[ 63: PASS ] getError was expected value: NO_ERROR : should be no errors at this point #2
+[ 64: PASS ] getError was expected value: INVALID_OPERATION : drawing with a null program should generate INVALID_OPERATION
+[ 65: PASS ] getError was expected value: NO_ERROR : drawing with a valid program shouldn't generate a GL error
+[ 66: PASS ] getError was expected value: INVALID_OPERATION : using an invalid program should generate INVALID_OPERATION
+[ 67: PASS ] getError was expected value: NO_ERROR : Try to use an invalid program should not change the current rendering state
+[ 68: PASS ] getError was expected value: NO_ERROR : drawing with a valid program shouldn't generate a GL error
+[ 69: PASS ] linking should fail with in-use formerly good program, with new bad shader attached
+[ 70: FAIL ] getError expected: INVALID_OPERATION. Was NO_ERROR : drawing with a newly-invalidated program should generate INVALID_OPERATION
+[ 71: PASS ] getError was expected value: NO_ERROR : drawing with a valid when last used program shouldn't generate a GL error
+[ 72: PASS ] delete shaders after attaching them and before linking program should not affect linkProgram
+[ 73: PASS ] getError was expected value: NO_ERROR : using a valid program should succeed
+[ 74: PASS ] getError was expected value: NO_ERROR : drawing with a valid when last used program shouldn't generate a GL error
+[ 75: PASS ] getError was expected value: NO_ERROR : delete the current program shouldn't change the current rendering state
+[ 76: PASS ] getError was expected value: NO_ERROR : The current program shouldn't be deleted
+[ 77: PASS ] good fragment shader should compile
+[ 78: PASS ] getError was expected value: INVALID_VALUE : an unattached shader should be deleted immediately
+[ 79: PASS ] good fragment shader should compile
+[ 80: PASS ] an attached shader shouldn't be deleted
+[ 81: PASS ] getError was expected value: INVALID_VALUE : a delete-marked program should be deleted once it's no longer the current program
+[ 82: PASS ] getError was expected value: INVALID_VALUE : a delete-marked shader should be deleted once all its attachments are removed
+[ 83: PASS ] should be red
+[ 84: PASS ] should be green
+[ 85: PASS ] should be red
+[ 86: PASS ] should be tranparent black
+[ 87: PASS ] getError was expected value: NO_ERROR : should be no errors
+[ 88: PASS ] successfullyParsed is true
+[ FAIL ] 1 failures reported

@@ -1,0 +1,1108 @@
+
+FAIL localStorage.setItem() The quota has been exceeded.
+FAIL localStorage[] The quota has been exceeded.
+FAIL localStorage[] update The quota has been exceeded.
+FAIL localStorage.setItem(_, null) The quota has been exceeded.
+FAIL localStorage[] = null The quota has been exceeded.
+FAIL localStorage.setItem(_, undefined) The quota has been exceeded.
+FAIL localStorage[] = undefined The quota has been exceeded.
+FAIL localStorage.setItem({ throws }) The quota has been exceeded.
+FAIL localStorage[] = { throws } The quota has been exceeded.
+FAIL localStorage.setItem(undefined, _) The quota has been exceeded.
+FAIL localStorage[undefined] The quota has been exceeded.
+FAIL localStorage.setItem(null, _) The quota has been exceeded.
+FAIL localStorage[null] The quota has been exceeded.
+FAIL localStorage key containing null The quota has been exceeded.
+FAIL localStorage value containing null The quota has been exceeded.
+FAIL localStorage["퟿"] The quota has been exceeded.
+FAIL localStorage[] = "퟿" The quota has been exceeded.
+FAIL localStorage["U+d800"] The quota has been exceeded.
+FAIL localStorage[] = "U+d800" The quota has been exceeded.
+FAIL localStorage["U+dbff"] The quota has been exceeded.
+FAIL localStorage[] = "U+dbff" The quota has been exceeded.
+FAIL localStorage["U+dc00"] The quota has been exceeded.
+FAIL localStorage[] = "U+dc00" The quota has been exceeded.
+FAIL localStorage["U+dfff"] The quota has been exceeded.
+FAIL localStorage[] = "U+dfff" The quota has been exceeded.
+FAIL localStorage[""] The quota has been exceeded.
+FAIL localStorage[] = "" The quota has been exceeded.
+FAIL localStorage["\ufffd"] The quota has been exceeded.
+FAIL localStorage[] = "\ufffd" The quota has been exceeded.
+FAIL localStorage["\ufffe"] The quota has been exceeded.
+FAIL localStorage[] = "\ufffe" The quota has been exceeded.
+FAIL localStorage["\uffff"] The quota has been exceeded.
+FAIL localStorage[] = "\uffff" The quota has been exceeded.
+FAIL localStorage["🍍"] The quota has been exceeded.
+FAIL localStorage[] = "🍍" The quota has been exceeded.
+FAIL localStorage["U+d83ca"] The quota has been exceeded.
+FAIL localStorage[] = "U+d83ca" The quota has been exceeded.
+FAIL localStorage["aU+df4d"] The quota has been exceeded.
+FAIL localStorage[] = "aU+df4d" The quota has been exceeded.
+FAIL localStorage["􏿿"] The quota has been exceeded.
+FAIL localStorage[] = "􏿿" The quota has been exceeded.
+FAIL localStorage["\0"] The quota has been exceeded.
+FAIL localStorage[] = "\0" The quota has been exceeded.
+FAIL localStorage["\x01"] The quota has been exceeded.
+FAIL localStorage[] = "\x01" The quota has been exceeded.
+FAIL localStorage["\x02"] The quota has been exceeded.
+FAIL localStorage[] = "\x02" The quota has been exceeded.
+FAIL localStorage["\x03"] The quota has been exceeded.
+FAIL localStorage[] = "\x03" The quota has been exceeded.
+FAIL localStorage["\x04"] The quota has been exceeded.
+FAIL localStorage[] = "\x04" The quota has been exceeded.
+FAIL localStorage["\x05"] The quota has been exceeded.
+FAIL localStorage[] = "\x05" The quota has been exceeded.
+FAIL localStorage["\x06"] The quota has been exceeded.
+FAIL localStorage[] = "\x06" The quota has been exceeded.
+FAIL localStorage["\x07"] The quota has been exceeded.
+FAIL localStorage[] = "\x07" The quota has been exceeded.
+FAIL localStorage["\b"] The quota has been exceeded.
+FAIL localStorage[] = "\b" The quota has been exceeded.
+FAIL localStorage["\t"] The quota has been exceeded.
+FAIL localStorage[] = "\t" The quota has been exceeded.
+FAIL localStorage["\n"] The quota has been exceeded.
+FAIL localStorage[] = "\n" The quota has been exceeded.
+FAIL localStorage["\v"] The quota has been exceeded.
+FAIL localStorage[] = "\v" The quota has been exceeded.
+FAIL localStorage["\f"] The quota has been exceeded.
+FAIL localStorage[] = "\f" The quota has been exceeded.
+FAIL localStorage["\r"] The quota has been exceeded.
+FAIL localStorage[] = "\r" The quota has been exceeded.
+FAIL localStorage["\x0e"] The quota has been exceeded.
+FAIL localStorage[] = "\x0e" The quota has been exceeded.
+FAIL localStorage["\x0f"] The quota has been exceeded.
+FAIL localStorage[] = "\x0f" The quota has been exceeded.
+FAIL localStorage["\x10"] The quota has been exceeded.
+FAIL localStorage[] = "\x10" The quota has been exceeded.
+FAIL localStorage["\x11"] The quota has been exceeded.
+FAIL localStorage[] = "\x11" The quota has been exceeded.
+FAIL localStorage["\x12"] The quota has been exceeded.
+FAIL localStorage[] = "\x12" The quota has been exceeded.
+FAIL localStorage["\x13"] The quota has been exceeded.
+FAIL localStorage[] = "\x13" The quota has been exceeded.
+FAIL localStorage["\x14"] The quota has been exceeded.
+FAIL localStorage[] = "\x14" The quota has been exceeded.
+FAIL localStorage["\x15"] The quota has been exceeded.
+FAIL localStorage[] = "\x15" The quota has been exceeded.
+FAIL localStorage["\x16"] The quota has been exceeded.
+FAIL localStorage[] = "\x16" The quota has been exceeded.
+FAIL localStorage["\x17"] The quota has been exceeded.
+FAIL localStorage[] = "\x17" The quota has been exceeded.
+FAIL localStorage["\x18"] The quota has been exceeded.
+FAIL localStorage[] = "\x18" The quota has been exceeded.
+FAIL localStorage["\x19"] The quota has been exceeded.
+FAIL localStorage[] = "\x19" The quota has been exceeded.
+FAIL localStorage["\x1a"] The quota has been exceeded.
+FAIL localStorage[] = "\x1a" The quota has been exceeded.
+FAIL localStorage["\x1b"] The quota has been exceeded.
+FAIL localStorage[] = "\x1b" The quota has been exceeded.
+FAIL localStorage["\x1c"] The quota has been exceeded.
+FAIL localStorage[] = "\x1c" The quota has been exceeded.
+FAIL localStorage["\x1d"] The quota has been exceeded.
+FAIL localStorage[] = "\x1d" The quota has been exceeded.
+FAIL localStorage["\x1e"] The quota has been exceeded.
+FAIL localStorage[] = "\x1e" The quota has been exceeded.
+FAIL localStorage["\x1f"] The quota has been exceeded.
+FAIL localStorage[] = "\x1f" The quota has been exceeded.
+FAIL localStorage[" "] The quota has been exceeded.
+FAIL localStorage[] = " " The quota has been exceeded.
+FAIL localStorage["!"] The quota has been exceeded.
+FAIL localStorage[] = "!" The quota has been exceeded.
+FAIL localStorage["\""] The quota has been exceeded.
+FAIL localStorage[] = "\"" The quota has been exceeded.
+FAIL localStorage["#"] The quota has been exceeded.
+FAIL localStorage[] = "#" The quota has been exceeded.
+FAIL localStorage["$"] The quota has been exceeded.
+FAIL localStorage[] = "$" The quota has been exceeded.
+FAIL localStorage["%"] The quota has been exceeded.
+FAIL localStorage[] = "%" The quota has been exceeded.
+FAIL localStorage["&"] The quota has been exceeded.
+FAIL localStorage[] = "&" The quota has been exceeded.
+FAIL localStorage["'"] The quota has been exceeded.
+FAIL localStorage[] = "'" The quota has been exceeded.
+FAIL localStorage["("] The quota has been exceeded.
+FAIL localStorage[] = "(" The quota has been exceeded.
+FAIL localStorage[")"] The quota has been exceeded.
+FAIL localStorage[] = ")" The quota has been exceeded.
+FAIL localStorage["*"] The quota has been exceeded.
+FAIL localStorage[] = "*" The quota has been exceeded.
+FAIL localStorage["+"] The quota has been exceeded.
+FAIL localStorage[] = "+" The quota has been exceeded.
+FAIL localStorage[","] The quota has been exceeded.
+FAIL localStorage[] = "," The quota has been exceeded.
+FAIL localStorage["-"] The quota has been exceeded.
+FAIL localStorage[] = "-" The quota has been exceeded.
+FAIL localStorage["."] The quota has been exceeded.
+FAIL localStorage[] = "." The quota has been exceeded.
+FAIL localStorage["/"] The quota has been exceeded.
+FAIL localStorage[] = "/" The quota has been exceeded.
+FAIL localStorage["0"] The quota has been exceeded.
+FAIL localStorage[] = "0" The quota has been exceeded.
+FAIL localStorage["1"] The quota has been exceeded.
+FAIL localStorage[] = "1" The quota has been exceeded.
+FAIL localStorage["2"] The quota has been exceeded.
+FAIL localStorage[] = "2" The quota has been exceeded.
+FAIL localStorage["3"] The quota has been exceeded.
+FAIL localStorage[] = "3" The quota has been exceeded.
+FAIL localStorage["4"] The quota has been exceeded.
+FAIL localStorage[] = "4" The quota has been exceeded.
+FAIL localStorage["5"] The quota has been exceeded.
+FAIL localStorage[] = "5" The quota has been exceeded.
+FAIL localStorage["6"] The quota has been exceeded.
+FAIL localStorage[] = "6" The quota has been exceeded.
+FAIL localStorage["7"] The quota has been exceeded.
+FAIL localStorage[] = "7" The quota has been exceeded.
+FAIL localStorage["8"] The quota has been exceeded.
+FAIL localStorage[] = "8" The quota has been exceeded.
+FAIL localStorage["9"] The quota has been exceeded.
+FAIL localStorage[] = "9" The quota has been exceeded.
+FAIL localStorage[":"] The quota has been exceeded.
+FAIL localStorage[] = ":" The quota has been exceeded.
+FAIL localStorage[";"] The quota has been exceeded.
+FAIL localStorage[] = ";" The quota has been exceeded.
+FAIL localStorage["<"] The quota has been exceeded.
+FAIL localStorage[] = "<" The quota has been exceeded.
+FAIL localStorage["="] The quota has been exceeded.
+FAIL localStorage[] = "=" The quota has been exceeded.
+FAIL localStorage[">"] The quota has been exceeded.
+FAIL localStorage[] = ">" The quota has been exceeded.
+FAIL localStorage["?"] The quota has been exceeded.
+FAIL localStorage[] = "?" The quota has been exceeded.
+FAIL localStorage["@"] The quota has been exceeded.
+FAIL localStorage[] = "@" The quota has been exceeded.
+FAIL localStorage["A"] The quota has been exceeded.
+FAIL localStorage[] = "A" The quota has been exceeded.
+FAIL localStorage["B"] The quota has been exceeded.
+FAIL localStorage[] = "B" The quota has been exceeded.
+FAIL localStorage["C"] The quota has been exceeded.
+FAIL localStorage[] = "C" The quota has been exceeded.
+FAIL localStorage["D"] The quota has been exceeded.
+FAIL localStorage[] = "D" The quota has been exceeded.
+FAIL localStorage["E"] The quota has been exceeded.
+FAIL localStorage[] = "E" The quota has been exceeded.
+FAIL localStorage["F"] The quota has been exceeded.
+FAIL localStorage[] = "F" The quota has been exceeded.
+FAIL localStorage["G"] The quota has been exceeded.
+FAIL localStorage[] = "G" The quota has been exceeded.
+FAIL localStorage["H"] The quota has been exceeded.
+FAIL localStorage[] = "H" The quota has been exceeded.
+FAIL localStorage["I"] The quota has been exceeded.
+FAIL localStorage[] = "I" The quota has been exceeded.
+FAIL localStorage["J"] The quota has been exceeded.
+FAIL localStorage[] = "J" The quota has been exceeded.
+FAIL localStorage["K"] The quota has been exceeded.
+FAIL localStorage[] = "K" The quota has been exceeded.
+FAIL localStorage["L"] The quota has been exceeded.
+FAIL localStorage[] = "L" The quota has been exceeded.
+FAIL localStorage["M"] The quota has been exceeded.
+FAIL localStorage[] = "M" The quota has been exceeded.
+FAIL localStorage["N"] The quota has been exceeded.
+FAIL localStorage[] = "N" The quota has been exceeded.
+FAIL localStorage["O"] The quota has been exceeded.
+FAIL localStorage[] = "O" The quota has been exceeded.
+FAIL localStorage["P"] The quota has been exceeded.
+FAIL localStorage[] = "P" The quota has been exceeded.
+FAIL localStorage["Q"] The quota has been exceeded.
+FAIL localStorage[] = "Q" The quota has been exceeded.
+FAIL localStorage["R"] The quota has been exceeded.
+FAIL localStorage[] = "R" The quota has been exceeded.
+FAIL localStorage["S"] The quota has been exceeded.
+FAIL localStorage[] = "S" The quota has been exceeded.
+FAIL localStorage["T"] The quota has been exceeded.
+FAIL localStorage[] = "T" The quota has been exceeded.
+FAIL localStorage["U"] The quota has been exceeded.
+FAIL localStorage[] = "U" The quota has been exceeded.
+FAIL localStorage["V"] The quota has been exceeded.
+FAIL localStorage[] = "V" The quota has been exceeded.
+FAIL localStorage["W"] The quota has been exceeded.
+FAIL localStorage[] = "W" The quota has been exceeded.
+FAIL localStorage["X"] The quota has been exceeded.
+FAIL localStorage[] = "X" The quota has been exceeded.
+FAIL localStorage["Y"] The quota has been exceeded.
+FAIL localStorage[] = "Y" The quota has been exceeded.
+FAIL localStorage["Z"] The quota has been exceeded.
+FAIL localStorage[] = "Z" The quota has been exceeded.
+FAIL localStorage["["] The quota has been exceeded.
+FAIL localStorage[] = "[" The quota has been exceeded.
+FAIL localStorage["\\"] The quota has been exceeded.
+FAIL localStorage[] = "\\" The quota has been exceeded.
+FAIL localStorage["]"] The quota has been exceeded.
+FAIL localStorage[] = "]" The quota has been exceeded.
+FAIL localStorage["^"] The quota has been exceeded.
+FAIL localStorage[] = "^" The quota has been exceeded.
+FAIL localStorage["_"] The quota has been exceeded.
+FAIL localStorage[] = "_" The quota has been exceeded.
+FAIL localStorage["`"] The quota has been exceeded.
+FAIL localStorage[] = "`" The quota has been exceeded.
+FAIL localStorage["a"] The quota has been exceeded.
+FAIL localStorage[] = "a" The quota has been exceeded.
+FAIL localStorage["b"] The quota has been exceeded.
+FAIL localStorage[] = "b" The quota has been exceeded.
+FAIL localStorage["c"] The quota has been exceeded.
+FAIL localStorage[] = "c" The quota has been exceeded.
+FAIL localStorage["d"] The quota has been exceeded.
+FAIL localStorage[] = "d" The quota has been exceeded.
+FAIL localStorage["e"] The quota has been exceeded.
+FAIL localStorage[] = "e" The quota has been exceeded.
+FAIL localStorage["f"] The quota has been exceeded.
+FAIL localStorage[] = "f" The quota has been exceeded.
+FAIL localStorage["g"] The quota has been exceeded.
+FAIL localStorage[] = "g" The quota has been exceeded.
+FAIL localStorage["h"] The quota has been exceeded.
+FAIL localStorage[] = "h" The quota has been exceeded.
+FAIL localStorage["i"] The quota has been exceeded.
+FAIL localStorage[] = "i" The quota has been exceeded.
+FAIL localStorage["j"] The quota has been exceeded.
+FAIL localStorage[] = "j" The quota has been exceeded.
+FAIL localStorage["k"] The quota has been exceeded.
+FAIL localStorage[] = "k" The quota has been exceeded.
+FAIL localStorage["l"] The quota has been exceeded.
+FAIL localStorage[] = "l" The quota has been exceeded.
+FAIL localStorage["m"] The quota has been exceeded.
+FAIL localStorage[] = "m" The quota has been exceeded.
+FAIL localStorage["n"] The quota has been exceeded.
+FAIL localStorage[] = "n" The quota has been exceeded.
+FAIL localStorage["o"] The quota has been exceeded.
+FAIL localStorage[] = "o" The quota has been exceeded.
+FAIL localStorage["p"] The quota has been exceeded.
+FAIL localStorage[] = "p" The quota has been exceeded.
+FAIL localStorage["q"] The quota has been exceeded.
+FAIL localStorage[] = "q" The quota has been exceeded.
+FAIL localStorage["r"] The quota has been exceeded.
+FAIL localStorage[] = "r" The quota has been exceeded.
+FAIL localStorage["s"] The quota has been exceeded.
+FAIL localStorage[] = "s" The quota has been exceeded.
+FAIL localStorage["t"] The quota has been exceeded.
+FAIL localStorage[] = "t" The quota has been exceeded.
+FAIL localStorage["u"] The quota has been exceeded.
+FAIL localStorage[] = "u" The quota has been exceeded.
+FAIL localStorage["v"] The quota has been exceeded.
+FAIL localStorage[] = "v" The quota has been exceeded.
+FAIL localStorage["w"] The quota has been exceeded.
+FAIL localStorage[] = "w" The quota has been exceeded.
+FAIL localStorage["x"] The quota has been exceeded.
+FAIL localStorage[] = "x" The quota has been exceeded.
+FAIL localStorage["y"] The quota has been exceeded.
+FAIL localStorage[] = "y" The quota has been exceeded.
+FAIL localStorage["z"] The quota has been exceeded.
+FAIL localStorage[] = "z" The quota has been exceeded.
+FAIL localStorage["{"] The quota has been exceeded.
+FAIL localStorage[] = "{" The quota has been exceeded.
+FAIL localStorage["|"] The quota has been exceeded.
+FAIL localStorage[] = "|" The quota has been exceeded.
+FAIL localStorage["}"] The quota has been exceeded.
+FAIL localStorage[] = "}" The quota has been exceeded.
+FAIL localStorage["~"] The quota has been exceeded.
+FAIL localStorage[] = "~" The quota has been exceeded.
+FAIL localStorage[""] The quota has been exceeded.
+FAIL localStorage[] = "" The quota has been exceeded.
+FAIL localStorage[""] The quota has been exceeded.
+FAIL localStorage[] = "" The quota has been exceeded.
+FAIL localStorage[""] The quota has been exceeded.
+FAIL localStorage[] = "" The quota has been exceeded.
+FAIL localStorage[""] The quota has been exceeded.
+FAIL localStorage[] = "" The quota has been exceeded.
+FAIL localStorage[""] The quota has been exceeded.
+FAIL localStorage[] = "" The quota has been exceeded.
+FAIL localStorage[""] The quota has been exceeded.
+FAIL localStorage[] = "" The quota has been exceeded.
+FAIL localStorage[""] The quota has been exceeded.
+FAIL localStorage[] = "" The quota has been exceeded.
+FAIL localStorage[""] The quota has been exceeded.
+FAIL localStorage[] = "" The quota has been exceeded.
+FAIL localStorage[""] The quota has been exceeded.
+FAIL localStorage[] = "" The quota has been exceeded.
+FAIL localStorage[""] The quota has been exceeded.
+FAIL localStorage[] = "" The quota has been exceeded.
+FAIL localStorage[""] The quota has been exceeded.
+FAIL localStorage[] = "" The quota has been exceeded.
+FAIL localStorage[""] The quota has been exceeded.
+FAIL localStorage[] = "" The quota has been exceeded.
+FAIL localStorage[""] The quota has been exceeded.
+FAIL localStorage[] = "" The quota has been exceeded.
+FAIL localStorage[""] The quota has been exceeded.
+FAIL localStorage[] = "" The quota has been exceeded.
+FAIL localStorage[""] The quota has been exceeded.
+FAIL localStorage[] = "" The quota has been exceeded.
+FAIL localStorage[""] The quota has been exceeded.
+FAIL localStorage[] = "" The quota has been exceeded.
+FAIL localStorage[""] The quota has been exceeded.
+FAIL localStorage[] = "" The quota has been exceeded.
+FAIL localStorage[""] The quota has been exceeded.
+FAIL localStorage[] = "" The quota has been exceeded.
+FAIL localStorage[""] The quota has been exceeded.
+FAIL localStorage[] = "" The quota has been exceeded.
+FAIL localStorage[""] The quota has been exceeded.
+FAIL localStorage[] = "" The quota has been exceeded.
+FAIL localStorage[""] The quota has been exceeded.
+FAIL localStorage[] = "" The quota has been exceeded.
+FAIL localStorage[""] The quota has been exceeded.
+FAIL localStorage[] = "" The quota has been exceeded.
+FAIL localStorage[""] The quota has been exceeded.
+FAIL localStorage[] = "" The quota has been exceeded.
+FAIL localStorage[""] The quota has been exceeded.
+FAIL localStorage[] = "" The quota has been exceeded.
+FAIL localStorage[""] The quota has been exceeded.
+FAIL localStorage[] = "" The quota has been exceeded.
+FAIL localStorage[""] The quota has been exceeded.
+FAIL localStorage[] = "" The quota has been exceeded.
+FAIL localStorage[""] The quota has been exceeded.
+FAIL localStorage[] = "" The quota has been exceeded.
+FAIL localStorage[""] The quota has been exceeded.
+FAIL localStorage[] = "" The quota has been exceeded.
+FAIL localStorage[""] The quota has been exceeded.
+FAIL localStorage[] = "" The quota has been exceeded.
+FAIL localStorage[""] The quota has been exceeded.
+FAIL localStorage[] = "" The quota has been exceeded.
+FAIL localStorage[""] The quota has been exceeded.
+FAIL localStorage[] = "" The quota has been exceeded.
+FAIL localStorage[""] The quota has been exceeded.
+FAIL localStorage[] = "" The quota has been exceeded.
+FAIL localStorage[""] The quota has been exceeded.
+FAIL localStorage[] = "" The quota has been exceeded.
+FAIL localStorage[" "] The quota has been exceeded.
+FAIL localStorage[] = " " The quota has been exceeded.
+FAIL localStorage["¡"] The quota has been exceeded.
+FAIL localStorage[] = "¡" The quota has been exceeded.
+FAIL localStorage["¢"] The quota has been exceeded.
+FAIL localStorage[] = "¢" The quota has been exceeded.
+FAIL localStorage["£"] The quota has been exceeded.
+FAIL localStorage[] = "£" The quota has been exceeded.
+FAIL localStorage["¤"] The quota has been exceeded.
+FAIL localStorage[] = "¤" The quota has been exceeded.
+FAIL localStorage["¥"] The quota has been exceeded.
+FAIL localStorage[] = "¥" The quota has been exceeded.
+FAIL localStorage["¦"] The quota has been exceeded.
+FAIL localStorage[] = "¦" The quota has been exceeded.
+FAIL localStorage["§"] The quota has been exceeded.
+FAIL localStorage[] = "§" The quota has been exceeded.
+FAIL localStorage["¨"] The quota has been exceeded.
+FAIL localStorage[] = "¨" The quota has been exceeded.
+FAIL localStorage["©"] The quota has been exceeded.
+FAIL localStorage[] = "©" The quota has been exceeded.
+FAIL localStorage["ª"] The quota has been exceeded.
+FAIL localStorage[] = "ª" The quota has been exceeded.
+FAIL localStorage["«"] The quota has been exceeded.
+FAIL localStorage[] = "«" The quota has been exceeded.
+FAIL localStorage["¬"] The quota has been exceeded.
+FAIL localStorage[] = "¬" The quota has been exceeded.
+FAIL localStorage["­"] The quota has been exceeded.
+FAIL localStorage[] = "­" The quota has been exceeded.
+FAIL localStorage["®"] The quota has been exceeded.
+FAIL localStorage[] = "®" The quota has been exceeded.
+FAIL localStorage["¯"] The quota has been exceeded.
+FAIL localStorage[] = "¯" The quota has been exceeded.
+FAIL localStorage["°"] The quota has been exceeded.
+FAIL localStorage[] = "°" The quota has been exceeded.
+FAIL localStorage["±"] The quota has been exceeded.
+FAIL localStorage[] = "±" The quota has been exceeded.
+FAIL localStorage["²"] The quota has been exceeded.
+FAIL localStorage[] = "²" The quota has been exceeded.
+FAIL localStorage["³"] The quota has been exceeded.
+FAIL localStorage[] = "³" The quota has been exceeded.
+FAIL localStorage["´"] The quota has been exceeded.
+FAIL localStorage[] = "´" The quota has been exceeded.
+FAIL localStorage["µ"] The quota has been exceeded.
+FAIL localStorage[] = "µ" The quota has been exceeded.
+FAIL localStorage["¶"] The quota has been exceeded.
+FAIL localStorage[] = "¶" The quota has been exceeded.
+FAIL localStorage["·"] The quota has been exceeded.
+FAIL localStorage[] = "·" The quota has been exceeded.
+FAIL localStorage["¸"] The quota has been exceeded.
+FAIL localStorage[] = "¸" The quota has been exceeded.
+FAIL localStorage["¹"] The quota has been exceeded.
+FAIL localStorage[] = "¹" The quota has been exceeded.
+FAIL localStorage["º"] The quota has been exceeded.
+FAIL localStorage[] = "º" The quota has been exceeded.
+FAIL localStorage["»"] The quota has been exceeded.
+FAIL localStorage[] = "»" The quota has been exceeded.
+FAIL localStorage["¼"] The quota has been exceeded.
+FAIL localStorage[] = "¼" The quota has been exceeded.
+FAIL localStorage["½"] The quota has been exceeded.
+FAIL localStorage[] = "½" The quota has been exceeded.
+FAIL localStorage["¾"] The quota has been exceeded.
+FAIL localStorage[] = "¾" The quota has been exceeded.
+FAIL localStorage["¿"] The quota has been exceeded.
+FAIL localStorage[] = "¿" The quota has been exceeded.
+FAIL localStorage["À"] The quota has been exceeded.
+FAIL localStorage[] = "À" The quota has been exceeded.
+FAIL localStorage["Á"] The quota has been exceeded.
+FAIL localStorage[] = "Á" The quota has been exceeded.
+FAIL localStorage["Â"] The quota has been exceeded.
+FAIL localStorage[] = "Â" The quota has been exceeded.
+FAIL localStorage["Ã"] The quota has been exceeded.
+FAIL localStorage[] = "Ã" The quota has been exceeded.
+FAIL localStorage["Ä"] The quota has been exceeded.
+FAIL localStorage[] = "Ä" The quota has been exceeded.
+FAIL localStorage["Å"] The quota has been exceeded.
+FAIL localStorage[] = "Å" The quota has been exceeded.
+FAIL localStorage["Æ"] The quota has been exceeded.
+FAIL localStorage[] = "Æ" The quota has been exceeded.
+FAIL localStorage["Ç"] The quota has been exceeded.
+FAIL localStorage[] = "Ç" The quota has been exceeded.
+FAIL localStorage["È"] The quota has been exceeded.
+FAIL localStorage[] = "È" The quota has been exceeded.
+FAIL localStorage["É"] The quota has been exceeded.
+FAIL localStorage[] = "É" The quota has been exceeded.
+FAIL localStorage["Ê"] The quota has been exceeded.
+FAIL localStorage[] = "Ê" The quota has been exceeded.
+FAIL localStorage["Ë"] The quota has been exceeded.
+FAIL localStorage[] = "Ë" The quota has been exceeded.
+FAIL localStorage["Ì"] The quota has been exceeded.
+FAIL localStorage[] = "Ì" The quota has been exceeded.
+FAIL localStorage["Í"] The quota has been exceeded.
+FAIL localStorage[] = "Í" The quota has been exceeded.
+FAIL localStorage["Î"] The quota has been exceeded.
+FAIL localStorage[] = "Î" The quota has been exceeded.
+FAIL localStorage["Ï"] The quota has been exceeded.
+FAIL localStorage[] = "Ï" The quota has been exceeded.
+FAIL localStorage["Ð"] The quota has been exceeded.
+FAIL localStorage[] = "Ð" The quota has been exceeded.
+FAIL localStorage["Ñ"] The quota has been exceeded.
+FAIL localStorage[] = "Ñ" The quota has been exceeded.
+FAIL localStorage["Ò"] The quota has been exceeded.
+FAIL localStorage[] = "Ò" The quota has been exceeded.
+FAIL localStorage["Ó"] The quota has been exceeded.
+FAIL localStorage[] = "Ó" The quota has been exceeded.
+FAIL localStorage["Ô"] The quota has been exceeded.
+FAIL localStorage[] = "Ô" The quota has been exceeded.
+FAIL localStorage["Õ"] The quota has been exceeded.
+FAIL localStorage[] = "Õ" The quota has been exceeded.
+FAIL localStorage["Ö"] The quota has been exceeded.
+FAIL localStorage[] = "Ö" The quota has been exceeded.
+FAIL localStorage["×"] The quota has been exceeded.
+FAIL localStorage[] = "×" The quota has been exceeded.
+FAIL localStorage["Ø"] The quota has been exceeded.
+FAIL localStorage[] = "Ø" The quota has been exceeded.
+FAIL localStorage["Ù"] The quota has been exceeded.
+FAIL localStorage[] = "Ù" The quota has been exceeded.
+FAIL localStorage["Ú"] The quota has been exceeded.
+FAIL localStorage[] = "Ú" The quota has been exceeded.
+FAIL localStorage["Û"] The quota has been exceeded.
+FAIL localStorage[] = "Û" The quota has been exceeded.
+FAIL localStorage["Ü"] The quota has been exceeded.
+FAIL localStorage[] = "Ü" The quota has been exceeded.
+FAIL localStorage["Ý"] The quota has been exceeded.
+FAIL localStorage[] = "Ý" The quota has been exceeded.
+FAIL localStorage["Þ"] The quota has been exceeded.
+FAIL localStorage[] = "Þ" The quota has been exceeded.
+FAIL localStorage["ß"] The quota has been exceeded.
+FAIL localStorage[] = "ß" The quota has been exceeded.
+FAIL localStorage["à"] The quota has been exceeded.
+FAIL localStorage[] = "à" The quota has been exceeded.
+FAIL localStorage["á"] The quota has been exceeded.
+FAIL localStorage[] = "á" The quota has been exceeded.
+FAIL localStorage["â"] The quota has been exceeded.
+FAIL localStorage[] = "â" The quota has been exceeded.
+FAIL localStorage["ã"] The quota has been exceeded.
+FAIL localStorage[] = "ã" The quota has been exceeded.
+FAIL localStorage["ä"] The quota has been exceeded.
+FAIL localStorage[] = "ä" The quota has been exceeded.
+FAIL localStorage["å"] The quota has been exceeded.
+FAIL localStorage[] = "å" The quota has been exceeded.
+FAIL localStorage["æ"] The quota has been exceeded.
+FAIL localStorage[] = "æ" The quota has been exceeded.
+FAIL localStorage["ç"] The quota has been exceeded.
+FAIL localStorage[] = "ç" The quota has been exceeded.
+FAIL localStorage["è"] The quota has been exceeded.
+FAIL localStorage[] = "è" The quota has been exceeded.
+FAIL localStorage["é"] The quota has been exceeded.
+FAIL localStorage[] = "é" The quota has been exceeded.
+FAIL localStorage["ê"] The quota has been exceeded.
+FAIL localStorage[] = "ê" The quota has been exceeded.
+FAIL localStorage["ë"] The quota has been exceeded.
+FAIL localStorage[] = "ë" The quota has been exceeded.
+FAIL localStorage["ì"] The quota has been exceeded.
+FAIL localStorage[] = "ì" The quota has been exceeded.
+FAIL localStorage["í"] The quota has been exceeded.
+FAIL localStorage[] = "í" The quota has been exceeded.
+FAIL localStorage["î"] The quota has been exceeded.
+FAIL localStorage[] = "î" The quota has been exceeded.
+FAIL localStorage["ï"] The quota has been exceeded.
+FAIL localStorage[] = "ï" The quota has been exceeded.
+FAIL localStorage["ð"] The quota has been exceeded.
+FAIL localStorage[] = "ð" The quota has been exceeded.
+FAIL localStorage["ñ"] The quota has been exceeded.
+FAIL localStorage[] = "ñ" The quota has been exceeded.
+FAIL localStorage["ò"] The quota has been exceeded.
+FAIL localStorage[] = "ò" The quota has been exceeded.
+FAIL localStorage["ó"] The quota has been exceeded.
+FAIL localStorage[] = "ó" The quota has been exceeded.
+FAIL localStorage["ô"] The quota has been exceeded.
+FAIL localStorage[] = "ô" The quota has been exceeded.
+FAIL localStorage["õ"] The quota has been exceeded.
+FAIL localStorage[] = "õ" The quota has been exceeded.
+FAIL localStorage["ö"] The quota has been exceeded.
+FAIL localStorage[] = "ö" The quota has been exceeded.
+FAIL localStorage["÷"] The quota has been exceeded.
+FAIL localStorage[] = "÷" The quota has been exceeded.
+FAIL localStorage["ø"] The quota has been exceeded.
+FAIL localStorage[] = "ø" The quota has been exceeded.
+FAIL localStorage["ù"] The quota has been exceeded.
+FAIL localStorage[] = "ù" The quota has been exceeded.
+FAIL localStorage["ú"] The quota has been exceeded.
+FAIL localStorage[] = "ú" The quota has been exceeded.
+FAIL localStorage["û"] The quota has been exceeded.
+FAIL localStorage[] = "û" The quota has been exceeded.
+FAIL localStorage["ü"] The quota has been exceeded.
+FAIL localStorage[] = "ü" The quota has been exceeded.
+FAIL localStorage["ý"] The quota has been exceeded.
+FAIL localStorage[] = "ý" The quota has been exceeded.
+FAIL localStorage["þ"] The quota has been exceeded.
+FAIL localStorage[] = "þ" The quota has been exceeded.
+FAIL localStorage["ÿ"] The quota has been exceeded.
+FAIL localStorage[] = "ÿ" The quota has been exceeded.
+PASS sessionStorage.setItem()
+PASS sessionStorage[]
+PASS sessionStorage[] update
+PASS sessionStorage.setItem(_, null)
+PASS sessionStorage[] = null
+PASS sessionStorage.setItem(_, undefined)
+PASS sessionStorage[] = undefined
+PASS sessionStorage.setItem({ throws })
+PASS sessionStorage[] = { throws }
+PASS sessionStorage.setItem(undefined, _)
+PASS sessionStorage[undefined]
+PASS sessionStorage.setItem(null, _)
+PASS sessionStorage[null]
+PASS sessionStorage key containing null
+PASS sessionStorage value containing null
+PASS sessionStorage["퟿"]
+PASS sessionStorage[] = "퟿"
+PASS sessionStorage["U+d800"]
+PASS sessionStorage[] = "U+d800"
+PASS sessionStorage["U+dbff"]
+PASS sessionStorage[] = "U+dbff"
+PASS sessionStorage["U+dc00"]
+PASS sessionStorage[] = "U+dc00"
+PASS sessionStorage["U+dfff"]
+PASS sessionStorage[] = "U+dfff"
+PASS sessionStorage[""]
+PASS sessionStorage[] = ""
+PASS sessionStorage["\ufffd"]
+PASS sessionStorage[] = "\ufffd"
+PASS sessionStorage["\ufffe"]
+PASS sessionStorage[] = "\ufffe"
+PASS sessionStorage["\uffff"]
+PASS sessionStorage[] = "\uffff"
+PASS sessionStorage["🍍"]
+PASS sessionStorage[] = "🍍"
+PASS sessionStorage["U+d83ca"]
+PASS sessionStorage[] = "U+d83ca"
+PASS sessionStorage["aU+df4d"]
+PASS sessionStorage[] = "aU+df4d"
+PASS sessionStorage["􏿿"]
+PASS sessionStorage[] = "􏿿"
+PASS sessionStorage["\0"]
+PASS sessionStorage[] = "\0"
+PASS sessionStorage["\x01"]
+PASS sessionStorage[] = "\x01"
+PASS sessionStorage["\x02"]
+PASS sessionStorage[] = "\x02"
+PASS sessionStorage["\x03"]
+PASS sessionStorage[] = "\x03"
+PASS sessionStorage["\x04"]
+PASS sessionStorage[] = "\x04"
+PASS sessionStorage["\x05"]
+PASS sessionStorage[] = "\x05"
+PASS sessionStorage["\x06"]
+PASS sessionStorage[] = "\x06"
+PASS sessionStorage["\x07"]
+PASS sessionStorage[] = "\x07"
+PASS sessionStorage["\b"]
+PASS sessionStorage[] = "\b"
+PASS sessionStorage["\t"]
+PASS sessionStorage[] = "\t"
+PASS sessionStorage["\n"]
+PASS sessionStorage[] = "\n"
+PASS sessionStorage["\v"]
+PASS sessionStorage[] = "\v"
+PASS sessionStorage["\f"]
+PASS sessionStorage[] = "\f"
+PASS sessionStorage["\r"]
+PASS sessionStorage[] = "\r"
+PASS sessionStorage["\x0e"]
+PASS sessionStorage[] = "\x0e"
+PASS sessionStorage["\x0f"]
+PASS sessionStorage[] = "\x0f"
+PASS sessionStorage["\x10"]
+PASS sessionStorage[] = "\x10"
+PASS sessionStorage["\x11"]
+PASS sessionStorage[] = "\x11"
+PASS sessionStorage["\x12"]
+PASS sessionStorage[] = "\x12"
+PASS sessionStorage["\x13"]
+PASS sessionStorage[] = "\x13"
+PASS sessionStorage["\x14"]
+PASS sessionStorage[] = "\x14"
+PASS sessionStorage["\x15"]
+PASS sessionStorage[] = "\x15"
+PASS sessionStorage["\x16"]
+PASS sessionStorage[] = "\x16"
+PASS sessionStorage["\x17"]
+PASS sessionStorage[] = "\x17"
+PASS sessionStorage["\x18"]
+PASS sessionStorage[] = "\x18"
+PASS sessionStorage["\x19"]
+PASS sessionStorage[] = "\x19"
+PASS sessionStorage["\x1a"]
+PASS sessionStorage[] = "\x1a"
+PASS sessionStorage["\x1b"]
+PASS sessionStorage[] = "\x1b"
+PASS sessionStorage["\x1c"]
+PASS sessionStorage[] = "\x1c"
+PASS sessionStorage["\x1d"]
+PASS sessionStorage[] = "\x1d"
+PASS sessionStorage["\x1e"]
+PASS sessionStorage[] = "\x1e"
+PASS sessionStorage["\x1f"]
+PASS sessionStorage[] = "\x1f"
+PASS sessionStorage[" "]
+PASS sessionStorage[] = " "
+PASS sessionStorage["!"]
+PASS sessionStorage[] = "!"
+PASS sessionStorage["\""]
+PASS sessionStorage[] = "\""
+PASS sessionStorage["#"]
+PASS sessionStorage[] = "#"
+PASS sessionStorage["$"]
+PASS sessionStorage[] = "$"
+PASS sessionStorage["%"]
+PASS sessionStorage[] = "%"
+PASS sessionStorage["&"]
+PASS sessionStorage[] = "&"
+PASS sessionStorage["'"]
+PASS sessionStorage[] = "'"
+PASS sessionStorage["("]
+PASS sessionStorage[] = "("
+PASS sessionStorage[")"]
+PASS sessionStorage[] = ")"
+PASS sessionStorage["*"]
+PASS sessionStorage[] = "*"
+PASS sessionStorage["+"]
+PASS sessionStorage[] = "+"
+PASS sessionStorage[","]
+PASS sessionStorage[] = ","
+PASS sessionStorage["-"]
+PASS sessionStorage[] = "-"
+PASS sessionStorage["."]
+PASS sessionStorage[] = "."
+PASS sessionStorage["/"]
+PASS sessionStorage[] = "/"
+PASS sessionStorage["0"]
+PASS sessionStorage[] = "0"
+PASS sessionStorage["1"]
+PASS sessionStorage[] = "1"
+PASS sessionStorage["2"]
+PASS sessionStorage[] = "2"
+PASS sessionStorage["3"]
+PASS sessionStorage[] = "3"
+PASS sessionStorage["4"]
+PASS sessionStorage[] = "4"
+PASS sessionStorage["5"]
+PASS sessionStorage[] = "5"
+PASS sessionStorage["6"]
+PASS sessionStorage[] = "6"
+PASS sessionStorage["7"]
+PASS sessionStorage[] = "7"
+PASS sessionStorage["8"]
+PASS sessionStorage[] = "8"
+PASS sessionStorage["9"]
+PASS sessionStorage[] = "9"
+PASS sessionStorage[":"]
+PASS sessionStorage[] = ":"
+PASS sessionStorage[";"]
+PASS sessionStorage[] = ";"
+PASS sessionStorage["<"]
+PASS sessionStorage[] = "<"
+PASS sessionStorage["="]
+PASS sessionStorage[] = "="
+PASS sessionStorage[">"]
+PASS sessionStorage[] = ">"
+PASS sessionStorage["?"]
+PASS sessionStorage[] = "?"
+PASS sessionStorage["@"]
+PASS sessionStorage[] = "@"
+PASS sessionStorage["A"]
+PASS sessionStorage[] = "A"
+PASS sessionStorage["B"]
+PASS sessionStorage[] = "B"
+PASS sessionStorage["C"]
+PASS sessionStorage[] = "C"
+PASS sessionStorage["D"]
+PASS sessionStorage[] = "D"
+PASS sessionStorage["E"]
+PASS sessionStorage[] = "E"
+PASS sessionStorage["F"]
+PASS sessionStorage[] = "F"
+PASS sessionStorage["G"]
+PASS sessionStorage[] = "G"
+PASS sessionStorage["H"]
+PASS sessionStorage[] = "H"
+PASS sessionStorage["I"]
+PASS sessionStorage[] = "I"
+PASS sessionStorage["J"]
+PASS sessionStorage[] = "J"
+PASS sessionStorage["K"]
+PASS sessionStorage[] = "K"
+PASS sessionStorage["L"]
+PASS sessionStorage[] = "L"
+PASS sessionStorage["M"]
+PASS sessionStorage[] = "M"
+PASS sessionStorage["N"]
+PASS sessionStorage[] = "N"
+PASS sessionStorage["O"]
+PASS sessionStorage[] = "O"
+PASS sessionStorage["P"]
+PASS sessionStorage[] = "P"
+PASS sessionStorage["Q"]
+PASS sessionStorage[] = "Q"
+PASS sessionStorage["R"]
+PASS sessionStorage[] = "R"
+PASS sessionStorage["S"]
+PASS sessionStorage[] = "S"
+PASS sessionStorage["T"]
+PASS sessionStorage[] = "T"
+PASS sessionStorage["U"]
+PASS sessionStorage[] = "U"
+PASS sessionStorage["V"]
+PASS sessionStorage[] = "V"
+PASS sessionStorage["W"]
+PASS sessionStorage[] = "W"
+PASS sessionStorage["X"]
+PASS sessionStorage[] = "X"
+PASS sessionStorage["Y"]
+PASS sessionStorage[] = "Y"
+PASS sessionStorage["Z"]
+PASS sessionStorage[] = "Z"
+PASS sessionStorage["["]
+PASS sessionStorage[] = "["
+PASS sessionStorage["\\"]
+PASS sessionStorage[] = "\\"
+PASS sessionStorage["]"]
+PASS sessionStorage[] = "]"
+PASS sessionStorage["^"]
+PASS sessionStorage[] = "^"
+PASS sessionStorage["_"]
+PASS sessionStorage[] = "_"
+PASS sessionStorage["`"]
+PASS sessionStorage[] = "`"
+PASS sessionStorage["a"]
+PASS sessionStorage[] = "a"
+PASS sessionStorage["b"]
+PASS sessionStorage[] = "b"
+PASS sessionStorage["c"]
+PASS sessionStorage[] = "c"
+PASS sessionStorage["d"]
+PASS sessionStorage[] = "d"
+PASS sessionStorage["e"]
+PASS sessionStorage[] = "e"
+PASS sessionStorage["f"]
+PASS sessionStorage[] = "f"
+PASS sessionStorage["g"]
+PASS sessionStorage[] = "g"
+PASS sessionStorage["h"]
+PASS sessionStorage[] = "h"
+PASS sessionStorage["i"]
+PASS sessionStorage[] = "i"
+PASS sessionStorage["j"]
+PASS sessionStorage[] = "j"
+PASS sessionStorage["k"]
+PASS sessionStorage[] = "k"
+PASS sessionStorage["l"]
+PASS sessionStorage[] = "l"
+PASS sessionStorage["m"]
+PASS sessionStorage[] = "m"
+PASS sessionStorage["n"]
+PASS sessionStorage[] = "n"
+PASS sessionStorage["o"]
+PASS sessionStorage[] = "o"
+PASS sessionStorage["p"]
+PASS sessionStorage[] = "p"
+PASS sessionStorage["q"]
+PASS sessionStorage[] = "q"
+PASS sessionStorage["r"]
+PASS sessionStorage[] = "r"
+PASS sessionStorage["s"]
+PASS sessionStorage[] = "s"
+PASS sessionStorage["t"]
+PASS sessionStorage[] = "t"
+PASS sessionStorage["u"]
+PASS sessionStorage[] = "u"
+PASS sessionStorage["v"]
+PASS sessionStorage[] = "v"
+PASS sessionStorage["w"]
+PASS sessionStorage[] = "w"
+PASS sessionStorage["x"]
+PASS sessionStorage[] = "x"
+PASS sessionStorage["y"]
+PASS sessionStorage[] = "y"
+PASS sessionStorage["z"]
+PASS sessionStorage[] = "z"
+PASS sessionStorage["{"]
+PASS sessionStorage[] = "{"
+PASS sessionStorage["|"]
+PASS sessionStorage[] = "|"
+PASS sessionStorage["}"]
+PASS sessionStorage[] = "}"
+PASS sessionStorage["~"]
+PASS sessionStorage[] = "~"
+PASS sessionStorage[""]
+PASS sessionStorage[] = ""
+PASS sessionStorage[""]
+PASS sessionStorage[] = ""
+PASS sessionStorage[""]
+PASS sessionStorage[] = ""
+PASS sessionStorage[""]
+PASS sessionStorage[] = ""
+PASS sessionStorage[""]
+PASS sessionStorage[] = ""
+PASS sessionStorage[""]
+PASS sessionStorage[] = ""
+PASS sessionStorage[""]
+PASS sessionStorage[] = ""
+PASS sessionStorage[""]
+PASS sessionStorage[] = ""
+PASS sessionStorage[""]
+PASS sessionStorage[] = ""
+PASS sessionStorage[""]
+PASS sessionStorage[] = ""
+PASS sessionStorage[""]
+PASS sessionStorage[] = ""
+PASS sessionStorage[""]
+PASS sessionStorage[] = ""
+PASS sessionStorage[""]
+PASS sessionStorage[] = ""
+PASS sessionStorage[""]
+PASS sessionStorage[] = ""
+PASS sessionStorage[""]
+PASS sessionStorage[] = ""
+PASS sessionStorage[""]
+PASS sessionStorage[] = ""
+PASS sessionStorage[""]
+PASS sessionStorage[] = ""
+PASS sessionStorage[""]
+PASS sessionStorage[] = ""
+PASS sessionStorage[""]
+PASS sessionStorage[] = ""
+PASS sessionStorage[""]
+PASS sessionStorage[] = ""
+PASS sessionStorage[""]
+PASS sessionStorage[] = ""
+PASS sessionStorage[""]
+PASS sessionStorage[] = ""
+PASS sessionStorage[""]
+PASS sessionStorage[] = ""
+PASS sessionStorage[""]
+PASS sessionStorage[] = ""
+PASS sessionStorage[""]
+PASS sessionStorage[] = ""
+PASS sessionStorage[""]
+PASS sessionStorage[] = ""
+PASS sessionStorage[""]
+PASS sessionStorage[] = ""
+PASS sessionStorage[""]
+PASS sessionStorage[] = ""
+PASS sessionStorage[""]
+PASS sessionStorage[] = ""
+PASS sessionStorage[""]
+PASS sessionStorage[] = ""
+PASS sessionStorage[""]
+PASS sessionStorage[] = ""
+PASS sessionStorage[""]
+PASS sessionStorage[] = ""
+PASS sessionStorage[""]
+PASS sessionStorage[] = ""
+PASS sessionStorage[" "]
+PASS sessionStorage[] = " "
+PASS sessionStorage["¡"]
+PASS sessionStorage[] = "¡"
+PASS sessionStorage["¢"]
+PASS sessionStorage[] = "¢"
+PASS sessionStorage["£"]
+PASS sessionStorage[] = "£"
+PASS sessionStorage["¤"]
+PASS sessionStorage[] = "¤"
+PASS sessionStorage["¥"]
+PASS sessionStorage[] = "¥"
+PASS sessionStorage["¦"]
+PASS sessionStorage[] = "¦"
+PASS sessionStorage["§"]
+PASS sessionStorage[] = "§"
+PASS sessionStorage["¨"]
+PASS sessionStorage[] = "¨"
+PASS sessionStorage["©"]
+PASS sessionStorage[] = "©"
+PASS sessionStorage["ª"]
+PASS sessionStorage[] = "ª"
+PASS sessionStorage["«"]
+PASS sessionStorage[] = "«"
+PASS sessionStorage["¬"]
+PASS sessionStorage[] = "¬"
+PASS sessionStorage["­"]
+PASS sessionStorage[] = "­"
+PASS sessionStorage["®"]
+PASS sessionStorage[] = "®"
+PASS sessionStorage["¯"]
+PASS sessionStorage[] = "¯"
+PASS sessionStorage["°"]
+PASS sessionStorage[] = "°"
+PASS sessionStorage["±"]
+PASS sessionStorage[] = "±"
+PASS sessionStorage["²"]
+PASS sessionStorage[] = "²"
+PASS sessionStorage["³"]
+PASS sessionStorage[] = "³"
+PASS sessionStorage["´"]
+PASS sessionStorage[] = "´"
+PASS sessionStorage["µ"]
+PASS sessionStorage[] = "µ"
+PASS sessionStorage["¶"]
+PASS sessionStorage[] = "¶"
+PASS sessionStorage["·"]
+PASS sessionStorage[] = "·"
+PASS sessionStorage["¸"]
+PASS sessionStorage[] = "¸"
+PASS sessionStorage["¹"]
+PASS sessionStorage[] = "¹"
+PASS sessionStorage["º"]
+PASS sessionStorage[] = "º"
+PASS sessionStorage["»"]
+PASS sessionStorage[] = "»"
+PASS sessionStorage["¼"]
+PASS sessionStorage[] = "¼"
+PASS sessionStorage["½"]
+PASS sessionStorage[] = "½"
+PASS sessionStorage["¾"]
+PASS sessionStorage[] = "¾"
+PASS sessionStorage["¿"]
+PASS sessionStorage[] = "¿"
+PASS sessionStorage["À"]
+PASS sessionStorage[] = "À"
+PASS sessionStorage["Á"]
+PASS sessionStorage[] = "Á"
+PASS sessionStorage["Â"]
+PASS sessionStorage[] = "Â"
+PASS sessionStorage["Ã"]
+PASS sessionStorage[] = "Ã"
+PASS sessionStorage["Ä"]
+PASS sessionStorage[] = "Ä"
+PASS sessionStorage["Å"]
+PASS sessionStorage[] = "Å"
+PASS sessionStorage["Æ"]
+PASS sessionStorage[] = "Æ"
+PASS sessionStorage["Ç"]
+PASS sessionStorage[] = "Ç"
+PASS sessionStorage["È"]
+PASS sessionStorage[] = "È"
+PASS sessionStorage["É"]
+PASS sessionStorage[] = "É"
+PASS sessionStorage["Ê"]
+PASS sessionStorage[] = "Ê"
+PASS sessionStorage["Ë"]
+PASS sessionStorage[] = "Ë"
+PASS sessionStorage["Ì"]
+PASS sessionStorage[] = "Ì"
+PASS sessionStorage["Í"]
+PASS sessionStorage[] = "Í"
+PASS sessionStorage["Î"]
+PASS sessionStorage[] = "Î"
+PASS sessionStorage["Ï"]
+PASS sessionStorage[] = "Ï"
+PASS sessionStorage["Ð"]
+PASS sessionStorage[] = "Ð"
+PASS sessionStorage["Ñ"]
+PASS sessionStorage[] = "Ñ"
+PASS sessionStorage["Ò"]
+PASS sessionStorage[] = "Ò"
+PASS sessionStorage["Ó"]
+PASS sessionStorage[] = "Ó"
+PASS sessionStorage["Ô"]
+PASS sessionStorage[] = "Ô"
+PASS sessionStorage["Õ"]
+PASS sessionStorage[] = "Õ"
+PASS sessionStorage["Ö"]
+PASS sessionStorage[] = "Ö"
+PASS sessionStorage["×"]
+PASS sessionStorage[] = "×"
+PASS sessionStorage["Ø"]
+PASS sessionStorage[] = "Ø"
+PASS sessionStorage["Ù"]
+PASS sessionStorage[] = "Ù"
+PASS sessionStorage["Ú"]
+PASS sessionStorage[] = "Ú"
+PASS sessionStorage["Û"]
+PASS sessionStorage[] = "Û"
+PASS sessionStorage["Ü"]
+PASS sessionStorage[] = "Ü"
+PASS sessionStorage["Ý"]
+PASS sessionStorage[] = "Ý"
+PASS sessionStorage["Þ"]
+PASS sessionStorage[] = "Þ"
+PASS sessionStorage["ß"]
+PASS sessionStorage[] = "ß"
+PASS sessionStorage["à"]
+PASS sessionStorage[] = "à"
+PASS sessionStorage["á"]
+PASS sessionStorage[] = "á"
+PASS sessionStorage["â"]
+PASS sessionStorage[] = "â"
+PASS sessionStorage["ã"]
+PASS sessionStorage[] = "ã"
+PASS sessionStorage["ä"]
+PASS sessionStorage[] = "ä"
+PASS sessionStorage["å"]
+PASS sessionStorage[] = "å"
+PASS sessionStorage["æ"]
+PASS sessionStorage[] = "æ"
+PASS sessionStorage["ç"]
+PASS sessionStorage[] = "ç"
+PASS sessionStorage["è"]
+PASS sessionStorage[] = "è"
+PASS sessionStorage["é"]
+PASS sessionStorage[] = "é"
+PASS sessionStorage["ê"]
+PASS sessionStorage[] = "ê"
+PASS sessionStorage["ë"]
+PASS sessionStorage[] = "ë"
+PASS sessionStorage["ì"]
+PASS sessionStorage[] = "ì"
+PASS sessionStorage["í"]
+PASS sessionStorage[] = "í"
+PASS sessionStorage["î"]
+PASS sessionStorage[] = "î"
+PASS sessionStorage["ï"]
+PASS sessionStorage[] = "ï"
+PASS sessionStorage["ð"]
+PASS sessionStorage[] = "ð"
+PASS sessionStorage["ñ"]
+PASS sessionStorage[] = "ñ"
+PASS sessionStorage["ò"]
+PASS sessionStorage[] = "ò"
+PASS sessionStorage["ó"]
+PASS sessionStorage[] = "ó"
+PASS sessionStorage["ô"]
+PASS sessionStorage[] = "ô"
+PASS sessionStorage["õ"]
+PASS sessionStorage[] = "õ"
+PASS sessionStorage["ö"]
+PASS sessionStorage[] = "ö"
+PASS sessionStorage["÷"]
+PASS sessionStorage[] = "÷"
+PASS sessionStorage["ø"]
+PASS sessionStorage[] = "ø"
+PASS sessionStorage["ù"]
+PASS sessionStorage[] = "ù"
+PASS sessionStorage["ú"]
+PASS sessionStorage[] = "ú"
+PASS sessionStorage["û"]
+PASS sessionStorage[] = "û"
+PASS sessionStorage["ü"]
+PASS sessionStorage[] = "ü"
+PASS sessionStorage["ý"]
+PASS sessionStorage[] = "ý"
+PASS sessionStorage["þ"]
+PASS sessionStorage[] = "þ"
+PASS sessionStorage["ÿ"]
+PASS sessionStorage[] = "ÿ"
+

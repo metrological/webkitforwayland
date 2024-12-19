@@ -1,0 +1,6 @@
+FAIL Unexpected error: QuotaExceededError: The quota has been exceeded.
+FAIL successfullyParsed should be true. Was false.
+Some tests failed.
+
+TEST COMPLETE
+This test verifies when storage process crashes, indexedDB operation should not hang indefinitely.

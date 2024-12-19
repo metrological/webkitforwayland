@@ -1,4 +1,4 @@
 
-PASS Updating XRReferenceSpace origin offset updates view and input matrices. - webgl
+FAIL Updating XRReferenceSpace origin offset updates view and input matrices. - webgl assert_implements: missing navigator.xr - ensure test is run in a secure context. undefined
 FAIL Updating XRReferenceSpace origin offset updates view and input matrices. - webgl2 assert_implements: webgl2 not supported. undefined
 

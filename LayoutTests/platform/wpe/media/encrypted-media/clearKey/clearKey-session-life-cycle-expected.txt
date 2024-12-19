@@ -1,0 +1,5 @@
+
+EME API is supported OK
+NotSupportedError: The operation is not supported. FAIL
+END OF TEST
+

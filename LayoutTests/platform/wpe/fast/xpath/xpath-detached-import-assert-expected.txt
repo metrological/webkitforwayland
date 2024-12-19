@@ -1,0 +1,53 @@
+layer at (0,0) size 800x600
+  RenderView at (0,0) size 800x600
+layer at (0,0) size 800x277
+  RenderBlock {html} at (0,0) size 800x277
+    RenderBlock {parsererror} at (16,16) size 768x137 [bgcolor=#FFDDDD] [border: (2px solid #CC7777)]
+      RenderBlock {h3} at (18,20) size 732x23
+        RenderText {#text} at (0,0) size 324x21
+          text run at (0,0) width 324: "This page contains the following errors:"
+      RenderBlock {div} at (18,61) size 732x15
+        RenderText {#text} at (0,0) size 560x14
+          text run at (0,0) width 560: "error on line 25 at column 8: Opening and ending tag mismatch: p line 0 and body"
+          text run at (560,0) width 0: " "
+      RenderBlock {h3} at (18,94) size 732x23
+        RenderText {#text} at (0,0) size 429x21
+          text run at (0,0) width 429: "Below is a rendering of the page up to the first error."
+    RenderBlock (anonymous) at (0,168) size 800x109
+      RenderInline {head} at (0,0) size 0x17
+        RenderText {#text} at (0,0) size 0x0
+        RenderInline {script} at (0,0) size 0x17
+        RenderText {#text} at (0,0) size 0x0
+      RenderText {#text} at (0,0) size 0x0
+      RenderInline {body} at (0,0) size 797x107
+        RenderText {#text} at (0,0) size 0x0
+        RenderInline {svg} at (0,0) size 0x17
+        RenderText {#text} at (0,0) size 0x0
+        RenderInline {p} at (0,0) size 797x107
+          RenderText {#text} at (0,0) size 419x17
+            text run at (0,0) width 419: "A test case from https://bugs.webkit.org/show_bug.cgi?id=84793. "
+          RenderInline {p} at (0,0) size 797x107
+            RenderText {#text} at (419,0) size 797x35
+              text run at (419,0) width 378: "Test passes if it doesn't hit ASSERT(parents.size() >= depth"
+              text run at (0,18) width 34: "+ 1). "
+            RenderInline {div} at (0,0) size 0x17
+            RenderText {#text} at (0,0) size 0x0
+            RenderInline {script} at (0,0) size 738x89
+              RenderText {#text} at (34,18) size 738x89
+                text run at (34,18) width 186: "resolver = function (prefix) { "
+                text run at (220,18) width 67: "var ns = { "
+                text run at (287,18) width 40: "\"svg\" "
+                text run at (327,18) width 213: ": \"http://www.w3.org/2000/svg\", "
+                text run at (540,18) width 54: "\"xhtml\" "
+                text run at (594,18) width 4: ":"
+                text run at (0,36) width 219: "\"http://www.w3.org/1999/xhtml\", "
+                text run at (219,36) width 16: "}; "
+                text run at (235,36) width 148: "return ns[prefix] || null; "
+                text run at (383,36) width 12: "} "
+                text run at (395,36) width 343: "var result= document.evaluate(\"/node()/descendant-or-"
+                text run at (0,54) width 277: "self::svg:* | node()/ancestor-or-self::node()\","
+                text run at (0,72) width 657: "document.getElementById(\"svg\").ownerDocument.importNode(document.documentElement), resolver,"
+                text run at (0,90) width 258: "XPathResult.NUMBER_TYPE, result); "
+                text run at (258,90) width 265: "shouldBe(\"result.numberValue\", \"NaN\");"
+            RenderText {#text} at (0,0) size 0x0
+            RenderInline {script} at (0,0) size 0x17

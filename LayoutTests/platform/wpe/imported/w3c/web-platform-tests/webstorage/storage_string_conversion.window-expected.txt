@@ -1,0 +1,4 @@
+
+FAIL localStorage only stores strings The quota has been exceeded.
+FAIL sessionStorage only stores strings assert_equals: expected "function(){}" but got "function (){}"
+

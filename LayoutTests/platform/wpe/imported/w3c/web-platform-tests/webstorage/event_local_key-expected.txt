@@ -1,0 +1,5 @@
+event_local_key
+
+
+FAIL key property test of local event - Local event is fired due to an invocation of the setItem(), clear() methods. assert_unreached: setItem method is failed. Reached unreachable code
+

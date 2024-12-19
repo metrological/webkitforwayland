@@ -1,0 +1,2 @@
+CONSOLE MESSAGE: TypeError: null is not an object (evaluating 'document.body.appendChild')
+ Test passes if the test does not crash or assert in debug builds.

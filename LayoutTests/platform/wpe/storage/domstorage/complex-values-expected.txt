@@ -1,0 +1,219 @@
+Test some corner case DOM Storage values.
+
+On success, you will see a series of "PASS" messages, followed by "TEST COMPLETE".
+
+
+Testing sessionStorage
+storage.clear()
+PASS storage.length is 0
+
+PASS typeof storage['foo'] is "undefined"
+PASS storage['foo'] is undefined.
+PASS typeof storage.foo is "undefined"
+PASS storage.foo is undefined.
+PASS typeof storage.getItem('foo') is "object"
+PASS storage.getItem('foo') is null
+
+storage.foo1 = null
+PASS typeof storage['foo1'] is "string"
+PASS storage['foo1'] is "null"
+PASS typeof storage.foo1 is "string"
+PASS storage.foo1 is "null"
+PASS typeof storage.getItem('foo1') is "string"
+PASS storage.getItem('foo1') is "null"
+storage['foo2'] = null
+PASS typeof storage['foo2'] is "string"
+PASS storage['foo2'] is "null"
+PASS typeof storage.foo2 is "string"
+PASS storage.foo2 is "null"
+PASS typeof storage.getItem('foo2') is "string"
+PASS storage.getItem('foo2') is "null"
+storage.setItem('foo3', null)
+PASS typeof storage['foo3'] is "string"
+PASS storage['foo3'] is "null"
+PASS typeof storage.foo3 is "string"
+PASS storage.foo3 is "null"
+PASS typeof storage.getItem('foo3') is "string"
+PASS storage.getItem('foo3') is "null"
+
+storage.foo4 = undefined
+PASS typeof storage['foo4'] is "string"
+PASS storage['foo4'] is "undefined"
+PASS typeof storage.foo4 is "string"
+PASS storage.foo4 is "undefined"
+PASS typeof storage.getItem('foo4') is "string"
+PASS storage.getItem('foo4') is "undefined"
+storage['foo5'] = undefined
+PASS typeof storage['foo5'] is "string"
+PASS storage['foo5'] is "undefined"
+PASS typeof storage.foo5 is "string"
+PASS storage.foo5 is "undefined"
+PASS typeof storage.getItem('foo5') is "string"
+PASS storage.getItem('foo5') is "undefined"
+storage.setItem('foo6', undefined)
+PASS typeof storage['foo6'] is "string"
+PASS storage['foo6'] is "undefined"
+PASS typeof storage.foo6 is "string"
+PASS storage.foo6 is "undefined"
+PASS typeof storage.getItem('foo6') is "string"
+PASS storage.getItem('foo6') is "undefined"
+
+storage.foo7 = 2
+PASS typeof storage['foo7'] is "string"
+PASS storage['foo7'] is "2"
+PASS typeof storage.foo7 is "string"
+PASS storage.foo7 is "2"
+PASS typeof storage.getItem('foo7') is "string"
+PASS storage.getItem('foo7') is "2"
+storage['foo8'] = 2
+PASS typeof storage['foo8'] is "string"
+PASS storage['foo8'] is "2"
+PASS typeof storage.foo8 is "string"
+PASS storage.foo8 is "2"
+PASS typeof storage.getItem('foo8') is "string"
+PASS storage.getItem('foo8') is "2"
+storage.setItem('foo9', 2)
+PASS typeof storage['foo9'] is "string"
+PASS storage['foo9'] is "2"
+PASS typeof storage.foo9 is "string"
+PASS storage.foo9 is "2"
+PASS typeof storage.getItem('foo9') is "string"
+PASS storage.getItem('foo9') is "2"
+
+storage.foo10 = k
+PASS typeof storage['foo10'] is "string"
+PASS storage['foo10'] is "ÿ찡\u0000hello"
+PASS typeof storage.foo10 is "string"
+PASS storage.foo10 is "ÿ찡\u0000hello"
+PASS typeof storage.getItem('foo10') is "string"
+PASS storage.getItem('foo10') is "ÿ찡\u0000hello"
+storage['foo11'] = k
+PASS typeof storage['foo11'] is "string"
+PASS storage['foo11'] is "ÿ찡\u0000hello"
+PASS typeof storage.foo11 is "string"
+PASS storage.foo11 is "ÿ찡\u0000hello"
+PASS typeof storage.getItem('foo11') is "string"
+PASS storage.getItem('foo11') is "ÿ찡\u0000hello"
+storage.setItem('foo12', k)
+PASS typeof storage['foo12'] is "string"
+PASS storage['foo12'] is "ÿ찡\u0000hello"
+PASS typeof storage.foo12 is "string"
+PASS storage.foo12 is "ÿ찡\u0000hello"
+PASS typeof storage.getItem('foo12') is "string"
+PASS storage.getItem('foo12') is "ÿ찡\u0000hello"
+
+
+Testing localStorage
+storage.clear()
+PASS storage.length is 0
+
+PASS typeof storage['foo'] is "undefined"
+PASS storage['foo'] is undefined.
+PASS typeof storage.foo is "undefined"
+PASS storage.foo is undefined.
+PASS typeof storage.getItem('foo') is "object"
+PASS storage.getItem('foo') is null
+
+storage.foo1 = null
+FAIL storage.foo1 = null threw exception QuotaExceededError: The quota has been exceeded.
+FAIL typeof storage['foo1'] should be string. Was undefined.
+FAIL storage['foo1'] should be null (of type string). Was undefined (of type undefined).
+FAIL typeof storage.foo1 should be string. Was undefined.
+FAIL storage.foo1 should be null (of type string). Was undefined (of type undefined).
+FAIL typeof storage.getItem('foo1') should be string. Was object.
+FAIL storage.getItem('foo1') should be null (of type string). Was null (of type object).
+storage['foo2'] = null
+FAIL storage['foo2'] = null threw exception QuotaExceededError: The quota has been exceeded.
+FAIL typeof storage['foo2'] should be string. Was undefined.
+FAIL storage['foo2'] should be null (of type string). Was undefined (of type undefined).
+FAIL typeof storage.foo2 should be string. Was undefined.
+FAIL storage.foo2 should be null (of type string). Was undefined (of type undefined).
+FAIL typeof storage.getItem('foo2') should be string. Was object.
+FAIL storage.getItem('foo2') should be null (of type string). Was null (of type object).
+storage.setItem('foo3', null)
+FAIL storage.setItem('foo3', null) threw exception QuotaExceededError: The quota has been exceeded.
+FAIL typeof storage['foo3'] should be string. Was undefined.
+FAIL storage['foo3'] should be null (of type string). Was undefined (of type undefined).
+FAIL typeof storage.foo3 should be string. Was undefined.
+FAIL storage.foo3 should be null (of type string). Was undefined (of type undefined).
+FAIL typeof storage.getItem('foo3') should be string. Was object.
+FAIL storage.getItem('foo3') should be null (of type string). Was null (of type object).
+
+storage.foo4 = undefined
+FAIL storage.foo4 = undefined threw exception QuotaExceededError: The quota has been exceeded.
+FAIL typeof storage['foo4'] should be string. Was undefined.
+FAIL storage['foo4'] should be undefined (of type string). Was undefined (of type undefined).
+FAIL typeof storage.foo4 should be string. Was undefined.
+FAIL storage.foo4 should be undefined (of type string). Was undefined (of type undefined).
+FAIL typeof storage.getItem('foo4') should be string. Was object.
+FAIL storage.getItem('foo4') should be undefined (of type string). Was null (of type object).
+storage['foo5'] = undefined
+FAIL storage['foo5'] = undefined threw exception QuotaExceededError: The quota has been exceeded.
+FAIL typeof storage['foo5'] should be string. Was undefined.
+FAIL storage['foo5'] should be undefined (of type string). Was undefined (of type undefined).
+FAIL typeof storage.foo5 should be string. Was undefined.
+FAIL storage.foo5 should be undefined (of type string). Was undefined (of type undefined).
+FAIL typeof storage.getItem('foo5') should be string. Was object.
+FAIL storage.getItem('foo5') should be undefined (of type string). Was null (of type object).
+storage.setItem('foo6', undefined)
+FAIL storage.setItem('foo6', undefined) threw exception QuotaExceededError: The quota has been exceeded.
+FAIL typeof storage['foo6'] should be string. Was undefined.
+FAIL storage['foo6'] should be undefined (of type string). Was undefined (of type undefined).
+FAIL typeof storage.foo6 should be string. Was undefined.
+FAIL storage.foo6 should be undefined (of type string). Was undefined (of type undefined).
+FAIL typeof storage.getItem('foo6') should be string. Was object.
+FAIL storage.getItem('foo6') should be undefined (of type string). Was null (of type object).
+
+storage.foo7 = 2
+FAIL storage.foo7 = 2 threw exception QuotaExceededError: The quota has been exceeded.
+FAIL typeof storage['foo7'] should be string. Was undefined.
+FAIL storage['foo7'] should be 2 (of type string). Was undefined (of type undefined).
+FAIL typeof storage.foo7 should be string. Was undefined.
+FAIL storage.foo7 should be 2 (of type string). Was undefined (of type undefined).
+FAIL typeof storage.getItem('foo7') should be string. Was object.
+FAIL storage.getItem('foo7') should be 2 (of type string). Was null (of type object).
+storage['foo8'] = 2
+FAIL storage['foo8'] = 2 threw exception QuotaExceededError: The quota has been exceeded.
+FAIL typeof storage['foo8'] should be string. Was undefined.
+FAIL storage['foo8'] should be 2 (of type string). Was undefined (of type undefined).
+FAIL typeof storage.foo8 should be string. Was undefined.
+FAIL storage.foo8 should be 2 (of type string). Was undefined (of type undefined).
+FAIL typeof storage.getItem('foo8') should be string. Was object.
+FAIL storage.getItem('foo8') should be 2 (of type string). Was null (of type object).
+storage.setItem('foo9', 2)
+FAIL storage.setItem('foo9', 2) threw exception QuotaExceededError: The quota has been exceeded.
+FAIL typeof storage['foo9'] should be string. Was undefined.
+FAIL storage['foo9'] should be 2 (of type string). Was undefined (of type undefined).
+FAIL typeof storage.foo9 should be string. Was undefined.
+FAIL storage.foo9 should be 2 (of type string). Was undefined (of type undefined).
+FAIL typeof storage.getItem('foo9') should be string. Was object.
+FAIL storage.getItem('foo9') should be 2 (of type string). Was null (of type object).
+
+storage.foo10 = k
+FAIL storage.foo10 = k threw exception QuotaExceededError: The quota has been exceeded.
+FAIL typeof storage['foo10'] should be string. Was undefined.
+FAIL storage['foo10'] should be ÿ찡\0hello (of type string). Was undefined (of type undefined).
+FAIL typeof storage.foo10 should be string. Was undefined.
+FAIL storage.foo10 should be ÿ찡\0hello (of type string). Was undefined (of type undefined).
+FAIL typeof storage.getItem('foo10') should be string. Was object.
+FAIL storage.getItem('foo10') should be ÿ찡\0hello (of type string). Was null (of type object).
+storage['foo11'] = k
+FAIL storage['foo11'] = k threw exception QuotaExceededError: The quota has been exceeded.
+FAIL typeof storage['foo11'] should be string. Was undefined.
+FAIL storage['foo11'] should be ÿ찡\0hello (of type string). Was undefined (of type undefined).
+FAIL typeof storage.foo11 should be string. Was undefined.
+FAIL storage.foo11 should be ÿ찡\0hello (of type string). Was undefined (of type undefined).
+FAIL typeof storage.getItem('foo11') should be string. Was object.
+FAIL storage.getItem('foo11') should be ÿ찡\0hello (of type string). Was null (of type object).
+storage.setItem('foo12', k)
+FAIL storage.setItem('foo12', k) threw exception QuotaExceededError: The quota has been exceeded.
+FAIL typeof storage['foo12'] should be string. Was undefined.
+FAIL storage['foo12'] should be ÿ찡\0hello (of type string). Was undefined (of type undefined).
+FAIL typeof storage.foo12 should be string. Was undefined.
+FAIL storage.foo12 should be ÿ찡\0hello (of type string). Was undefined (of type undefined).
+FAIL typeof storage.getItem('foo12') should be string. Was object.
+FAIL storage.getItem('foo12') should be ÿ찡\0hello (of type string). Was null (of type object).
+PASS successfullyParsed is true
+
+TEST COMPLETE
+

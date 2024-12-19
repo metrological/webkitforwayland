@@ -1,0 +1,6 @@
+CONSOLE MESSAGE: QuotaExceededError: The quota has been exceeded.
+
+Harness Error (TIMEOUT), message = null
+
+TIMEOUT Auxiliary browsing context created with `rel="noreferrer"` should report `window.opener` `null` Test timed out
+

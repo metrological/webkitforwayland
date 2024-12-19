@@ -1,0 +1,5 @@
+CONSOLE MESSAGE: QuotaExceededError: The quota has been exceeded.
+This test tries simple operations on localStorage
+Length is 0
+Value for FOO is null
+

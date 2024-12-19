@@ -1,0 +1,112 @@
+This is a test to make sure DOM Storage mutations fire StorageEvents that are caught by the event listener specified as an attribute on the body.
+
+On success, you will see a series of "PASS" messages, followed by "TEST COMPLETE".
+
+
+Testing sessionStorage
+storage.clear()
+PASS storage.length is 0
+iframe.onload = step1
+iframe.src = 'resources/body-event-handler.html'
+Reset storage event list
+storageEventList = new Array()
+storage.setItem('FOO', 'BAR')
+PASS storageEventList.length is 1
+PASS storageEventList[0].key is "FOO"
+PASS storageEventList[0].oldValue is null
+PASS storageEventList[0].newValue is "BAR"
+storage.setItem('FU', 'BAR')
+storage.setItem('a', '1')
+storage.setItem('b', '2')
+storage.setItem('b', '3')
+PASS storageEventList.length is 5
+PASS storageEventList[1].key is "FU"
+PASS storageEventList[1].oldValue is null
+PASS storageEventList[1].newValue is "BAR"
+PASS storageEventList[2].key is "a"
+PASS storageEventList[2].oldValue is null
+PASS storageEventList[2].newValue is "1"
+PASS storageEventList[3].key is "b"
+PASS storageEventList[3].oldValue is null
+PASS storageEventList[3].newValue is "2"
+PASS storageEventList[4].key is "b"
+PASS storageEventList[4].oldValue is "2"
+PASS storageEventList[4].newValue is "3"
+storage.removeItem('FOO')
+PASS storageEventList.length is 6
+PASS storageEventList[5].key is "FOO"
+PASS storageEventList[5].oldValue is "BAR"
+PASS storageEventList[5].newValue is null
+storage.removeItem('FU')
+PASS storageEventList.length is 7
+PASS storageEventList[6].key is "FU"
+PASS storageEventList[6].oldValue is "BAR"
+PASS storageEventList[6].newValue is null
+storage.clear()
+PASS storageEventList.length is 8
+PASS storageEventList[7].key is null
+PASS storageEventList[7].oldValue is null
+PASS storageEventList[7].newValue is null
+
+
+Testing localStorage
+storage.clear()
+PASS storage.length is 0
+iframe.onload = step1
+iframe.src = 'resources/body-event-handler.html'
+Reset storage event list
+storageEventList = new Array()
+storage.setItem('FOO', 'BAR')
+FAIL storage.setItem('FOO', 'BAR') threw exception QuotaExceededError: The quota has been exceeded.
+FAIL Timeout: only got 0, expected 1 events
+FAIL storageEventList.length should be 1. Was 0.
+FAIL storageEventList[0].key should be FOO. Threw exception TypeError: undefined is not an object (evaluating 'storageEventList[0].key')
+FAIL storageEventList[0].oldValue should be null. Threw exception TypeError: undefined is not an object (evaluating 'storageEventList[0].oldValue')
+FAIL storageEventList[0].newValue should be BAR. Threw exception TypeError: undefined is not an object (evaluating 'storageEventList[0].newValue')
+storage.setItem('FU', 'BAR')
+FAIL storage.setItem('FU', 'BAR') threw exception QuotaExceededError: The quota has been exceeded.
+storage.setItem('a', '1')
+FAIL storage.setItem('a', '1') threw exception QuotaExceededError: The quota has been exceeded.
+storage.setItem('b', '2')
+FAIL storage.setItem('b', '2') threw exception QuotaExceededError: The quota has been exceeded.
+storage.setItem('b', '3')
+FAIL storage.setItem('b', '3') threw exception QuotaExceededError: The quota has been exceeded.
+FAIL Timeout: only got 0, expected 5 events
+FAIL storageEventList.length should be 5. Was 0.
+FAIL storageEventList[1].key should be FU. Threw exception TypeError: undefined is not an object (evaluating 'storageEventList[1].key')
+FAIL storageEventList[1].oldValue should be null. Threw exception TypeError: undefined is not an object (evaluating 'storageEventList[1].oldValue')
+FAIL storageEventList[1].newValue should be BAR. Threw exception TypeError: undefined is not an object (evaluating 'storageEventList[1].newValue')
+FAIL storageEventList[2].key should be a. Threw exception TypeError: undefined is not an object (evaluating 'storageEventList[2].key')
+FAIL storageEventList[2].oldValue should be null. Threw exception TypeError: undefined is not an object (evaluating 'storageEventList[2].oldValue')
+FAIL storageEventList[2].newValue should be 1. Threw exception TypeError: undefined is not an object (evaluating 'storageEventList[2].newValue')
+FAIL storageEventList[3].key should be b. Threw exception TypeError: undefined is not an object (evaluating 'storageEventList[3].key')
+FAIL storageEventList[3].oldValue should be null. Threw exception TypeError: undefined is not an object (evaluating 'storageEventList[3].oldValue')
+FAIL storageEventList[3].newValue should be 2. Threw exception TypeError: undefined is not an object (evaluating 'storageEventList[3].newValue')
+FAIL storageEventList[4].key should be b. Threw exception TypeError: undefined is not an object (evaluating 'storageEventList[4].key')
+FAIL storageEventList[4].oldValue should be 2. Threw exception TypeError: undefined is not an object (evaluating 'storageEventList[4].oldValue')
+FAIL storageEventList[4].newValue should be 3. Threw exception TypeError: undefined is not an object (evaluating 'storageEventList[4].newValue')
+storage.removeItem('FOO')
+FAIL Timeout: only got 0, expected 6 events
+FAIL storageEventList.length should be 6. Was 0.
+FAIL storageEventList[5].key should be FOO. Threw exception TypeError: undefined is not an object (evaluating 'storageEventList[5].key')
+FAIL storageEventList[5].oldValue should be BAR. Threw exception TypeError: undefined is not an object (evaluating 'storageEventList[5].oldValue')
+FAIL storageEventList[5].newValue should be null. Threw exception TypeError: undefined is not an object (evaluating 'storageEventList[5].newValue')
+storage.removeItem('FU')
+FAIL Timeout: only got 0, expected 7 events
+FAIL storageEventList.length should be 7. Was 0.
+FAIL storageEventList[6].key should be FU. Threw exception TypeError: undefined is not an object (evaluating 'storageEventList[6].key')
+FAIL storageEventList[6].oldValue should be BAR. Threw exception TypeError: undefined is not an object (evaluating 'storageEventList[6].oldValue')
+FAIL storageEventList[6].newValue should be null. Threw exception TypeError: undefined is not an object (evaluating 'storageEventList[6].newValue')
+storage.clear()
+FAIL Timeout: only got 0, expected 8 events
+FAIL storageEventList.length should be 8. Was 0.
+FAIL storageEventList[7].key should be null. Threw exception TypeError: undefined is not an object (evaluating 'storageEventList[7].key')
+FAIL storageEventList[7].oldValue should be null. Threw exception TypeError: undefined is not an object (evaluating 'storageEventList[7].oldValue')
+FAIL storageEventList[7].newValue should be null. Threw exception TypeError: undefined is not an object (evaluating 'storageEventList[7].newValue')
+
+
+PASS successfullyParsed is true
+
+TEST COMPLETE
+
+

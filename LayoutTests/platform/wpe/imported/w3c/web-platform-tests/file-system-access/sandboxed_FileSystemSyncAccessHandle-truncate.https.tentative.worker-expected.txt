@@ -1,0 +1,5 @@
+
+FAIL test createSyncAccessHandle.truncate with pending operation promise_test: Unhandled rejection with value: object "InvalidStateError: The object is in an invalid state."
+FAIL test SyncAccessHandle.truncate with different sizes promise_test: Unhandled rejection with value: object "InvalidStateError: The object is in an invalid state."
+FAIL test SyncAccessHandle.truncate after SyncAccessHandle.write promise_test: Unhandled rejection with value: object "InvalidStateError: The object is in an invalid state."
+

@@ -1,0 +1,43 @@
+layer at (0,0) size 800x600
+  RenderView at (0,0) size 800x600
+layer at (0,0) size 800x223
+  RenderBlock {html} at (0,0) size 800x223
+    RenderBlock {parsererror} at (16,16) size 768x137 [bgcolor=#FFDDDD] [border: (2px solid #CC7777)]
+      RenderBlock {h3} at (18,20) size 732x23
+        RenderText {#text} at (0,0) size 324x21
+          text run at (0,0) width 324: "This page contains the following errors:"
+      RenderBlock {div} at (18,61) size 732x15
+        RenderText {#text} at (0,0) size 574x14
+          text run at (0,0) width 574: "error on line 26 at column 8: Opening and ending tag mismatch: img line 0 and body"
+          text run at (574,0) width 0: " "
+      RenderBlock {h3} at (18,94) size 732x23
+        RenderText {#text} at (0,0) size 429x21
+          text run at (0,0) width 429: "Below is a rendering of the page up to the first error."
+    RenderBlock (anonymous) at (0,168) size 800x55
+      RenderInline {head} at (0,0) size 0x0
+        RenderText {#text} at (0,0) size 0x0
+        RenderInline {script} at (0,0) size 0x0
+        RenderText {#text} at (0,0) size 0x0
+      RenderText {#text} at (0,0) size 0x0
+      RenderInline {body} at (0,0) size 798x53
+        RenderText {#text} at (0,0) size 0x0
+        RenderInline {img} at (0,0) size 798x53
+          RenderText {#text} at (0,0) size 0x0
+          RenderSVGRoot {svg} at (0,182) size 0x0
+            RenderSVGHiddenContainer {defs} at (0,0) size 0x0
+              RenderSVGResourceFilter {filter} [id="MyFilter"] [filterUnits=objectBoundingBox] [primitiveUnits=userSpaceOnUse]
+                [feColorMatrix type="HUEROTATE" values="180.00"]
+                  [SourceGraphic]
+          RenderText {#text} at (0,0) size 4x17
+            text run at (0,0) width 4: " "
+          RenderInline {script} at (0,0) size 798x53
+            RenderText {#text} at (4,0) size 798x53
+              text run at (4,0) width 753: "description(\"Test that no crash occurs when a SVG filter is deleted that was referenced by a deleted HTML element.\"); "
+              text run at (757,0) width 41: "html ="
+              text run at (0,18) width 221: "document.getElementById('html'); "
+              text run at (221,18) width 100: "html.style = \"\"; "
+              text run at (321,18) width 254: "svg = document.getElementById('svg'); "
+              text run at (575,18) width 222: "svg.parentNode.removeChild(svg);"
+              text run at (0,36) width 163: "successfullyParsed = true;"
+          RenderText {#text} at (0,0) size 0x0
+          RenderInline {script} at (0,0) size 0x0

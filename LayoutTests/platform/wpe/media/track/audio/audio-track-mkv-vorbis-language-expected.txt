@@ -1,0 +1,12 @@
+
+Check audio tracks' language attributes.
+
+EVENT(canplaythrough)
+
+** Check in-band kind attributes
+EXPECTED (video.audioTracks.length == '2') OK
+TypeError: null is not an object (evaluating 'video.audioTracks.getTrackById('A0').language')
+TypeError: null is not an object (evaluating 'video.audioTracks.getTrackById('A1').language')
+
+END OF TEST
+

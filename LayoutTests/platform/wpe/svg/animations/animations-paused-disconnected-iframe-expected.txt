@@ -1,0 +1,22 @@
+Tests that SVG animations are properly paused in disconnected iframes.
+
+On success, you will see a series of "PASS" messages, followed by "TEST COMPLETE".
+
+
+FAIL frameWindow.internals.areSVGAnimationsPaused should be false. Threw exception NotFoundError: No SVG animations
+FAIL frameWindow.document.getElementsByTagName('svg')[0].animationsPaused() should be false. Threw exception TypeError: frameWindow.document.getElementsByTagName('svg')[0].animationsPaused is not a function. (In 'frameWindow.document.getElementsByTagName('svg')[0].animationsPaused()', 'frameWindow.document.getElementsByTagName('svg')[0].animationsPaused' is undefined)
+FAIL grandChildWindow.internals.areSVGAnimationsPaused should be false. Threw exception TypeError: undefined is not an object (evaluating 'grandChildWindow.internals')
+FAIL grandChildWindow.document.getElementsByTagName('svg')[0].animationsPaused() should be false. Threw exception TypeError: undefined is not an object (evaluating 'grandChildWindow.document')
+Removing iframe from the document.
+FAIL frameWindow.internals.areSVGAnimationsPaused should be true. Threw exception NotFoundError: No SVG animations
+FAIL frameWindow.document.getElementsByTagName('svg')[0].animationsPaused() should be true. Threw exception TypeError: frameWindow.document.getElementsByTagName('svg')[0].animationsPaused is not a function. (In 'frameWindow.document.getElementsByTagName('svg')[0].animationsPaused()', 'frameWindow.document.getElementsByTagName('svg')[0].animationsPaused' is undefined)
+FAIL grandChildWindow.internals.areSVGAnimationsPaused should be true. Threw exception TypeError: undefined is not an object (evaluating 'grandChildWindow.internals')
+FAIL grandChildWindow.document.getElementsByTagName('svg')[0].animationsPaused() should be true. Threw exception TypeError: undefined is not an object (evaluating 'grandChildWindow.document')
+Add iframe back into the document.
+FAIL frame.contentWindow.internals.areSVGAnimationsPaused should be false. Threw exception NotFoundError: No SVG animations
+FAIL frame.contentDocument.getElementsByTagName('svg')[0].animationsPaused() should be false. Threw exception TypeError: frame.contentDocument.getElementsByTagName('svg')[0].animationsPaused is not a function. (In 'frame.contentDocument.getElementsByTagName('svg')[0].animationsPaused()', 'frame.contentDocument.getElementsByTagName('svg')[0].animationsPaused' is undefined)
+FAIL grandChildWindow.document.getElementsByTagName('svg')[0].animationsPaused() should be false. Threw exception TypeError: undefined is not an object (evaluating 'grandChildWindow.document')
+PASS successfullyParsed is true
+
+TEST COMPLETE
+

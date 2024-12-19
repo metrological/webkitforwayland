@@ -1,5 +1,4 @@
 
-
-PASS Reject multiple calls to XRSession.end() - webgl
+FAIL Reject multiple calls to XRSession.end() - webgl assert_implements: missing navigator.xr - ensure test is run in a secure context. undefined
 FAIL Reject multiple calls to XRSession.end() - webgl2 assert_implements: webgl2 not supported. undefined
 

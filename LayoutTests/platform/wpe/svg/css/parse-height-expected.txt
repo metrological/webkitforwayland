@@ -1,0 +1,57 @@
+layer at (0,0) size 800x600
+  RenderView at (0,0) size 800x600
+layer at (0,0) size 800x403
+  RenderBlock {html} at (0,0) size 800x403
+    RenderBlock {parsererror} at (16,16) size 768x137 [bgcolor=#FFDDDD] [border: (2px solid #CC7777)]
+      RenderBlock {h3} at (18,20) size 732x23
+        RenderText {#text} at (0,0) size 324x21
+          text run at (0,0) width 324: "This page contains the following errors:"
+      RenderBlock {div} at (18,61) size 732x15
+        RenderText {#text} at (0,0) size 581x14
+          text run at (0,0) width 581: "error on line 52 at column 8: Opening and ending tag mismatch: html line 0 and body"
+          text run at (581,0) width 0: " "
+      RenderBlock {h3} at (18,94) size 732x23
+        RenderText {#text} at (0,0) size 429x21
+          text run at (0,0) width 429: "Below is a rendering of the page up to the first error."
+    RenderBlock (anonymous) at (0,168) size 800x235
+      RenderInline {style} at (0,0) size 492x17
+        RenderText {#text} at (0,0) size 492x17
+          text run at (0,0) width 492: "* { font-size: 16px; } svg, rect { font-family: 'Ahem'; } div { font-size: 8px; } "
+      RenderText {#text} at (0,0) size 0x0
+      RenderInline {html} at (0,0) size 800x233
+        RenderText {#text} at (0,0) size 0x0
+        RenderInline {svg} at (0,0) size 0x17
+        RenderText {#text} at (0,0) size 0x0
+        RenderInline {script} at (0,0) size 0x17
+        RenderText {#text} at (0,0) size 0x0
+        RenderInline {script} at (0,0) size 800x233
+          RenderText {#text} at (492,0) size 800x233
+            text run at (492,0) width 308: "description(\"Test that 'with' presentation attribute"
+            text run at (0,18) width 258: "is parsed with CSS presentation rules.\"); "
+            text run at (258,18) width 271: "function computedStyle(property, value) { "
+            text run at (529,18) width 60: "var rect ="
+            text run at (0,36) width 420: "document.createElementNS('http://www.w3.org/2000/svg', 'rect'); "
+            text run at (420,36) width 329: "document.getElementById('svg').appendChild(rect);"
+            text run at (0,54) width 213: "rect.setAttribute(property, value); "
+            text run at (213,54) width 473: "var computedValue = getComputedStyle(rect).getPropertyValue(property);"
+            text run at (0,72) width 334: "document.getElementById('svg').removeChild(rect); "
+            text run at (334,72) width 161: "return computedValue; } "
+            text run at (495,72) width 247: "function testComputed(property, value,"
+            text run at (0,90) width 77: "expected) { "
+            text run at (77,90) width 560: "shouldBeEqualToString('computedStyle(\"' + property + '\", \"' + value + '\")', expected); } "
+            text run at (637,90) width 52: "function"
+            text run at (0,108) width 201: "negativeTest(property, value) { "
+            text run at (201,108) width 261: "testComputed(property, value, \"auto\"); } "
+            text run at (462,108) width 315: "// test mask-image testComputed(\"height\", \"auto\","
+            text run at (0,126) width 218: "\"auto\"); testComputed(\"height\", \" "
+            text run at (218,126) width 294: "100\", \"100px\"); testComputed(\"height\", \"100 "
+            text run at (512,126) width 231: "\", \"100px\"); testComputed(\"height\","
+            text run at (0,144) width 655: "\"100px\", \"100px\"); testComputed(\"height\", \"1em\", \"16px\"); testComputed(\"height\", \"1ex\", \"12.8px\");"
+            text run at (0,162) width 689: "testComputed(\"height\", \"20%\", \"20%\"); // FIXME: Vieport units not implemented for SVG at the moment. //"
+            text run at (0,180) width 772: "testComputed(\"height\", \"1vh\", \"7.869999885559082px\"); // testComputed(\"height\", \"1vw\", \"14.029999732971191px\"); "
+            text run at (772,180) width 8: "//"
+            text run at (0,198) width 269: "negative tests negativeTest(\"height\", \"100 "
+            text run at (269,198) width 531: "px\"); negativeTest(\"height\", \"100px;\"); negativeTest(\"height\", \"100px !important\");"
+            text run at (0,216) width 451: "negativeTest(\"height\", \"{ 100px }\"); negativeTest(\"height\", \"-100px\");"
+        RenderText {#text} at (0,0) size 0x0
+        RenderInline {script} at (0,0) size 0x17

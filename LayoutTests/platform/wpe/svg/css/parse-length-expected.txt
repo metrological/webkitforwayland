@@ -1,0 +1,120 @@
+layer at (0,0) size 785x943
+  RenderView at (0,0) size 785x600
+layer at (0,0) size 785x943
+  RenderBlock {html} at (0,0) size 785x943
+    RenderBlock {parsererror} at (16,16) size 753x137 [bgcolor=#FFDDDD] [border: (2px solid #CC7777)]
+      RenderBlock {h3} at (18,20) size 717x23
+        RenderText {#text} at (0,0) size 324x21
+          text run at (0,0) width 324: "This page contains the following errors:"
+      RenderBlock {div} at (18,61) size 717x15
+        RenderText {#text} at (0,0) size 588x14
+          text run at (0,0) width 588: "error on line 167 at column 8: Opening and ending tag mismatch: html line 0 and body"
+          text run at (588,0) width 0: " "
+      RenderBlock {h3} at (18,94) size 717x23
+        RenderText {#text} at (0,0) size 429x21
+          text run at (0,0) width 429: "Below is a rendering of the page up to the first error."
+    RenderBlock (anonymous) at (0,168) size 785x775
+      RenderInline {style} at (0,0) size 492x17
+        RenderText {#text} at (0,0) size 492x17
+          text run at (0,0) width 492: "* { font-size: 16px; } svg, rect { font-family: 'Ahem'; } div { font-size: 8px; } "
+      RenderText {#text} at (0,0) size 0x0
+      RenderInline {html} at (0,0) size 784x773
+        RenderText {#text} at (0,0) size 0x0
+        RenderInline {svg} at (0,0) size 0x17
+        RenderText {#text} at (0,0) size 0x0
+        RenderInline {script} at (0,0) size 0x17
+        RenderText {#text} at (0,0) size 0x0
+        RenderInline {script} at (0,0) size 784x773
+          RenderText {#text} at (492,0) size 784x773
+            text run at (492,0) width 261: "description(\"Test that 'width' presentation"
+            text run at (0,18) width 313: "attribute is parsed with CSS presentation rules.\"); "
+            text run at (313,18) width 271: "function computedStyle(property, value) { "
+            text run at (584,18) width 60: "var rect ="
+            text run at (0,36) width 420: "document.createElementNS('http://www.w3.org/2000/svg', 'rect'); "
+            text run at (420,36) width 329: "document.getElementById('svg').appendChild(rect);"
+            text run at (0,54) width 213: "rect.setAttribute(property, value); "
+            text run at (213,54) width 473: "var computedValue = getComputedStyle(rect).getPropertyValue(property);"
+            text run at (0,72) width 334: "document.getElementById('svg').removeChild(rect); "
+            text run at (334,72) width 161: "return computedValue; } "
+            text run at (495,72) width 247: "function testComputed(property, value,"
+            text run at (0,90) width 77: "expected) { "
+            text run at (77,90) width 560: "shouldBeEqualToString('computedStyle(\"' + property + '\", \"' + value + '\")', expected); } "
+            text run at (637,90) width 52: "function"
+            text run at (0,108) width 201: "negativeTest(property, value) { "
+            text run at (201,108) width 261: "testComputed(property, value, \"auto\"); } "
+            text run at (462,108) width 283: "function negativeTestZero(property, value) {"
+            text run at (0,126) width 258: "testComputed(property, value, \"0px\"); } "
+            text run at (258,126) width 212: "// Test 'cx'. testComputed(\"cx\", \" "
+            text run at (470,126) width 270: "100\", \"100px\"); testComputed(\"cx\", \"100 "
+            text run at (740,126) width 11: "\","
+            text run at (0,144) width 732: "\"100px\"); testComputed(\"cx\", \"100px\", \"100px\"); testComputed(\"cx\", \"1em\", \"16px\"); testComputed(\"cx\", \"1ex\","
+            text run at (0,162) width 575: "\"12.8px\"); testComputed(\"cx\", \"20%\", \"20%\"); testComputed(\"cx\", \"-200px\", \"-200px\"); "
+            text run at (575,162) width 208: "// Test 'cx'. testComputed(\"cy\", \""
+            text run at (0,180) width 270: "100\", \"100px\"); testComputed(\"cy\", \"100 "
+            text run at (270,180) width 514: "\", \"100px\"); testComputed(\"cy\", \"100px\", \"100px\"); testComputed(\"cy\", \"1em\","
+            text run at (0,198) width 732: "\"16px\"); testComputed(\"cy\", \"1ex\", \"12.8px\"); testComputed(\"cy\", \"20%\", \"20%\"); testComputed(\"cy\", \"-200px\","
+            text run at (0,216) width 72: "\"-200px\"); "
+            text run at (72,216) width 192: "// Test 'r'. testComputed(\"r\", \" "
+            text run at (264,216) width 260: "100\", \"100px\"); testComputed(\"r\", \"100 "
+            text run at (524,216) width 259: "\", \"100px\"); testComputed(\"r\", \"100px\","
+            text run at (0,234) width 751: "\"100px\"); testComputed(\"r\", \"1em\", \"16px\"); testComputed(\"r\", \"1ex\", \"12.8px\"); testComputed(\"r\", \"20%\", \"20%\");"
+            text run at (0,252) width 237: "testComputed(\"r\", \"-200px\", \"0px\"); "
+            text run at (237,252) width 208: "// Test 'rx'. testComputed(\"rx\", \" "
+            text run at (445,252) width 268: "100\", \"100px\"); testComputed(\"rx\", \"100 "
+            text run at (713,252) width 11: "\","
+            text run at (0,270) width 726: "\"100px\"); testComputed(\"rx\", \"100px\", \"100px\"); testComputed(\"rx\", \"1em\", \"16px\"); testComputed(\"rx\", \"1ex\","
+            text run at (0,288) width 553: "\"12.8px\"); testComputed(\"rx\", \"20%\", \"20%\"); testComputed(\"rx\", \"-200px\", \"auto\"); "
+            text run at (553,288) width 204: "// Test 'ry'. testComputed(\"ry\", \""
+            text run at (0,306) width 268: "100\", \"100px\"); testComputed(\"ry\", \"100 "
+            text run at (268,306) width 510: "\", \"100px\"); testComputed(\"ry\", \"100px\", \"100px\"); testComputed(\"ry\", \"1em\","
+            text run at (0,324) width 780: "\"16px\"); testComputed(\"ry\", \"1ex\", \"12.8px\"); testComputed(\"ry\", \"20%\", \"20%\"); testComputed(\"ry\", \"-200px\", \"auto\");"
+            text run at (0,342) width 507: "// Test 'width'. testComputed(\"width\", \"auto\", \"auto\"); testComputed(\"width\", \" "
+            text run at (507,342) width 252: "100\", \"100px\"); testComputed(\"width\","
+            text run at (0,360) width 35: "\"100 "
+            text run at (35,360) width 615: "\", \"100px\"); testComputed(\"width\", \"100px\", \"100px\"); testComputed(\"width\", \"1em\", \"16px\");"
+            text run at (0,378) width 784: "testComputed(\"width\", \"1ex\", \"12.8px\"); testComputed(\"width\", \"20%\", \"20%\"); // FIXME: Vieport units not implemented"
+            text run at (0,396) width 747: "for SVG at the moment. // testComputed(\"width\", \"1vh\", \"7.869999885559082px\"); // testComputed(\"width\", \"1vw\","
+            text run at (0,414) width 183: "\"14.029999732971191px\"); "
+            text run at (183,414) width 198: "// Test 'x'. testComputed(\"x\", \" "
+            text run at (381,414) width 263: "100\", \"100px\"); testComputed(\"x\", \"100 "
+            text run at (644,414) width 78: "\", \"100px\");"
+            text run at (0,432) width 715: "testComputed(\"x\", \"100px\", \"100px\"); testComputed(\"x\", \"1em\", \"16px\"); testComputed(\"x\", \"1ex\", \"12.8px\");"
+            text run at (0,450) width 490: "testComputed(\"x\", \"20%\", \"20%\"); testComputed(\"x\", \"-200px\", \"-200px\"); "
+            text run at (490,450) width 198: "// Test 'y'. testComputed(\"y\", \" "
+            text run at (688,450) width 35: "100\","
+            text run at (0,468) width 224: "\"100px\"); testComputed(\"y\", \"100 "
+            text run at (224,468) width 559: "\", \"100px\"); testComputed(\"y\", \"100px\", \"100px\"); testComputed(\"y\", \"1em\", \"16px\");"
+            text run at (0,486) width 728: "testComputed(\"y\", \"1ex\", \"12.8px\"); testComputed(\"y\", \"20%\", \"20%\"); testComputed(\"y\", \"-200px\", \"-200px\"); "
+            text run at (728,486) width 8: "//"
+            text run at (0,504) width 585: "Negative tests for 'cx'. negativeTestZero(\"cx\", \"auto\", \"auto\"); negativeTestZero(\"cx\", \"100 "
+            text run at (585,504) width 184: "px\"); negativeTestZero(\"cx\","
+            text run at (0,522) width 602: "\"100px;\"); negativeTestZero(\"cx\", \"100px !important\"); negativeTestZero(\"cx\", \"{ 100px }\"); "
+            text run at (602,522) width 151: "// Negative tests for 'cy'."
+            text run at (0,540) width 393: "negativeTestZero(\"cy\", \"auto\"); negativeTestZero(\"cy\", \"100 "
+            text run at (393,540) width 255: "px\"); negativeTestZero(\"cy\", \"100px;\");"
+            text run at (0,558) width 531: "negativeTestZero(\"cy\", \"100px !important\"); negativeTestZero(\"cy\", \"{ 100px }\"); "
+            text run at (531,558) width 141: "// Negative tests for 'r'."
+            text run at (0,576) width 422: "negativeTestZero(\"r\", \"auto\", \"auto\"); negativeTestZero(\"r\", \"100 "
+            text run at (422,576) width 245: "px\"); negativeTestZero(\"r\", \"100px;\");"
+            text run at (0,594) width 511: "negativeTestZero(\"r\", \"100px !important\"); negativeTestZero(\"r\", \"{ 100px }\"); "
+            text run at (511,594) width 269: "// Negative tests for 'rx'. negativeTest(\"rx\","
+            text run at (0,612) width 258: "\"auto\", \"auto\"); negativeTest(\"rx\", \"100 "
+            text run at (258,612) width 492: "px\", \"auto\"); negativeTest(\"rx\", \"100px;\", \"auto\"); negativeTest(\"rx\", \"100px"
+            text run at (0,630) width 394: "!important\", \"auto\"); negativeTest(\"rx\", \"{ 100px }\", \"auto\"); "
+            text run at (394,630) width 372: "// Negative tests for 'ry'. negativeTest(\"ry\", \"auto\", \"auto\");"
+            text run at (0,648) width 155: "negativeTest(\"ry\", \"100 "
+            text run at (155,648) width 626: "px\", \"auto\"); negativeTest(\"ry\", \"100px;\", \"auto\"); negativeTest(\"ry\", \"100px !important\", \"auto\");"
+            text run at (0,666) width 260: "negativeTest(\"ry\", \"{ 100px }\", \"auto\"); "
+            text run at (260,666) width 354: "// Negative tests for 'width'. negativeTest(\"width\", \"100 "
+            text run at (614,666) width 32: "px\");"
+            text run at (0,684) width 723: "negativeTest(\"width\", \"100px;\"); negativeTest(\"width\", \"100px !important\"); negativeTest(\"width\", \"{ 100px }\");"
+            text run at (0,702) width 215: "negativeTest(\"width\", \"-100px\"); "
+            text run at (215,702) width 537: "// Negative tests for 'x'. negativeTestZero(\"x\", \"auto\", \"auto\"); negativeTestZero(\"x\","
+            text run at (0,720) width 35: "\"100 "
+            text run at (35,720) width 737: "px\"); negativeTestZero(\"x\", \"100px;\"); negativeTestZero(\"x\", \"100px !important\"); negativeTestZero(\"x\", \"{ 100px"
+            text run at (0,738) width 28: "}\"); "
+            text run at (28,738) width 527: "// Negative tests for 'y'. negativeTestZero(\"y\", \"auto\"); negativeTestZero(\"y\", \"100 "
+            text run at (555,738) width 177: "px\"); negativeTestZero(\"y\","
+            text run at (0,756) width 584: "\"100px;\"); negativeTestZero(\"y\", \"100px !important\"); negativeTestZero(\"y\", \"{ 100px }\");"
+        RenderText {#text} at (0,0) size 0x0
+        RenderInline {script} at (0,0) size 0x17

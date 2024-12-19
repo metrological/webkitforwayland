@@ -1,0 +1,62 @@
+layer at (0,0) size 785x737
+  RenderView at (0,0) size 785x600
+layer at (0,0) size 785x737
+  RenderBlock {html} at (0,0) size 785x737
+    RenderInline {head} at (0,0) size 0x0
+      RenderText {#text} at (0,0) size 0x0
+    RenderText {#text} at (0,0) size 0x0
+    RenderInline {body} at (0,0) size 785x161
+      RenderText {#text} at (0,0) size 0x0
+      RenderSVGRoot {svg} at (0,0) size 302x18
+        RenderSVGHiddenContainer {defs} at (0,0) size 0x0
+          RenderSVGText {text} at (0,-15) size 62x19 contains 1 chunk(s)
+            RenderSVGInlineText {#text} at (0,0) size 62x18
+              chunk 1 text run 1 at (0.00,0.00) startOffset 0 endOffset 7 width 61.35: "Woohoo!"
+        RenderSVGText {text} at (0,-15) size 62x19 contains 1 chunk(s)
+          RenderSVGInline {tref} at (0,0) size 62x18
+            RenderSVGInlineText {#text} at (0,0) size 62x18
+              chunk 1 text run 1 at (0.00,0.00) startOffset 0 endOffset 7 width 61.35: "Woohoo!"
+        RenderSVGText {text}
+          RenderSVGInline {tref} at (0,0) size 0x0
+      RenderText {#text} at (0,0) size 0x0
+      RenderInline {p} at (0,0) size 294x17
+        RenderText {#text} at (0,593) size 294x17
+          text run at (0,593) width 294: "This test can only be run in DumpRenderTree."
+      RenderText {#text} at (294,593) size 4x17
+        text run at (294,593) width 4: " "
+      RenderInline {script} at (0,0) size 781x143
+        RenderText {#text} at (298,593) size 781x143
+          text run at (298,593) width 137: "function log(string) { "
+          text run at (435,593) width 302: "var result = document.getElementById('result'); "
+          text run at (737,593) width 44: "var div"
+          text run at (0,611) width 212: "= document.createElement('div'); "
+          text run at (212,611) width 335: "div.appendChild(document.createTextNode(string)); "
+          text run at (547,611) width 169: "result.appendChild(div); } "
+          text run at (716,611) width 52: "function"
+          text run at (0,629) width 74: "runTest() { "
+          text run at (74,629) width 284: "if (!window.internals || !window.testRunner) "
+          text run at (358,629) width 45: "return; "
+          text run at (403,629) width 229: "window.testRunner.dumpAsText(); "
+          text run at (632,629) width 71: "var result ="
+          text run at (0,647) width 227: "document.getElementById('result'); "
+          text run at (227,647) width 150: "while (result.firstChild) "
+          text run at (377,647) width 235: "result.removeChild(result.firstChild); "
+          text run at (612,647) width 120: "var textWithHref ="
+          text run at (0,665) width 279: "document.getElementById('text-with-href'); "
+          text run at (279,665) width 443: "var textWithoutHref = document.getElementById('text-without-href'); "
+          text run at (722,665) width 56: "var sr1 ="
+          text run at (0,683) width 238: "internals.shadowRoot(textWithHref); "
+          text run at (238,683) width 108: "if (sr1 == null) { "
+          text run at (346,683) width 356: "log(\"FAIL: textWithHref should have a shadow root.\"); "
+          text run at (702,683) width 45: "return; "
+          text run at (747,683) width 12: "} "
+          text run at (759,683) width 20: "var"
+          text run at (0,701) width 294: "sr2 = internals.shadowRoot(textWithoutHref); "
+          text run at (294,701) width 108: "if (sr2 == null) { "
+          text run at (402,701) width 372: "log(\"FAIL: textWithoutHref should have a shadow root.\");"
+          text run at (0,719) width 45: "return; "
+          text run at (45,719) width 12: "} "
+          text run at (57,719) width 140: "log(\"SUCCESS!\"); } "
+          text run at (197,719) width 62: "runTest();"
+      RenderText {#text} at (0,0) size 0x0
+    RenderText {#text} at (0,0) size 0x0

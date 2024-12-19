@@ -1,0 +1,7 @@
+main frame - has 1 onunload handler(s)
+frame "<!--frame1-->" - has 1 onunload handler(s)
+CONSOLE MESSAGE: QuotaExceededError: The quota has been exceeded.
+CONSOLE MESSAGE: QuotaExceededError: The quota has been exceeded.
+
+FAIL document.open in beforeunload with button The quota has been exceeded.
+

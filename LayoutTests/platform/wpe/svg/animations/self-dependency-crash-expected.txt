@@ -1,0 +1,20 @@
+layer at (0,0) size 800x600
+  RenderView at (0,0) size 800x600
+layer at (0,0) size 800x104
+  RenderBlock {html} at (0,0) size 800x104
+    RenderInline {body} at (0,0) size 648x17
+      RenderText {#text} at (0,86) size 220x17
+        text run at (0,86) width 220: "This test passes if it does not crash."
+      RenderInline {br} at (0,0) size 0x17
+      RenderText {#text} at (220,86) size 4x17
+        text run at (220,86) width 4: " "
+      RenderSVGRoot {svg} at (224,0) size 0x0
+        RenderSVGRect {rect} at (224,0) size 0x0 [fill={[type=SOLID] [color=#000000]}] [x=0.00] [y=0.00] [width=0.00] [height=0.00]
+      RenderText {#text} at (324,86) size 4x17
+        text run at (324,86) width 4: " "
+      RenderInline {script} at (0,0) size 320x17
+        RenderText {#text} at (328,86) size 320x17
+          text run at (328,86) width 151: "if (window.testRunner) "
+          text run at (479,86) width 169: "testRunner.dumpAsText();"
+      RenderText {#text} at (0,0) size 0x0
+    RenderText {#text} at (0,0) size 0x0

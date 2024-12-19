@@ -1,0 +1,5 @@
+CONSOLE MESSAGE: QuotaExceededError: The quota has been exceeded.
+This test case verifies that local storage only stores strings.
+Length is 0
+Testing implicit setters
+

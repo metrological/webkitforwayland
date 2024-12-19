@@ -1,0 +1,10 @@
+
+FAIL Test reading an empty file through a sync access handle. promise_test: Unhandled rejection with value: object "InvalidStateError: The object is in an invalid state."
+FAIL Test writing and reading through a sync access handle. promise_test: Unhandled rejection with value: object "InvalidStateError: The object is in an invalid state."
+FAIL Test second write that is bigger than the first write promise_test: Unhandled rejection with value: object "InvalidStateError: The object is in an invalid state."
+FAIL Test second write that is smaller than the first write promise_test: Unhandled rejection with value: object "InvalidStateError: The object is in an invalid state."
+FAIL Test initial write with an offset promise_test: Unhandled rejection with value: object "InvalidStateError: The object is in an invalid state."
+FAIL Test overwriting the file at an offset promise_test: Unhandled rejection with value: object "InvalidStateError: The object is in an invalid state."
+FAIL Test read at an offset promise_test: Unhandled rejection with value: object "InvalidStateError: The object is in an invalid state."
+FAIL Test reading at a negative offset fails. promise_test: Unhandled rejection with value: object "InvalidStateError: The object is in an invalid state."
+

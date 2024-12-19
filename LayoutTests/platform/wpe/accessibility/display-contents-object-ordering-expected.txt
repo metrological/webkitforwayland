@@ -1,0 +1,20 @@
+This test ensures that display:contents elements are inserted in the correct place in the AX tree.
+
+
+Performing search traversal of #button-container.
+
+Performing search traversal of #heading-container.
+
+Performing search traversal of #mixed-element-container.
+
+PASS successfullyParsed is true
+
+TEST COMPLETE
+
+
+
+
+
+
+
+

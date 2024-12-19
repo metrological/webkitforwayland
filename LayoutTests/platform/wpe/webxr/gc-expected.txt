@@ -1,0 +1,17 @@
+Test that the window.navigator.xr wrapper preserves custom properties.
+
+On success, you will see a series of "PASS" messages, followed by "TEST COMPLETE".
+
+
+FAIL window.navigator.xr.customProperty should be undefined. Threw exception TypeError: undefined is not an object (evaluating 'window.navigator.xr.customProperty')
+window.navigator.xr.customProperty = 1
+FAIL window.navigator.xr.customProperty = 1 threw exception TypeError: undefined is not an object (evaluating 'window.navigator.xr.customProperty = 1')
+FAIL window.navigator.xr.customProperty should be 1. Threw exception TypeError: undefined is not an object (evaluating 'window.navigator.xr.customProperty')
+FAIL window.navigator.xr.customProperty should be 1. Threw exception TypeError: undefined is not an object (evaluating 'window.navigator.xr.customProperty')
+FAIL window.navigator.xr.customProperty should be 1. Threw exception TypeError: undefined is not an object (evaluating 'window.navigator.xr.customProperty')
+FAIL window.navigator.xr.customProperty should be 1. Threw exception TypeError: undefined is not an object (evaluating 'window.navigator.xr.customProperty')
+PASS successfullyParsed is true
+Some tests failed.
+
+TEST COMPLETE
+

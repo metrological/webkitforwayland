@@ -1,0 +1,4 @@
+CONSOLE MESSAGE: TypeError: null is not an object (evaluating 'group.titleUIElement().allAttributes')
+Header for button	
+Header for button	
+

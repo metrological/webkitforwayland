@@ -1,0 +1,60 @@
+layer at (0,0) size 1280x724
+  RenderView at (0,0) size 800x600
+layer at (0,0) size 800x724
+  RenderBlock {HTML} at (0,0) size 800x724
+    RenderBody {BODY} at (0,0) size 800x724
+      RenderText {#text} at (0,0) size 0x0
+      RenderText {#text} at (0,0) size 0x0
+layer at (0,0) size 1280x720
+  RenderVideo {VIDEO} at (0,0) size 1280x720
+layer at (0,0) size 1280x720
+  RenderBlock (relative positioned) {DIV} at (0,0) size 1280x720
+layer at (0,0) size 1280x720
+  RenderBlock (positioned) {DIV} at (0,0) size 1280x720
+layer at (6,6) size 32x31 isolatesBlending
+  RenderBlock (positioned) zI: 1 {DIV} at (6,6) size 32x31
+layer at (6,6) size 32x31
+  RenderBlock (positioned) {DIV} at (0,0) size 32x31
+layer at (6,6) size 32x31
+  RenderBlock (positioned) {DIV} at (0,0) size 32x31 [bgcolor=#0000008C]
+layer at (6,6) size 32x31
+  RenderBlock (positioned) {DIV} at (0,0) size 32x31 [bgcolor=#FFFFFF24]
+layer at (6,6) size 32x31
+  RenderFlexibleBox {DIV} at (0,0) size 32x31
+layer at (6,683) size 1268x31 isolatesBlending
+  RenderBlock (positioned) zI: 1 {DIV} at (6,683) size 1268x31
+layer at (6,683) size 1268x31
+  RenderBlock (positioned) {DIV} at (0,0) size 1268x31
+layer at (6,683) size 1268x31
+  RenderBlock (positioned) {DIV} at (0,0) size 1268x31 [bgcolor=#0000008C]
+layer at (6,683) size 1268x31
+  RenderBlock (positioned) {DIV} at (0,0) size 1268x31 [bgcolor=#FFFFFF24]
+layer at (6,683) size 64x31
+  RenderFlexibleBox {DIV} at (0,0) size 64x31
+layer at (70,683) size 1156x31
+  RenderFlexibleBox {DIV} at (64,0) size 1156x31
+layer at (70,691) size 35x15 blendMode: plus-lighter
+  RenderBlock (positioned) {DIV} at (0,8) size 35x15 [color=#FFFFFF8C]
+    RenderText {#text} at (8,0) size 27x14
+      text run at (8,0) width 27: "00:00"
+layer at (110,691) size 1076x16
+  RenderBlock (relative positioned) {DIV} at (0,7) size 1076x17
+layer at (110,696) size 1076x5
+  RenderBlock (positioned) {DIV} at (0,5) size 1076x6
+layer at (110,696) size 1076x5
+  RenderBlock (relative positioned) {DIV} at (0,0) size 1076x5
+layer at (115,696) size 1071x5 blendMode: plus-lighter
+  RenderBlock (positioned) {DIV} at (5,0) size 1071x5 [bgcolor=#FFFFFF1A]
+layer at (112,690) size 4x17
+  RenderBlock (positioned) {DIV} at (2,-6) size 4x17 [bgcolor=#FFFFFF]
+layer at (110,691) size 1076x16
+  RenderSlider {INPUT} at (0,0) size 1076x16 [color=#909090]
+    RenderFlexibleBox {DIV} at (0,0) size 1076x16
+      RenderBlock {DIV} at (0,8) size 1076x0
+        RenderBlock {DIV} at (0,0) size 9x0
+layer at (1191,691) size 35x15 blendMode: plus-lighter
+  RenderBlock (positioned) {DIV} at (1121,8) size 35x15 [color=#FFFFFF8C]
+    RenderText {#text} at (8,0) size 27x14
+      text run at (8,0) width 27: "00:00"
+layer at (1226,683) size 48x31
+  RenderFlexibleBox {DIV} at (1220,0) size 48x31
