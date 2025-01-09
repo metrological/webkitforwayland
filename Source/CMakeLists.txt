@@ -13,6 +13,11 @@ endif ()
 
 add_subdirectory(JavaScriptCore)
 
+add_subdirectory(ThirdParty/telemetry)
+if (USE_RDK_TELEMETRY)
+    add_definitions(-DRDK_TELEMETRY)
+endif ()
+
 if (ENABLE_WEBGL OR USE_ANGLE_EGL)
     add_subdirectory(ThirdParty/ANGLE)
 endif ()

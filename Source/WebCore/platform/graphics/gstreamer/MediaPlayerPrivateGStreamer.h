@@ -48,6 +48,7 @@
 #include <wtf/RunLoop.h>
 #include <wtf/WeakPtr.h>
 #include <wtf/text/AtomStringHash.h>
+#include <TelemetryReport.h>
 
 typedef struct _GstMpegtsSection GstMpegtsSection;
 
@@ -581,6 +582,7 @@ private:
     InitData parseInitDataFromProtectionMessage(GstMessage*);
     bool waitForCDMAttachment();
 #endif
+    Telemetry::IReport::DrmType getDrm() const;
 
     void configureMediaStreamAudioTracks();
     void invalidateCachedPositionOnNextIteration() const;
@@ -604,6 +606,7 @@ private:
     Lock m_drawLock;
     RunLoop::Timer<MediaPlayerPrivateGStreamer> m_drawTimer WTF_GUARDED_BY_LOCK(m_drawLock);
     RunLoop::Timer<MediaPlayerPrivateGStreamer> m_pausedTimerHandler;
+    TelemetryImpl m_telemetry;
 #if USE(TEXTURE_MAPPER_GL)
 #if USE(NICOSIA)
     RefPtr<Nicosia::ContentLayer> m_nicosiaLayer;
