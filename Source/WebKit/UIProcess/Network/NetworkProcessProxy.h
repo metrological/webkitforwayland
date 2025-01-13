@@ -226,6 +226,8 @@ public:
     ProcessThrottler& throttler() final { return m_throttler; }
     void updateProcessAssertion();
 
+    pid_t networkProcessPID();
+
 #if ENABLE(CONTENT_EXTENSIONS)
     void didDestroyWebUserContentControllerProxy(WebUserContentControllerProxy&);
 #endif

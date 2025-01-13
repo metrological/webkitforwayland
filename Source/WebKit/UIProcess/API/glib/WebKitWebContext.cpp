@@ -1685,6 +1685,12 @@ void webkit_web_context_set_disk_cache_directory(WebKitWebContext*, const char*)
 }
 #endif
 
+pid_t webkit_web_context_get_network_process_identifier(WebKitWebContext* context)
+{
+    //g_return_if_fail(WEBKIT_IS_WEB_CONTEXT(context));
+    return context->priv->processPool->networkProcessIdentifier();
+}
+
 /**
  * webkit_web_context_prefetch_dns:
  * @context: a #WebKitWebContext

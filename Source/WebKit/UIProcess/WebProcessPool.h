@@ -255,6 +255,8 @@ public:
     void clearSupportedPlugins();
 
     ProcessID prewarmedProcessIdentifier();
+    pid_t networkProcessIdentifier();
+
     void activePagesOriginsInWebProcessForTesting(ProcessID, CompletionHandler<void(Vector<String>&&)>&&);
 
     WebPageGroup& defaultPageGroup() { return m_defaultPageGroup.get(); }

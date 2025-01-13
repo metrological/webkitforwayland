@@ -162,6 +162,13 @@ void NetworkProcessProxy::requestTermination()
     networkProcessDidTerminate(ProcessTerminationReason::RequestedByClient);
 }
 
+pid_t NetworkProcessProxy::networkProcessPID()
+{
+    printf("NAMBI Getting NetworkProcessPID\n", processIdentifier());
+    fflush(stdout);
+    return processIdentifier();
+}
+
 void NetworkProcessProxy::didBecomeUnresponsive()
 {
     RELEASE_LOG_ERROR(Process, "NetworkProcessProxy::didBecomeUnresponsive: NetworkProcess with PID %d became unresponsive, terminating it", processIdentifier());

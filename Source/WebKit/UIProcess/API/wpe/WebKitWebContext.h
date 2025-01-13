@@ -265,6 +265,10 @@ webkit_web_context_set_web_extensions_initialization_user_data
                                                     (WebKitWebContext              *context,
                                                      GVariant                      *user_data);
 
+WEBKIT_API pid_t
+webkit_web_context_get_network_process_identifier
+                                                    (WebKitWebContext              *context);
+
 WEBKIT_API void
 webkit_web_context_prefetch_dns                     (WebKitWebContext              *context,
                                                      const gchar                   *hostname);

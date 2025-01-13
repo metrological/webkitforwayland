@@ -1752,6 +1752,18 @@ WeakHashSet<WebProcessProxy>& WebProcessPool::remoteWorkerProcesses()
     return processes;
 }
 
+pid_t WebProcessPool::networkProcessIdentifier()
+{
+    printf("NAMBI networkProcessIdentifier\n");
+    fflush(stdout);
+    if (WebsiteDataStore::defaultDataStoreExists())
+    {
+        WebsiteDataStore::defaultDataStore()->networkProcessIfExists().networkProcessPID();    
+    } 
+//    if (auto& networkProcess = NetworkProcessProxy::defaultNetworkProcess())
+//        return networkProcess->networkProcessPID();
+}
+
 void WebProcessPool::updateProcessAssertions()
 {
     if (auto& networkProcess = NetworkProcessProxy::defaultNetworkProcess())
