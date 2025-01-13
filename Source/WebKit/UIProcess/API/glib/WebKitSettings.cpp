@@ -1464,7 +1464,7 @@ static void webkit_settings_class_init(WebKitSettingsClass* klass)
             _("Enable mock capture devices"),
             _("Whether we expose mock capture devices or not"),
 #if ENABLE(MEDIA_STREAM)
-            FEATURE_DEFAULT(MockCaptureDevicesEnabled),
+            TRUE,
 #else
             FALSE,
 #endif
