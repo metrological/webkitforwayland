@@ -30,7 +30,6 @@
 #if ENABLE(GAMEPAD)
 
 #include "WPEGamepadProvider.h"
-#include <wpe/wpe.h>
 
 namespace WebCore {
 
@@ -58,12 +57,15 @@ WPEGamepad::WPEGamepad(struct wpe_gamepad_provider* provider, uintptr_t gamepadI
             auto& self = *static_cast<WPEGamepad*>(data);
             self.absoluteAxisChanged(static_cast<unsigned>(axis), value);
         },
+#if WPE_CHECK_VERSION(1, 16, 1)
         // analog_button_value
-        [](void* data, enum wpe_gamepad_button button, double value) {
+        [](void* data, enum wpe_gamepad_button button, double value) {1111
             auto& self = *static_cast<WPEGamepad*>(data);
             self.analogButtonChanged(static_cast<unsigned>(button), value);
-        },
-        nullptr, nullptr,
+        }, nullptr, nullptr
+#else
+        nullptr, nullptr, nullptr
+#endif
     };
     wpe_gamepad_set_client(m_gamepad.get(), &s_client, this);
 }
@@ -89,6 +91,7 @@ void WPEGamepad::absoluteAxisChanged(unsigned axis, double value)
     WPEGamepadProvider::singleton().scheduleInputNotification(*this, WPEGamepadProvider::ShouldMakeGamepadsVisible::Yes);
 }
 
+#if WPE_CHECK_VERSION(1, 16, 1)
 void WPEGamepad::analogButtonChanged(unsigned button, double value)
 {
     m_lastUpdateTime = MonotonicTime::now();
@@ -97,6 +100,7 @@ void WPEGamepad::analogButtonChanged(unsigned button, double value)
     WPEGamepadProvider::singleton().scheduleInputNotification(*this, WPEGamepadProvider::ShouldMakeGamepadsVisible::Yes);
 
 }
+#endif
 
 } // namespace WebCore
 

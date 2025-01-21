@@ -29,6 +29,7 @@
 #if ENABLE(GAMEPAD)
 
 #include "PlatformGamepad.h"
+#include <wpe/wpe.h>
 
 struct wpe_gamepad;
 struct wpe_gamepad_provider;
@@ -48,7 +49,9 @@ public:
 private:
     void buttonPressedOrReleased(unsigned, bool);
     void absoluteAxisChanged(unsigned, double);
+#if WPE_CHECK_VERSION(1, 16, 1)
     void analogButtonChanged(unsigned, double);
+#endif
 
     Vector<SharedGamepadValue> m_buttonValues;
     Vector<SharedGamepadValue> m_axisValues;
