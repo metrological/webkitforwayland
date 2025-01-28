@@ -147,6 +147,10 @@ public:
     void setupBufferingPercentageCorrection(MediaPlayerPrivateGStreamer*, GstState currentState, GstState newState, GRefPtr<GstElement>&&) const;
 
     void processWebAudioSilentBuffer(GstBuffer*) const;
+
+    void reportPlaybackState(AVPipelineState state, const std::string &additionalInfo = "", MediaType mediaType = MediaType::NONE);
+    void reportDrmInfo(DrmType drmType, const std::string &additionalInfo = "");
+
 private:
     GStreamerQuirksManager(bool, bool);
 

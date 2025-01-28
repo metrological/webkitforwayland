@@ -85,6 +85,9 @@ GStreamerQuirksManager::GStreamerQuirksManager(bool isForTesting, bool loadQuirk
 #if PLATFORM(RPI) && CPU(ARM) && !CPU(ARM64)
         quirksListBuilder.append("openmax,");
 #endif
+#if USE(RDK_TELEMETRY)
+        quirksListBuilder.append("rdktelemetry");
+#endif
 #if PLATFORM(REALTEK)
         quirksListBuilder.append("realtek,");
 #endif
@@ -96,7 +99,7 @@ GStreamerQuirksManager::GStreamerQuirksManager(bool isForTesting, bool loadQuirk
     GST_DEBUG("Attempting to parse requested quirks: %s", quirks.ascii().data());
     if (!quirks.isEmpty()) {
         if (WTF::equalLettersIgnoringASCIICase(quirks, "help"_s)) {
-            WTFLogAlways("Supported quirks for WEBKIT_GST_QUIRKS are: amlogic, broadcom, bcmnexus, openmax, realtek, westeros");
+            WTFLogAlways("Supported quirks for WEBKIT_GST_QUIRKS are: amlogic, broadcom, bcmnexus, openmax, rdktelemetry, realtek, westeros");
             return;
         }
 
@@ -110,6 +113,8 @@ GStreamerQuirksManager::GStreamerQuirksManager(bool isForTesting, bool loadQuirk
                 quirk = WTF::makeUnique<GStreamerQuirkBcmNexus>();
             else if (WTF::equalLettersIgnoringASCIICase(identifier, "openmax"_s))
                 quirk = WTF::makeUnique<GStreamerQuirkOpenMAX>();
+            else if (WTF::equalLettersIgnoringASCIICase(identifier, "rdktelemetry"_s))
+                quirk = WTF::makeUnique<GStreamerQuirkRdkTelemetry>();
             else if (WTF::equalLettersIgnoringASCIICase(identifier, "realtek"_s))
                 quirk = WTF::makeUnique<GStreamerQuirkRealtek>();
             else if (WTF::equalLettersIgnoringASCIICase(identifier, "rialto"_s))

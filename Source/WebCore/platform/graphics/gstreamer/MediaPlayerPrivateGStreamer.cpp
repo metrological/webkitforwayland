@@ -224,7 +224,10 @@ MediaPlayerPrivateGStreamer::~MediaPlayerPrivateGStreamer()
 {
     GST_DEBUG_OBJECT(pipeline(), "Disposing player");
     m_isPlayerShuttingDown.store(true);
-    m_telemetry.reportPlaybackState(Telemetry::IReport::AVPipelineState::STOP);
+
+    auto& quirksManager = GStreamerQuirksManager::singleton();
+    if (quirksManager.isEnabled())
+        quirksManager.reportPlaybackState(Telemetry::IReport::AVPipelineState::STOP);
 
     if (m_gstreamerHolePunchHost)
         m_gstreamerHolePunchHost->playerPrivateWillBeDestroyed();
@@ -292,7 +295,9 @@ MediaPlayerPrivateGStreamer::~MediaPlayerPrivateGStreamer()
 
     m_player = nullptr;
     m_notifier->invalidate();
-    m_telemetry.reportPlaybackState(Telemetry::IReport::AVPipelineState::DESTROY);
+
+    if (quirksManager.isEnabled())
+        quirksManager.reportPlaybackState(Telemetry::IReport::AVPipelineState::DESTROY);
 }
 
 bool MediaPlayerPrivateGStreamer::isAvailable()
@@ -452,7 +457,10 @@ void MediaPlayerPrivateGStreamer::play()
         m_preload = MediaPlayer::Preload::Auto;
         updateDownloadBufferingFlag();
         GST_INFO_OBJECT(pipeline(), "Play");
-        m_telemetry.reportPlaybackState(Telemetry::IReport::AVPipelineState::PLAY);
+
+        auto& quirksManager = GStreamerQuirksManager::singleton();
+        if (quirksManager.isEnabled())
+            quirksManager.reportPlaybackState(Telemetry::IReport::AVPipelineState::PLAY);
     } else
         loadingFailed(MediaPlayer::NetworkState::Empty);
 }
@@ -471,7 +479,9 @@ void MediaPlayerPrivateGStreamer::pause()
     auto result = changePipelineState(GST_STATE_PAUSED);
     if (result == ChangePipelineStateResult::Ok) {
         GST_INFO_OBJECT(pipeline(), "Pause");
-        m_telemetry.reportPlaybackState(Telemetry::IReport::AVPipelineState::PAUSE);
+        auto& quirksManager = GStreamerQuirksManager::singleton();
+        if (quirksManager.isEnabled())
+            quirksManager.reportPlaybackState(Telemetry::IReport::AVPipelineState::PAUSE);
     } else if (result == ChangePipelineStateResult::Failed)
         loadingFailed(MediaPlayer::NetworkState::Empty);
 }
@@ -578,8 +588,11 @@ void MediaPlayerPrivateGStreamer::seek(const MediaTime& mediaTime)
 
     MediaTime time = std::min(mediaTime, durationMediaTime());
     GST_INFO_OBJECT(pipeline(), "[Seek] seeking to %s", toString(time).utf8().data());
-    m_telemetry.reportPlaybackState(Telemetry::IReport::AVPipelineState::SEEK_START,
-        "seek_from:" + std::to_string(playbackPosition().toDouble()) + ", seek_to:" + std::to_string(time.toDouble()));
+
+    auto& quirksManager = GStreamerQuirksManager::singleton();
+    if (quirksManager.isEnabled())
+        quirksManager.reportPlaybackState(Telemetry::IReport::AVPipelineState::SEEK_START,
+                "seek_from:" + std::to_string(playbackPosition().toDouble()) + ", seek_to:" + std::to_string(time.toDouble()));
 
     if (m_isSeeking) {
         m_timeOfOverlappingSeek = time;
@@ -1882,7 +1895,10 @@ void MediaPlayerPrivateGStreamer::handleMessage(GstMessage* message)
             break;
 
         m_errorMessage = String::fromLatin1(err->message);
-        m_telemetry.reportPlaybackState(Telemetry::IReport::AVPipelineState::PLAYBACK_ERROR, std::string(err->message));
+
+        auto& quirksManager = GStreamerQuirksManager::singleton();
+        if (quirksManager.isEnabled())
+            quirksManager.reportPlaybackState(Telemetry::IReport::AVPipelineState::PLAYBACK_ERROR, std::string(err->message));
 
         error = MediaPlayer::NetworkState::Empty;
         if (g_error_matches(err.get(), GST_STREAM_ERROR, GST_STREAM_ERROR_CODEC_NOT_FOUND)
@@ -2521,7 +2537,11 @@ void MediaPlayerPrivateGStreamer::purgeOldDownloadFiles(const String& downloadFi
 void MediaPlayerPrivateGStreamer::finishSeek()
 {
     GST_DEBUG_OBJECT(pipeline(), "[Seek] seeked to %s", toString(m_seekTime).utf8().data());
-    m_telemetry.reportPlaybackState(Telemetry::IReport::AVPipelineState::SEEK_DONE, "seek_to:" + std::to_string(m_seekTime.toDouble()));
+
+    auto& quirksManager = GStreamerQuirksManager::singleton();
+    if (quirksManager.isEnabled())
+        quirksManager.reportPlaybackState(Telemetry::IReport::AVPipelineState::SEEK_DONE, "seek_to:" + std::to_string(m_seekTime.toDouble()));
+
     m_isSeeking = false;
     invalidateCachedPosition();
     if (m_timeOfOverlappingSeek != m_seekTime && m_timeOfOverlappingSeek.isValid()) {
@@ -2881,7 +2901,10 @@ void MediaPlayerPrivateGStreamer::didEnd()
 #endif
     }
     timeChanged();
-    m_telemetry.reportPlaybackState(Telemetry::IReport::AVPipelineState::END_OF_STREAM);
+
+    auto& quirksManager = GStreamerQuirksManager::singleton();
+    if (quirksManager.isEnabled())
+        quirksManager.reportPlaybackState(Telemetry::IReport::AVPipelineState::END_OF_STREAM);
 }
 
 void MediaPlayerPrivateGStreamer::getSupportedTypes(HashSet<String, ASCIICaseInsensitiveHash>& types)
@@ -3113,8 +3136,11 @@ void MediaPlayerPrivateGStreamer::createGSTPlayBin(const URL& url)
             player->videoSinkCapsChanged(videoSinkPad);
         }), this);
 
-    m_telemetry.reportDrmInfo(getDrm());
-    m_telemetry.reportPlaybackState(Telemetry::IReport::AVPipelineState::CREATE);
+    auto& quirksManager = GStreamerQuirksManager::singleton();
+    if (quirksManager.isEnabled()) {
+        quirksManager.reportDrmInfo(getDrm());
+        quirksManager.reportPlaybackState(Telemetry::IReport::AVPipelineState::CREATE);
+    }
 }
 
 void MediaPlayerPrivateGStreamer::configureVideoDecoder(GstElement* decoder)
@@ -3204,7 +3230,10 @@ void MediaPlayerPrivateGStreamer::pausedTimerFired()
 {
     GST_DEBUG_OBJECT(pipeline(), "In PAUSED for too long. Releasing pipeline resources.");
     changePipelineState(GST_STATE_NULL);
-    m_telemetry.reportPlaybackState(Telemetry::IReport::AVPipelineState::DESTROY);
+
+    auto& quirksManager = GStreamerQuirksManager::singleton();
+    if (quirksManager.isEnabled())
+        quirksManager.reportPlaybackState(Telemetry::IReport::AVPipelineState::DESTROY);
 }
 
 void MediaPlayerPrivateGStreamer::acceleratedRenderingStateChanged()
