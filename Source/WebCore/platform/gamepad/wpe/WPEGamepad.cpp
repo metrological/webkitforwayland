@@ -59,7 +59,7 @@ WPEGamepad::WPEGamepad(struct wpe_gamepad_provider* provider, uintptr_t gamepadI
         },
 #if WPE_CHECK_VERSION(1, 16, 1)
         // analog_button_value
-        [](void* data, enum wpe_gamepad_button button, double value) {1111
+        [](void* data, enum wpe_gamepad_button button, double value) {
             auto& self = *static_cast<WPEGamepad*>(data);
             self.analogButtonChanged(static_cast<unsigned>(button), value);
         }, nullptr, nullptr
