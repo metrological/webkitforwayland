@@ -57,7 +57,7 @@ WPEGamepad::WPEGamepad(struct wpe_gamepad_provider* provider, uintptr_t gamepadI
             auto& self = *static_cast<WPEGamepad*>(data);
             self.absoluteAxisChanged(static_cast<unsigned>(axis), value);
         },
-#if WPE_CHECK_VERSION(1, 16, 1)
+#if WPE_CHECK_VERSION(1, 16, 2)
         // analog_button_value
         [](void* data, enum wpe_gamepad_button button, double value) {
             auto& self = *static_cast<WPEGamepad*>(data);
