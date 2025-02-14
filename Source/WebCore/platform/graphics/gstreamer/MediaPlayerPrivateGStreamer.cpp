@@ -439,11 +439,6 @@ void MediaPlayerPrivateGStreamer::play()
         return;
     }
 
-    if (isPipelineWaitingPreroll()) {
-        GST_DEBUG_OBJECT(pipeline(), "pipeline is seeking, let's delay moving the pipeline to playing right now");
-        return;
-    }
-
     if (changePipelineState(GST_STATE_PLAYING) == ChangePipelineStateResult::Ok) {
         m_isEndReached = false;
         m_isDelayingLoad = false;
@@ -998,10 +993,6 @@ MediaPlayerPrivateGStreamer::ChangePipelineStateResult MediaPlayerPrivateGStream
 
     GstState currentState, pending;
     GstStateChangeReturn change = gst_element_get_state(m_pipeline.get(), &currentState, &pending, 0);
-    if (isPipelineWaitingPreroll(currentState, pending, change)) {
-        GST_DEBUG_OBJECT(pipeline(), "rejected state change during seek");
-        return ChangePipelineStateResult::Rejected;
-    }
 
     GST_DEBUG_OBJECT(pipeline(), "Changing state change to %s from %s with %s pending", gst_element_state_get_name(newState),
         gst_element_state_get_name(currentState), gst_element_state_get_name(pending));
