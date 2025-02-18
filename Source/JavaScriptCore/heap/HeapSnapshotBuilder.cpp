@@ -39,6 +39,52 @@
 
 namespace JSC {
 
+namespace {
+
+class FileOutputStingBuilder {
+    WTF_MAKE_NONCOPYABLE(FileOutputStingBuilder);
+
+    FileSystem::PlatformFileHandle fileHandle;
+    StringBuilder builder;
+
+public:
+    FileOutputStingBuilder(FileSystem::PlatformFileHandle fileHandle)
+        : fileHandle(WTFMove(fileHandle))
+    {
+    }
+
+    ~FileOutputStingBuilder()
+    {
+        flush(true);
+    }
+
+    template<typename... StringTypes> void append(StringTypes... fragment)
+    {
+        builder.append(fragment...);
+        flush();
+    }
+
+    void appendQuotedJSONString(const String& string)
+    {
+        builder.appendQuotedJSONString(string);
+        flush();
+    }
+
+    void flush(bool force = false)
+    {
+        constexpr size_t kBufferLengthLimit = 4 * WTF::KB;
+        if ((force && !builder.isEmpty()) ||  builder.length() >= kBufferLengthLimit)
+        {
+            CString utf8String = builder.toStringPreserveCapacity().utf8();
+            FileSystem::writeToFile(fileHandle, utf8String.data(), utf8String.length());
+            builder.clear();
+            builder.reserveCapacity(kBufferLengthLimit);
+        }
+    }
+};
+
+} // namespace
+
 NodeIdentifier HeapSnapshotBuilder::nextAvailableObjectIdentifier = 1;
 NodeIdentifier HeapSnapshotBuilder::getNextObjectIdentifier() { return nextAvailableObjectIdentifier++; }
 void HeapSnapshotBuilder::resetNextAvailableObjectIdentifier() { HeapSnapshotBuilder::nextAvailableObjectIdentifier = 1; }
@@ -330,6 +376,20 @@ String HeapSnapshotBuilder::descriptionForCell(JSCell *cell) const
 
 String HeapSnapshotBuilder::json(Function<bool (const HeapSnapshotNode&)> allowNodeCallback)
 {
+    StringBuilder json;
+    writeJson(WTFMove(allowNodeCallback), json);
+    return json.toString();
+}
+
+void HeapSnapshotBuilder::writeJsonToFile(FileSystem::PlatformFileHandle fileHandle)
+{
+    FileOutputStingBuilder json(fileHandle);
+    writeJson([] (const HeapSnapshotNode&) { return true; }, json);
+}
+
+template<typename OutputStingBuilder>
+void HeapSnapshotBuilder::writeJson(Function<bool (const HeapSnapshotNode&)>&& allowNodeCallback, OutputStingBuilder &json)
+{
     VM& vm = m_profiler.vm();
     DeferGCForAWhile deferGC(vm);
 
@@ -350,7 +410,6 @@ String HeapSnapshotBuilder::json(Function<bool (const HeapSnapshotNode&)> allowN
     HashMap<UniquedStringImpl*, unsigned> edgeNameIndexes;
     unsigned nextEdgeNameIndex = 0;
 
-    StringBuilder json;
 
     auto appendNodeJSON = [&] (const HeapSnapshotNode& node) {
         // Let the client decide if they want to allow or disallow certain nodes.
@@ -615,7 +674,6 @@ String HeapSnapshotBuilder::json(Function<bool (const HeapSnapshotNode&)> allowN
     }
 
     json.append('}');
-    return json.toString();
 }
 
 } // namespace JSC

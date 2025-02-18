@@ -140,10 +140,26 @@ void GCController::deleteAllLinkedCode(DeleteAllCodeEffort effort)
 
 void GCController::dumpHeap()
 {
+    static const char* sHeapDumpDirOverride = []() {
+        return getenv("WEBKIT_HEAP_SNAPSHOT_DIR");
+    }();
+
     FileSystem::PlatformFileHandle fileHandle;
-    String tempFilePath = FileSystem::openTemporaryFile("GCHeap"_s, fileHandle);
+    String tempFilePath;
+    if (sHeapDumpDirOverride) {
+        char buf[32];
+        time_t now = time(nullptr);
+        struct tm* tstruct = localtime(&now);
+        std::strftime(buf, sizeof(buf), "%Y%m%d_%H%M%S", tstruct);
+
+        tempFilePath = WTF::String::fromUTF8(sHeapDumpDirOverride) + "/GCHeap_" + WTF::String::fromUTF8(buf);
+        fileHandle = FileSystem::openFile(tempFilePath, FileSystem::FileOpenMode::ReadWrite);
+    } else {
+        tempFilePath = FileSystem::openTemporaryFile("GCHeap"_s, fileHandle);
+    }
+
     if (!FileSystem::isHandleValid(fileHandle)) {
-        WTFLogAlways("Dumping GC heap failed to open temporary file");
+        WTFLogAlways("Dumping GC heap failed to open temporary file: %s", tempFilePath.utf8().data());
         return;
     }
 
@@ -152,19 +168,14 @@ void GCController::dumpHeap()
 
     sanitizeStackForVM(vm);
 
-    String jsonData;
     {
         DeferGCForAWhile deferGC(vm); // Prevent concurrent GC from interfering with the full GC that the snapshot does.
 
         HeapSnapshotBuilder snapshotBuilder(vm.ensureHeapProfiler(), HeapSnapshotBuilder::SnapshotType::GCDebuggingSnapshot);
         snapshotBuilder.buildSnapshot();
-
-        jsonData = snapshotBuilder.json();
+        snapshotBuilder.writeJsonToFile(fileHandle);
     }
 
-    CString utf8String = jsonData.utf8();
-
-    FileSystem::writeToFile(fileHandle, utf8String.data(), utf8String.length());
     FileSystem::closeFile(fileHandle);
     
     WTFLogAlways("Dumped GC heap to %s", tempFilePath.utf8().data());
