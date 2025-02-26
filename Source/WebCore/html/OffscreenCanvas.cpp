@@ -209,7 +209,6 @@ void OffscreenCanvas::createContextWebGL(RenderingContextType contextType, WebGL
     UNUSED_PARAM(contextType);
 #endif
     m_context = WebGLRenderingContextBase::create(*this, attrs, webGLVersion);
-    m_placeholderData->bufferPipeSource->setGraphicsContextGL(static_cast<WebGLRenderingContextBase*>(m_context.get())->graphicsContextGL());
 }
 
 #endif // ENABLE(WEBGL)
@@ -449,10 +448,8 @@ void OffscreenCanvas::commitToPlaceholderCanvas()
 
     // FIXME: Transfer texture over if we're using accelerated compositing
     if (m_context && (m_context->isWebGL() || m_context->isAccelerated())) {
-        m_context->prepareForDisplayWithSwapBuffers();
-        m_placeholderData->bufferPipeSource->swapBuffers();
+        m_context->prepareForDisplayWithPaint();
         m_context->paintRenderingResultsToCanvas();
-        return;
     }
 
     if (m_placeholderData->bufferPipeSource) {

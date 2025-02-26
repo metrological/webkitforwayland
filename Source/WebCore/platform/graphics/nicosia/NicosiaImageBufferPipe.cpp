@@ -104,36 +104,6 @@ void NicosiaImageBufferPipeSource::handle(RefPtr<ImageBuffer>&& buffer)
     m_imageBuffer = WTFMove(buffer);
 }
 
-void NicosiaImageBufferPipeSource::swapBuffers()
-{
-    if (!m_context)
-        return;
-
-    if (m_context->layerComposited())
-        return;
-
-    m_context->prepareTexture();
-    IntSize textureSize(m_context->m_currentWidth, m_context->m_currentHeight);
-
-    TextureMapperGL::Flags flags = TextureMapperGL::ShouldFlipTexture;
-    if (m_context->contextAttributes().alpha)
-        flags |= TextureMapperGL::ShouldBlend;
-
-    {
-        auto& proxy = downcast<Nicosia::ContentLayerTextureMapperImpl>(m_nicosiaLayer->impl()).proxy();
-        Locker locker { proxy.lock() };
-        ASSERT(is<TextureMapperPlatformLayerProxyGL>(proxy));
-        downcast<TextureMapperPlatformLayerProxyGL>(proxy).pushNextBuffer(makeUnique<TextureMapperPlatformLayerBuffer>(m_context->m_compositorTexture, textureSize, flags, m_context->m_internalColorFormat));
-    }
-
-    m_context->markLayerComposited();
-}
-
-void NicosiaImageBufferPipeSource::setGraphicsContextGL(GraphicsContextGL* context)
-{
-    m_context = static_cast<GraphicsContextGLOpenGL*>(context);
-}
-
 void NicosiaImageBufferPipeSource::swapBuffersIfNeeded()
 {
 }
