@@ -90,7 +90,7 @@ struct _WebKitWebAudioSrcPrivate {
 
     _WebKitWebAudioSrcPrivate()
     {
-        sourcePad = webkitGstGhostPadFromStaticTemplate(&srcTemplate, "src", nullptr);
+        sourcePad = webkitGstGhostPadFromStaticTemplate(&srcTemplate, "src"_s, nullptr);
 
         g_rec_mutex_init(&mutex);
     }
