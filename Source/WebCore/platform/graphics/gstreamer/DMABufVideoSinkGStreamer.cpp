@@ -195,7 +195,7 @@ bool webKitDMABufVideoSinkIsEnabled()
 
 bool webKitDMABufVideoSinkProbePlatform()
 {
-    return webkitGstCheckVersion(1, 20, 0) && isGStreamerPluginAvailable("app");
+    return webkitGstCheckVersion(1, 20, 0) && isGStreamerPluginAvailable("app"_s);
 }
 
 void webKitDMABufVideoSinkSetMediaPlayerPrivate(WebKitDMABufVideoSink* sink, MediaPlayerPrivateGStreamer* player)
