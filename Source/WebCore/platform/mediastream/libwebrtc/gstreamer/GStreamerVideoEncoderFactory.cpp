@@ -115,11 +115,11 @@ public:
         return m_pipeline.get();
     }
 
-    GstElement* makeElement(const gchar* factoryName)
+    GstElement* makeElement(ASCIILiteral factoryName)
     {
         static Atomic<uint32_t> elementId;
-        auto name = makeString(Name(), "-enc-"_s, span(factoryName), "-"_s, elementId.exchangeAdd(1));
-        auto* elem = makeGStreamerElement(factoryName, name.utf8().data());
+        auto name = makeString(Name(), "-enc-"_s, factoryName, "-"_s, elementId.exchangeAdd(1));
+        auto* elem = makeGStreamerElement(factoryName, name);
         return elem;
     }
 
@@ -133,7 +133,7 @@ public:
             return WEBRTC_VIDEO_CODEC_ERR_SIMULCAST_PARAMETERS_NOT_SUPPORTED;
         }
 
-        m_pipeline = makeElement("pipeline");
+        m_pipeline = makeElement("pipeline"_s);
 
         connectSimpleBusMessageCallback(m_pipeline.get());
         m_encoder = createEncoder();
@@ -141,15 +141,15 @@ public:
 
         g_object_set(m_encoder.get(), "keyframe-interval", KeyframeInterval(codecSettings), nullptr);
 
-        m_src = makeElement("appsrc");
+        m_src = makeElement("appsrc"_s);
         g_object_set(m_src.get(), "is-live", true, "format", GST_FORMAT_TIME, nullptr);
 
-        auto* videoconvert = makeElement("videoconvert");
-        auto* videoscale = makeElement("videoscale");
-        m_sink = makeElement("appsink");
+        auto* videoconvert = makeElement("videoconvert"_s);
+        auto* videoscale = makeElement("videoscale"_s);
+        m_sink = makeElement("appsink"_s);
         g_object_set(m_sink.get(), "sync", FALSE, nullptr);
 
-        m_capsFilter = makeElement("capsfilter");
+        m_capsFilter = makeElement("capsfilter"_s);
         if (m_restrictionCaps)
             g_object_set(m_capsFilter.get(), "caps", m_restrictionCaps.get(), nullptr);
 

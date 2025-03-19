@@ -47,11 +47,11 @@ GStreamerVideoFrameConverter::GStreamerVideoFrameConverter()
     ensureGStreamerInitialized();
     GST_DEBUG_CATEGORY_INIT(webkit_gst_video_frame_converter_debug, "webkitvideoframeconverter", 0, "WebKit GStreamer Video Frame Converter");
     m_pipeline = gst_element_factory_make("pipeline", "video-frame-converter");
-    m_src = makeGStreamerElement("appsrc", nullptr);
-    auto gldownload = makeGStreamerElement("gldownload", nullptr);
-    auto videoconvert = makeGStreamerElement("videoconvert", nullptr);
-    auto videoscale = makeGStreamerElement("videoscale", nullptr);
-    m_sink = makeGStreamerElement("appsink", nullptr);
+    m_src = makeGStreamerElement("appsrc"_s);
+    auto gldownload = makeGStreamerElement("gldownload"_s);
+    auto videoconvert = makeGStreamerElement("videoconvert"_s);
+    auto videoscale = makeGStreamerElement("videoscale"_s);
+    m_sink = makeGStreamerElement("appsink"_s);
     g_object_set(m_sink.get(), "enable-last-sample", FALSE, "max-buffers", 1, nullptr);
 
     gst_bin_add_many(GST_BIN_CAST(m_pipeline.get()), m_src.get(), gldownload, videoconvert, videoscale, m_sink.get(), nullptr);

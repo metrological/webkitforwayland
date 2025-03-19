@@ -351,7 +351,7 @@ static bool videoEncoderSetEncoder(WebKitVideoEncoder* self, EncoderId encoderId
 
     if (useVideoConvertScale) {
         if (!priv->videoConvert) {
-            priv->videoConvert = makeGStreamerElement("videoconvertscale", nullptr);
+            priv->videoConvert = makeGStreamerElement("videoconvertscale"_s);
             gst_bin_add(GST_BIN_CAST(self), priv->videoConvert.get());
 
             auto sinkPadTarget = adoptGRef(gst_element_get_static_pad(priv->videoConvert.get(), "sink"));
@@ -364,12 +364,12 @@ static bool videoEncoderSetEncoder(WebKitVideoEncoder* self, EncoderId encoderId
         }
     } else {
         if (!priv->videoScale) {
-            priv->videoScale = makeGStreamerElement("videoscale", nullptr);
+            priv->videoScale = makeGStreamerElement("videoscale"_s);
             gst_bin_add(GST_BIN_CAST(self), priv->videoScale.get());
         }
 
         if (!priv->videoConvert) {
-            priv->videoConvert = makeGStreamerElement("videoconvert", nullptr);
+            priv->videoConvert = makeGStreamerElement("videoconvert"_s);
             gst_bin_add(GST_BIN_CAST(self), priv->videoConvert.get());
 
             auto sinkPadTarget = adoptGRef(gst_element_get_static_pad(priv->videoConvert.get(), "sink"));
@@ -383,7 +383,7 @@ static bool videoEncoderSetEncoder(WebKitVideoEncoder* self, EncoderId encoderId
     }
 
     if (encoderDefinition->parserName) {
-        priv->parser = makeGStreamerElement(encoderDefinition->parserName, nullptr);
+        priv->parser = makeGStreamerElement(encoderDefinition->parserName);
 
         if (!priv->outputCapsFilter) {
             priv->outputCapsFilter = gst_element_factory_make("capsfilter", nullptr);

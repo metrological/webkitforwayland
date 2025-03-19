@@ -52,7 +52,7 @@ public:
 class GStreamerCapturer : public ThreadSafeRefCountedAndCanMakeThreadSafeWeakPtr<GStreamerCapturer> {
 public:
     GStreamerCapturer(GStreamerCaptureDevice&&, GRefPtr<GstCaps>&&);
-    GStreamerCapturer(const char* sourceFactory, GRefPtr<GstCaps>&&, CaptureDevice::DeviceType);
+    GStreamerCapturer(ASCIILiteral sourceFactory, GRefPtr<GstCaps>&&, CaptureDevice::DeviceType);
     virtual ~GStreamerCapturer();
 
     virtual void tearDown(bool disconnectSignals);
@@ -69,7 +69,7 @@ public:
 
     std::pair<GstClockTime, GstClockTime> queryLatency();
 
-    GstElement* makeElement(const char* factoryName);
+    GstElement* makeElement(ASCIILiteral factoryName);
     virtual GstElement* createSource();
     GstElement* source() { return m_src.get();  }
     virtual const char* name() = 0;
@@ -95,7 +95,7 @@ protected:
     std::optional<GStreamerCaptureDevice> m_device { };
     GRefPtr<GstCaps> m_caps;
     GRefPtr<GstElement> m_pipeline;
-    const char* m_sourceFactory;
+    ASCIILiteral m_sourceFactory;
 
 private:
     CaptureDevice::DeviceType m_deviceType;
