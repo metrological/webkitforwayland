@@ -315,7 +315,7 @@ bool MediaPlayerPrivateGStreamerMSE::doSeek(const SeekTarget& target, float rate
                 sink = GST_ELEMENT(g_value_get_object(&value));
                 g_value_unset(&value);
             }
-            if (gstObjectHasProperty(sink.get(), "async"))
+            if (gstObjectHasProperty(sink.get(), "async"_s))
                 g_object_get(sink.get(), "async", &audioSinkPerformsAsyncStateChanges, nullptr);
             if (!audioSinkPerformsAsyncStateChanges) {
                 // If audio-only pipeline's sink is not performing async state changes

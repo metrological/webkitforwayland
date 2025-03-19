@@ -1588,69 +1588,69 @@ void fillVideoInfoColorimetryFromColorSpace(GstVideoInfo* info, const PlatformVi
 
 void configureAudioDecoderForHarnessing(const GRefPtr<GstElement>& element)
 {
-    if (gstObjectHasProperty(element.get(), "max-errors"))
+    if (gstObjectHasProperty(element.get(), "max-errors"_s))
         g_object_set(element.get(), "max-errors", 0, nullptr);
 
     // rawaudioparse-specific:
-    if (gstObjectHasProperty(element.get(), "use-sink-caps"))
+    if (gstObjectHasProperty(element.get(), "use-sink-caps"_s))
         g_object_set(element.get(), "use-sink-caps", TRUE, nullptr);
 }
 
 void configureVideoDecoderForHarnessing(const GRefPtr<GstElement>& element)
 {
-    if (gstObjectHasProperty(element.get(), "max-threads"))
+    if (gstObjectHasProperty(element.get(), "max-threads"_s))
         g_object_set(element.get(), "max-threads", 1, nullptr);
 
-    if (gstObjectHasProperty(element.get(), "max-errors"))
+    if (gstObjectHasProperty(element.get(), "max-errors"_s))
         g_object_set(element.get(), "max-errors", 0, nullptr);
 
     // avdec-specific:
-    if (gstObjectHasProperty(element.get(), "std-compliance"))
+    if (gstObjectHasProperty(element.get(), "std-compliance"_s))
         gst_util_set_object_arg(G_OBJECT(element.get()), "std-compliance", "strict");
 
-    if (gstObjectHasProperty(element.get(), "output-corrupt"))
+    if (gstObjectHasProperty(element.get(), "output-corrupt"_s))
         g_object_set(element.get(), "output-corrupt", FALSE, nullptr);
 
     // dav1ddec-specific:
-    if (gstObjectHasProperty(element.get(), "n-threads"))
+    if (gstObjectHasProperty(element.get(), "n-threads"_s))
         g_object_set(element.get(), "n-threads", 1, nullptr);
 }
 
 void configureMediaStreamVideoDecoder(GstElement* element)
 {
-    if (gstObjectHasProperty(element, "automatic-request-sync-points"))
+    if (gstObjectHasProperty(element, "automatic-request-sync-points"_s))
         g_object_set(element, "automatic-request-sync-points", TRUE, nullptr);
 
-    if (gstObjectHasProperty(element, "discard-corrupted-frames"))
+    if (gstObjectHasProperty(element, "discard-corrupted-frames"_s))
         g_object_set(element, "discard-corrupted-frames", TRUE, nullptr);
 
-    if (gstObjectHasProperty(element, "output-corrupt"))
+    if (gstObjectHasProperty(element, "output-corrupt"_s))
         g_object_set(element, "output-corrupt", FALSE, nullptr);
 
-    if (gstObjectHasProperty(element, "max-errors"))
+    if (gstObjectHasProperty(element, "max-errors"_s))
         g_object_set(element, "max-errors", -1, nullptr);
 }
 
 void configureVideoRTPDepayloader(GstElement* element)
 {
-    if (gstObjectHasProperty(element, "request-keyframe"))
+    if (gstObjectHasProperty(element, "request-keyframe"_s))
         g_object_set(element, "request-keyframe", TRUE, nullptr);
 
-    if (gstObjectHasProperty(element, "wait-for-keyframe"))
+    if (gstObjectHasProperty(element, "wait-for-keyframe"_s))
         g_object_set(element, "wait-for-keyframe", TRUE, nullptr);
 }
 
-static bool gstObjectHasProperty(GstObject* gstObject, const char* name)
+static bool gstObjectHasProperty(GstObject* gstObject, ASCIILiteral name)
 {
-    return g_object_class_find_property(G_OBJECT_GET_CLASS(gstObject), name);
+    return g_object_class_find_property(G_OBJECT_GET_CLASS(gstObject), name.characters());
 }
 
-bool gstObjectHasProperty(GstElement* element, const char* name)
+bool gstObjectHasProperty(GstElement* element, ASCIILiteral name)
 {
     return gstObjectHasProperty(GST_OBJECT_CAST(element), name);
 }
 
-bool gstObjectHasProperty(GstPad* pad, const char* name)
+bool gstObjectHasProperty(GstPad* pad, ASCIILiteral name)
 {
     return gstObjectHasProperty(GST_OBJECT_CAST(pad), name);
 }
