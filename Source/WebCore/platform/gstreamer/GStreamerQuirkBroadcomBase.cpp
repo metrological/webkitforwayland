@@ -37,6 +37,20 @@ GStreamerQuirkBroadcomBase::GStreamerQuirkBroadcomBase()
     GST_DEBUG_CATEGORY_INIT(webkit_broadcom_base_quirks_debug, "webkitquirksbroadcombase", 0, "WebKit Broadcom Base Quirks");
 }
 
+GstElement* GStreamerQuirkBroadcomBase::createAudioSink()
+{
+    GstElement *result = gst_element_factory_make( "brcmaudiosink", nullptr);
+    GST_DEBUG("brcmaudiosink: %p", result);
+    return result;
+}
+
+GstElement* GStreamerQuirkBroadcomBase::createWebAudioSink()
+{
+    GstElement *result = gst_element_factory_make( "brcmpcmsink", nullptr);
+    GST_DEBUG("brcmpcmsink: %p", result);
+    return result;
+}
+
 ASCIILiteral GStreamerQuirkBroadcomBase::queryBufferingPercentage(MediaPlayerPrivateGStreamer* playerPrivate, const GRefPtr<GstQuery>& query) const
 {
     auto& state = ensureState(playerPrivate);

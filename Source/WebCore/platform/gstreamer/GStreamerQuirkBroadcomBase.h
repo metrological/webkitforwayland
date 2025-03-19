@@ -33,6 +33,9 @@ class GStreamerQuirkBroadcomBase : public GStreamerQuirk {
 public:
     GStreamerQuirkBroadcomBase();
 
+    virtual GstElement* createAudioSink();
+    virtual GstElement* createWebAudioSink();
+
     bool needsBufferingPercentageCorrection() const { return true; }
     ASCIILiteral queryBufferingPercentage(MediaPlayerPrivateGStreamer*, const GRefPtr<GstQuery>&) const;
     int correctBufferingPercentage(MediaPlayerPrivateGStreamer*, int originalBufferingPercentage, GstBufferingMode) const;
