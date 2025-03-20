@@ -93,6 +93,7 @@ unsigned NetworkResourcesData::ResourceData::removeContent()
 unsigned NetworkResourcesData::ResourceData::evictContent()
 {
     m_isContentEvicted = true;
+    setDecoder(nullptr);
     return removeContent();
 }
 
