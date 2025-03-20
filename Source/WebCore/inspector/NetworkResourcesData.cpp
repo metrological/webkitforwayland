@@ -40,8 +40,24 @@ namespace WebCore {
 
 using namespace Inspector;
 
-static const size_t maximumResourcesContentSize = 200 * 1000 * 1000; // 200MB
-static const size_t maximumSingleResourceContentSize = 50 * 1000 * 1000; // 50MB
+static const int maximumResourcesContentSizeMB = 200; // 200MB
+static const int maximumSingleResourceContentSizeMB = 50; // 50MB
+
+static size_t getMaximumResourcesContentSizeMB()
+{
+    static size_t maximumResourcesContentSize = maximumResourcesContentSizeMB;
+    static std::once_flag onceFlag;
+    std::call_once(onceFlag, [] {
+        const char* env = getenv("WEBINSPECTOR_MAXIMUM_RESOURCES_CONTENT_SIZE_MB");
+        if (env && env[strnlen(env, 3)] == '\0') {
+            int value;
+            if (sscanf(env, "%d", &value) == 1)
+                maximumResourcesContentSize = std::min(maximumResourcesContentSizeMB, std::max(maximumSingleResourceContentSizeMB, value));
+        }
+    });
+
+    return maximumResourcesContentSize;
+}
 
 NetworkResourcesData::ResourceData::ResourceData(const String& requestId, const String& loaderId)
     : m_requestId(requestId)
@@ -115,8 +131,8 @@ void NetworkResourcesData::ResourceData::decodeDataToContent()
 }
 
 NetworkResourcesData::NetworkResourcesData()
-    : m_maximumResourcesContentSize(maximumResourcesContentSize)
-    , m_maximumSingleResourceContentSize(maximumSingleResourceContentSize)
+    : m_maximumResourcesContentSize(getMaximumResourcesContentSizeMB() * MB)
+    , m_maximumSingleResourceContentSize(maximumSingleResourceContentSizeMB * MB)
 {
 }
 
