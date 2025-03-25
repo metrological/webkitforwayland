@@ -178,8 +178,10 @@ void NetworkResourcesData::responseReceived(const String& requestId, const Strin
     if (InspectorNetworkAgent::shouldTreatAsText(response.mimeType()))
         resourceData->setDecoder(InspectorNetworkAgent::createTextDecoder(response.mimeType(), response.textEncodingName()));
 
+#if PLATFORM(COCOA)
     if (auto& certificateInfo = response.certificateInfo())
         resourceData->setCertificateInfo(certificateInfo);
+#endif
 }
 
 void NetworkResourcesData::setResourceType(const String& requestId, InspectorPageAgent::ResourceType type)
