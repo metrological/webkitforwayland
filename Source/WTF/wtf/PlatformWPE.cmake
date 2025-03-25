@@ -13,6 +13,7 @@ list(APPEND WTF_PUBLIC_HEADERS
     linux/ProcessMemoryFootprint.h
     linux/CurrentProcessMemoryStatus.h
     linux/RealTimeThreads.h
+    linux/SystemTracingFTrace.h
 
     unix/UnixFileDescriptor.h
 )

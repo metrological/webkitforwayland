@@ -146,12 +146,21 @@ enum TracePointCode {
 
 #ifdef __cplusplus
 
+#if USE(LINUX_FTRACE)
+#include <wtf/linux/SystemTracingFTrace.h>
+#endif
+
 namespace WTF {
 
 inline void tracePoint(TracePointCode code, uint64_t data1 = 0, uint64_t data2 = 0, uint64_t data3 = 0, uint64_t data4 = 0)
 {
 #if HAVE(KDEBUG_H)
     kdebug_trace(ARIADNEDBG_CODE(WEBKIT_COMPONENT, code), data1, data2, data3, data4);
+#elif USE(LINUX_FTRACE)
+    SystemTracingFTrace::instance().tracePoint(code, data1);
+    UNUSED_PARAM(data2);
+    UNUSED_PARAM(data3);
+    UNUSED_PARAM(data4);
 #else
     UNUSED_PARAM(code);
     UNUSED_PARAM(data1);
