@@ -47,6 +47,11 @@ GStreamerQuirkRealtek::GStreamerQuirkRealtek()
     };
 }
 
+bool GStreamerQuirkRealtek::isPlatformSupported() const
+{
+    return adoptGRef(gst_element_factory_find("rtkaudiosink"));
+}
+
 GstElement* GStreamerQuirkRealtek::createWebAudioSink()
 {
     auto sink = makeGStreamerElement("rtkaudiosink", nullptr);
