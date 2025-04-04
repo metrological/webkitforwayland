@@ -51,6 +51,11 @@ GStreamerQuirkWesteros::GStreamerQuirkWesteros()
     }
 }
 
+bool GStreamerQuirkWesteros::isPlatformSupported() const
+{
+    return adoptGRef(gst_element_factory_find("westerossink"));
+}
+
 void GStreamerQuirkWesteros::configureElement(GstElement* element, const OptionSet<ElementRuntimeCharacteristics>& characteristics)
 {
     if (!characteristics.contains(ElementRuntimeCharacteristics::IsMediaStream))

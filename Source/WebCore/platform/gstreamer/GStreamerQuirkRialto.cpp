@@ -68,6 +68,15 @@ GStreamerQuirkRialto::GStreamerQuirkRialto()
     }
 }
 
+bool GStreamerQuirkRialto::isPlatformSupported() const
+{
+    auto sinkFactory = adoptGRef(gst_element_factory_find("rialtomsevideosink"));
+    if (!sinkFactory)
+        return false;
+    auto rank = gst_plugin_feature_get_rank(GST_PLUGIN_FEATURE(sinkFactory.get()));
+    return rank > GST_RANK_MARGINAL;
+}
+
 void GStreamerQuirkRialto::configureElement(GstElement* element, const OptionSet<ElementRuntimeCharacteristics>&)
 {
     if (!g_strcmp0(G_OBJECT_TYPE_NAME(G_OBJECT(element)), "GstURIDecodeBin3")) {
