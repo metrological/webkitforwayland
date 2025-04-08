@@ -32,6 +32,10 @@
 struct wl_egl_window;
 #endif
 
+#if ENABLE(MEDIA_TELEMETRY)
+#include "MediaTelemetry.h"
+#endif
+
 #if USE(WPE_RENDERER)
 struct wpe_renderer_backend_egl_offscreen_target;
 #endif
@@ -63,7 +67,11 @@ typedef EGLBoolean (*PFNEGLDESTROYIMAGEKHRPROC) (EGLDisplay, EGLImageKHR);
 
 namespace WebCore {
 
-class GLContextEGL final : public GLContext {
+class GLContextEGL final : public GLContext
+#if ENABLE(MEDIA_TELEMETRY)
+    , public MediaTelemetryWaylandInfoGetter
+#endif
+{
     WTF_MAKE_NONCOPYABLE(GLContextEGL);
 public:
     static std::unique_ptr<GLContextEGL> createContext(GLNativeWindowType, PlatformDisplay&);
@@ -125,6 +133,15 @@ private:
 #endif
 
     static bool getEGLConfig(EGLDisplay, EGLConfig*, EGLSurfaceType);
+
+#if ENABLE(MEDIA_TELEMETRY)
+    EGLDisplay eglDisplay() const final;
+    EGLConfig eglConfig() const final;
+    EGLSurface eglSurface() const final;
+    EGLContext eglContext() const final;
+    unsigned windowWidth() const final;
+    unsigned windowHeight() const final;
+#endif
 
     EGLContext m_context { nullptr };
     EGLSurface m_surface { nullptr };
