@@ -656,6 +656,28 @@ WEBKIT_API const gchar*
 webkit_web_view_get_default_content_security_policy  (WebKitWebView             *web_view);
 
 WEBKIT_API void
+webkit_web_view_freeze                               (WebKitWebView               *web_view,
+                                                      GCancellable              *cancellable,
+                                                      GAsyncReadyCallback       callback,
+                                                      gpointer                  user_data);
+
+WEBKIT_API gboolean
+webkit_web_view_freeze_finish                        (WebKitWebView             *web_view,
+                                                      GAsyncResult              *result,
+                                                      GError                    **error);
+
+WEBKIT_API void
+webkit_web_view_resume_frozen                        (WebKitWebView               *web_view,
+                                                      GCancellable              *cancellable,
+                                                      GAsyncReadyCallback       callback,
+                                                      gpointer                  user_data);
+
+WEBKIT_API gboolean
+webkit_web_view_resume_frozen_finish                 (WebKitWebView             *web_view,
+                                                      GAsyncResult              *result,
+                                                      GError                    **error);
+
+WEBKIT_API void
 webkit_web_view_suspend                              (WebKitWebView               *web_view);
 
 WEBKIT_API void

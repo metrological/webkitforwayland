@@ -5425,8 +5425,51 @@ webkit_web_view_get_default_content_security_policy(WebKitWebView* webView)
     return webView->priv->defaultContentSecurityPolicy.data();
 }
 
+void webkit_web_view_freeze(WebKitWebView *webView, GCancellable* cancellable, GAsyncReadyCallback callback, gpointer userData)
+{
+    g_return_if_fail(WEBKIT_IS_WEB_VIEW(webView));
+
+    GRefPtr<GTask> task = adoptGRef(g_task_new(webView, cancellable, callback, userData));
+    getPage(webView).suspend([task = WTFMove(task)](bool success) {
+        g_print("webkit_web_view_freeze callback success: %d\n", success);
+        if (g_task_return_error_if_cancelled(task.get()))
+            return;
+        g_task_return_boolean(task.get(), success);
+    });
+}
+
+gboolean webkit_web_view_freeze_finish(WebKitWebView* webView, GAsyncResult* result, GError** error)
+{
+    g_return_val_if_fail(WEBKIT_IS_WEB_VIEW(webView), false);
+    g_return_val_if_fail(g_task_is_valid(result, webView), false);
+
+    return g_task_propagate_boolean(G_TASK(result), error);
+}
+
+void webkit_web_view_resume_frozen(WebKitWebView *webView, GCancellable* cancellable, GAsyncReadyCallback callback, gpointer userData)
+{
+    g_return_if_fail(WEBKIT_IS_WEB_VIEW(webView));
+
+    GRefPtr<GTask> task = adoptGRef(g_task_new(webView, cancellable, callback, userData));
+    getPage(webView).resume([task = WTFMove(task)](bool success) {
+        if (g_task_return_error_if_cancelled(task.get()))
+            return;
+        g_print("webkit_web_view_resume_freeze callback success: %d\n", success);
+        g_task_return_boolean(task.get(), success);
+    });
+}
+
+gboolean webkit_web_view_resume_frozen_finish(WebKitWebView* webView, GAsyncResult* result, GError** error)
+{
+    g_return_val_if_fail(WEBKIT_IS_WEB_VIEW(webView), false);
+    g_return_val_if_fail(g_task_is_valid(result, webView), false);
+
+    return g_task_propagate_boolean(G_TASK(result), error);
+}
+
 void webkit_web_view_suspend(WebKitWebView *webView)
 {
+    g_print("webkit_web_view_suspend DEPRECATED\n");
     g_return_if_fail(WEBKIT_IS_WEB_VIEW(webView));
 
     auto viewStateFlags = webView->priv->view->viewState();
@@ -5436,6 +5479,7 @@ void webkit_web_view_suspend(WebKitWebView *webView)
 
 void webkit_web_view_resume(WebKitWebView *webView)
 {
+    g_print("webkit_web_view_resume DEPRECATED\n");
     g_return_if_fail(WEBKIT_IS_WEB_VIEW(webView));
 
     auto viewStateFlags = webView->priv->view->viewState();

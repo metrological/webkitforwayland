@@ -6786,6 +6786,15 @@ const char* WebGLRenderingContextBase::activeDOMObjectName() const
 void WebGLRenderingContextBase::suspend(ReasonForSuspension)
 {
     m_isSuspended = true;
+    if (m_nonCompositedWebGLEnabled) {
+            if (m_scissorEnabled)
+                m_context->disable(GraphicsContextGL::SCISSOR_TEST);
+            m_context->clearColor(0, 0, 0, 0);
+            m_context->clear(GraphicsContextGL::COLOR_BUFFER_BIT);
+            downcast<Nicosia::ContentLayerTextureMapperImpl>(downcast<Nicosia::ContentLayer>(m_context->platformLayer())->impl()).swapBuffersIfNeeded();
+            if (m_scissorEnabled)
+                m_context->enable(GraphicsContextGL::SCISSOR_TEST);
+    }
 }
 
 void WebGLRenderingContextBase::resume()
