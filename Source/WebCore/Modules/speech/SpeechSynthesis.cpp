@@ -162,17 +162,24 @@ void SpeechSynthesis::cancel()
     // Remove all the items from the utterance queue.
     // Hold on to the current utterance so the platform synthesizer can have a chance to clean up.
     RefPtr<SpeechSynthesisUtterance> current = m_currentSpeechUtterance;
-    m_utteranceQueue.clear();
+    // Clear m_utteranceQueue before calling cancel to avoid picking up new utterances
+    // on completion callback
+    auto utteranceQueue = WTFMove(m_utteranceQueue);
     if (m_speechSynthesisClient) {
         m_speechSynthesisClient->cancel();
         // If we wait for cancel to callback speakingErrorOccurred, then m_currentSpeechUtterance will be null
         // and the event won't be processed. Instead we process the error immediately.
         speakingErrorOccurred(SpeechSynthesisErrorCode::Canceled);
         m_currentSpeechUtterance = nullptr;
-    } else if (m_platformSpeechSynthesizer) {
+    } else if (m_platformSpeechSynthesizer)
         m_platformSpeechSynthesizer->cancel();
-        // The platform should have called back immediately and cleared the current utterance.
-        ASSERT(!m_currentSpeechUtterance);
+
+    // Trigger canceled events for queued utterances
+    while (!utteranceQueue.isEmpty()) {
+        const auto utterance = utteranceQueue.takeFirst();
+        // Current utterance is handled in platform cancel()
+        if (current.get() != utterance.ptr())
+            utterance.get().errorEventOccurred(eventNames().errorEvent, SpeechSynthesisErrorCode::Canceled);
     }
     current = nullptr;
 }
