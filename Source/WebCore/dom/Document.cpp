@@ -7532,6 +7532,8 @@ void Document::initSecurityContext()
         // Web security is turned off. We should let this document access every other document. This is used primary by testing
         // harnesses for web sites.
         securityOrigin().grantUniversalAccess();
+    } else if (settings().urlsWithUniversalAccess().contains(m_url.url().string())) {
+        securityOrigin().grantUniversalAccess();
     } else if (securityOrigin().isLocal()) {
         if (settings().allowUniversalAccessFromFileURLs() || m_frame->loader().client().shouldForceUniversalAccessFromLocalURL(m_url)) {
             // Some clients want local URLs to have universal access, but that setting is dangerous for other clients.

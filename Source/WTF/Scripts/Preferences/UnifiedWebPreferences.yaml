@@ -7295,6 +7295,17 @@ UpgradeMixedContentEnabled:
     WebCore:
       default: true
 
+UrlsWithUniversalAccess:
+  type: String
+  status: embedder
+  defaultValue:
+    WebKitLegacy:
+      default: '""_str'
+    WebKit:
+      default: '""_str'
+    WebCore:
+      default: '""_str'
+
 UseARKitForModel:
   type: bool
   status: internal

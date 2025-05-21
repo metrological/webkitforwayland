@@ -74,6 +74,7 @@ struct _WebKitSettingsPrivate {
 #if ENABLE(WEB_RTC)
         webrtcUDPPortsRange = preferences->webRTCUDPPortRange().utf8();
 #endif
+        urlsWithUniversalAccess = preferences->urlsWithUniversalAccess().utf8();
     }
 
     RefPtr<WebPreferences> preferences;
@@ -90,6 +91,7 @@ struct _WebKitSettingsPrivate {
 #if ENABLE(WEB_RTC)
     CString webrtcUDPPortsRange;
 #endif
+    CString urlsWithUniversalAccess;
     bool allowModalDialogs { false };
     bool zoomTextOnly { false };
 #if PLATFORM(GTK)
@@ -198,6 +200,7 @@ enum {
     PROP_WEBRTC_UDP_PORTS_RANGE,
     PROP_ENABLE_NON_COMPOSITED_WEBGL,
     PROP_SCREEN_SUPPORTS_HDR,
+    PROP_URLS_WITH_UNIVERSAL_ACCESS,
     N_PROPERTIES,
 };
 
@@ -402,6 +405,9 @@ ALLOW_DEPRECATED_DECLARATIONS_BEGIN
         break;
     case PROP_ALLOW_UNIVERSAL_ACCESS_FROM_FILE_URLS:
         webkit_settings_set_allow_universal_access_from_file_urls(settings, g_value_get_boolean(value));
+        break;
+    case PROP_URLS_WITH_UNIVERSAL_ACCESS:
+        webkit_settings_set_urls_with_universal_access(settings, g_value_get_string(value));
         break;
     case PROP_ALLOW_TOP_NAVIGATION_TO_DATA_URLS:
         webkit_settings_set_allow_top_navigation_to_data_urls(settings, g_value_get_boolean(value));
@@ -643,6 +649,9 @@ ALLOW_DEPRECATED_DECLARATIONS_BEGIN
         break;
     case PROP_ALLOW_UNIVERSAL_ACCESS_FROM_FILE_URLS:
         g_value_set_boolean(value, webkit_settings_get_allow_universal_access_from_file_urls(settings));
+        break;
+    case PROP_URLS_WITH_UNIVERSAL_ACCESS:
+        g_value_set_string(value, webkit_settings_get_urls_with_universal_access(settings));
         break;
     case PROP_ALLOW_TOP_NAVIGATION_TO_DATA_URLS:
         g_value_set_boolean(value, webkit_settings_get_allow_top_navigation_to_data_urls(settings));
@@ -1603,6 +1612,21 @@ static void webkit_settings_class_init(WebKitSettingsClass* klass)
             _("Allow universal access from the context of file scheme URLs"),
             _("Whether or not universal access is allowed from the context of file scheme URLs"),
             FEATURE_DEFAULT(AllowUniversalAccessFromFileURLs),
+            readWriteConstructParamFlags);
+
+    /**
+     * WebKitSettings:urls-with-universal-access:
+     *
+     * Comma-separated string with URLs that have universal access
+     *
+     * Since: 2.46
+     */
+    sObjProperties[PROP_URLS_WITH_UNIVERSAL_ACCESS] =
+        g_param_spec_string(
+            "urls-with-universal-access",
+            _("Allow universal access from the context of the URLs in the provided list"),
+            _("Whether or not universal access is allowed from the context of the URL in the provided list"),
+            nullptr,
             readWriteConstructParamFlags);
 
     /**
@@ -3972,6 +3996,45 @@ void webkit_settings_set_allow_universal_access_from_file_urls(WebKitSettings* s
 
     priv->preferences->setAllowUniversalAccessFromFileURLs(allowed);
     g_object_notify_by_pspec(G_OBJECT(settings), sObjProperties[PROP_ALLOW_UNIVERSAL_ACCESS_FROM_FILE_URLS]);
+}
+
+/**
+ * webkit_settings_get_urls_with_universal_access:
+ * @settings: a #WebKitSettings
+ * @url: Comma separated list with URLs that shall have universal access
+ *
+ * Get the #WebKitSettings:urls-with-universal-access property.
+ *
+ * Returns: String with comma-separated URLs that shall have universal access
+ *
+ * Since: 2.46
+ */
+const gchar* webkit_settings_get_urls_with_universal_access(WebKitSettings *settings)
+{
+    g_return_val_if_fail(WEBKIT_IS_SETTINGS(settings), nullptr);
+
+    return settings->priv->urlsWithUniversalAccess.data();
+}
+
+/**
+ * webkit_settings_set_urls_with_universal_access:
+ * @settings: a #WebKitSettings
+ * @urls: String with comma-separated URLs that shall have universal access. E.g.
+ *        "file:///var/www/index.html,file:///var/www/error.html"
+ *
+ * Set the #WebKitSettings:urls-with-universal-access property.
+ *
+ * Since: 2.46
+ */
+void webkit_settings_set_urls_with_universal_access(WebKitSettings *settings, const gchar *urls)
+{
+    g_return_if_fail(WEBKIT_IS_SETTINGS(settings));
+
+    auto url_list = String::fromUTF8(urls);
+    settings->priv->urlsWithUniversalAccess = url_list.utf8();
+    settings->priv->preferences->setUrlsWithUniversalAccess(url_list);
+
+    g_object_notify_by_pspec(G_OBJECT(settings), sObjProperties[PROP_URLS_WITH_UNIVERSAL_ACCESS]);
 }
 
 /**
