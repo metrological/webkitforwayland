@@ -2282,6 +2282,9 @@ public:
     void setCORSDisablingPatterns(Vector<String>&&);
     const Vector<String>& corsDisablingPatterns() const { return m_corsDisablingPatterns; }
 
+    void setLocalUniversalAccessAllowList(Vector<String>&&);
+    const Vector<String>& localUniversalAccessAllowList() const { return m_localUniversalAccessAllowList; }
+
     void getProcessDisplayName(CompletionHandler<void(String&&)>&&);
 
     void setOrientationForMediaCapture(WebCore::IntDegrees);
@@ -3876,6 +3879,7 @@ private:
     String m_overriddenMediaType;
 
     Vector<String> m_corsDisablingPatterns;
+    Vector<String> m_localUniversalAccessAllowList;
 
     struct InjectedBundleMessage {
         String messageName;
