@@ -235,7 +235,7 @@ void drawPatternToCairoContext(cairo_t* cr, cairo_surface_t* image, const IntSiz
         scaledImageSurface = adoptRef(cairo_image_surface_create(CAIRO_FORMAT_ARGB32, scaledImageSurfaceSize.width(), scaledImageSurfaceSize.height()));
         RefPtr<cairo_t> scaledImageContext = adoptRef(cairo_create(scaledImageSurface.get()));
 
-        RefPtr<cairo_pattern_t> pattern = cairo_pattern_create_for_surface(image);
+        RefPtr<cairo_pattern_t> pattern = adoptRef(cairo_pattern_create_for_surface(image));
         switch (imageInterpolationQuality) {
         case InterpolationQuality::DoNotInterpolate:
         case InterpolationQuality::Low:
