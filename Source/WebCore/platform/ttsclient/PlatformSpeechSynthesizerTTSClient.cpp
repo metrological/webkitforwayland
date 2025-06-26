@@ -30,6 +30,7 @@
 
 #include "TTSClient.h"
 
+#include <wtf/RunLoop.h>
 #include <wtf/WeakPtr.h>
 #include <sys/types.h>
 #include <unistd.h>
