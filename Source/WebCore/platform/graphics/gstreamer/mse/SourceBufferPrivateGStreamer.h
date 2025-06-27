@@ -96,6 +96,10 @@ public:
     size_t platformMaximumBufferSize() const override;
     size_t platformEvictionThreshold() const final;
 
+    void willSeek();
+    bool isSeeking() const final;
+    void seekToTime(const MediaTime&) final;
+
 private:
     friend class AppendPipeline;
 
@@ -109,6 +113,7 @@ private:
     std::unique_ptr<AppendPipeline> m_appendPipeline;
     StdUnorderedMap<TrackID, RefPtr<MediaSourceTrackGStreamer>> m_tracks;
     std::optional<MediaPromise::Producer> m_appendPromise;
+    bool m_seeking { false };
 
 #if !RELEASE_LOG_DISABLED
     Ref<const Logger> m_logger;
