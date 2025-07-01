@@ -170,7 +170,7 @@ ALWAYS_INLINE JSString* jsSpliceSubstringsWithSeparators(JSGlobalObject* globalO
         RELEASE_AND_RETURN(scope, jsString(vm, impl.releaseNonNull()));
     }
 
-    std::span<UChar> buffer;
+    std::span<char16_t> buffer;
     auto impl = StringImpl::tryCreateUninitialized(totalLength, buffer);
     if (!impl) {
         throwOutOfMemoryError(globalObject, scope);

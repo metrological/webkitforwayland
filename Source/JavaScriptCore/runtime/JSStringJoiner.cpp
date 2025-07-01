@@ -54,7 +54,7 @@ static inline void appendStringToData(std::span<OutputCharacterType>& data, std:
 }
 
 template<typename CharacterType>
-static inline void appendStringToDataWithOneCharacterSeparatorRepeatedly(std::span<CharacterType>& data, UChar separatorCharacter, StringView string, unsigned count)
+static inline void appendStringToDataWithOneCharacterSeparatorRepeatedly(std::span<CharacterType>& data, char16_t separatorCharacter, StringView string, unsigned count)
 {
 #if OS(DARWIN)
     if constexpr (std::is_same_v<CharacterType, LChar>) {
@@ -205,9 +205,9 @@ JSValue JSStringJoiner::joinSlow(JSGlobalObject* globalObject)
         result = joinStrings<LChar>(m_strings, m_separator.span8(), length);
     else {
         if (m_separator.is8Bit())
-            result = joinStrings<UChar>(m_strings, m_separator.span8(), length);
+            result = joinStrings<char16_t>(m_strings, m_separator.span8(), length);
         else
-            result = joinStrings<UChar>(m_strings, m_separator.span16(), length);
+            result = joinStrings<char16_t>(m_strings, m_separator.span16(), length);
     }
 
     if (UNLIKELY(result.isNull())) {

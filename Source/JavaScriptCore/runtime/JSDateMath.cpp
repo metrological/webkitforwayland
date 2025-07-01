@@ -501,13 +501,13 @@ String DateCache::timeZoneDisplayName(bool isDST)
         auto& timeZoneCache = *this->timeZoneCache();
         CString language = defaultLanguage().utf8();
         {
-            Vector<UChar, 32> standardDisplayNameBuffer;
+            Vector<char16_t, 32> standardDisplayNameBuffer;
             auto status = callBufferProducingFunction(ucal_getTimeZoneDisplayName, timeZoneCache.m_calendar.get(), UCAL_STANDARD, language.data(), standardDisplayNameBuffer);
             if (U_SUCCESS(status))
                 m_timeZoneStandardDisplayNameCache = String::adopt(WTFMove(standardDisplayNameBuffer));
         }
         {
-            Vector<UChar, 32> dstDisplayNameBuffer;
+            Vector<char16_t, 32> dstDisplayNameBuffer;
             auto status = callBufferProducingFunction(ucal_getTimeZoneDisplayName, timeZoneCache.m_calendar.get(), UCAL_DST, language.data(), dstDisplayNameBuffer);
             if (U_SUCCESS(status))
                 m_timeZoneDSTDisplayNameCache = String::adopt(WTFMove(dstDisplayNameBuffer));
@@ -555,10 +555,10 @@ DateCache::DateCache()
 #endif
 }
 
-static std::tuple<String, Vector<UChar, 32>> retrieveTimeZoneInformation()
+static std::tuple<String, Vector<char16_t, 32>> retrieveTimeZoneInformation()
 {
     Locker locker { timeZoneCacheLock };
-    static NeverDestroyed<std::tuple<String, Vector<UChar, 32>, uint64_t>> globalCache;
+    static NeverDestroyed<std::tuple<String, Vector<char16_t, 32>, uint64_t>> globalCache;
 
     bool isCacheStale = true;
     uint64_t currentID = 0;
@@ -567,7 +567,7 @@ static std::tuple<String, Vector<UChar, 32>> retrieveTimeZoneInformation()
     isCacheStale = std::get<2>(globalCache.get()) != currentID;
 #endif
     if (isCacheStale) {
-        Vector<UChar, 32> timeZoneID;
+        Vector<char16_t, 32> timeZoneID;
         getTimeZoneOverride(timeZoneID);
         String canonical;
         UErrorCode status = U_ZERO_ERROR;
@@ -576,7 +576,7 @@ static std::tuple<String, Vector<UChar, 32>> retrieveTimeZoneInformation()
             ASSERT_UNUSED(status, U_SUCCESS(status));
         }
         if (U_SUCCESS(status)) {
-            Vector<UChar, 32> canonicalBuffer;
+            Vector<char16_t, 32> canonicalBuffer;
             auto status = callBufferProducingFunction(ucal_getCanonicalTimeZoneID, timeZoneID.data(), timeZoneID.size(), canonicalBuffer, nullptr);
             if (U_SUCCESS(status))
                 canonical = String(canonicalBuffer);

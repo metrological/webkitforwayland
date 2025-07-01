@@ -3175,7 +3175,7 @@ unsigned interpret(BytecodePattern* bytecode, StringView input, unsigned start, 
     SuperSamplerScope superSamplerScope(false);
     if (input.is8Bit())
         return Interpreter<LChar>(bytecode, output, input.span8(), start).interpret();
-    return Interpreter<UChar>(bytecode, output, input.span16(), start).interpret();
+    return Interpreter<char16_t>(bytecode, output, input.span16(), start).interpret();
 }
 
 unsigned interpret(BytecodePattern* bytecode, std::span<const LChar> input, unsigned start, unsigned* output)
@@ -3184,20 +3184,20 @@ unsigned interpret(BytecodePattern* bytecode, std::span<const LChar> input, unsi
     return Interpreter<LChar>(bytecode, output, input, start).interpret();
 }
 
-unsigned interpret(BytecodePattern* bytecode, std::span<const UChar> input, unsigned start, unsigned* output)
+unsigned interpret(BytecodePattern* bytecode, std::span<const char16_t> input, unsigned start, unsigned* output)
 {
     SuperSamplerScope superSamplerScope(false);
-    return Interpreter<UChar>(bytecode, output, input, start).interpret();
+    return Interpreter<char16_t>(bytecode, output, input, start).interpret();
 }
 
-// These should be the same for both UChar & LChar.
+// These should be the same for both char16_t & LChar.
 static_assert(sizeof(BackTrackInfoPatternCharacter) == (YarrStackSpaceForBackTrackInfoPatternCharacter * sizeof(uintptr_t)));
 static_assert(sizeof(BackTrackInfoCharacterClass) == (YarrStackSpaceForBackTrackInfoCharacterClass * sizeof(uintptr_t)));
 static_assert(sizeof(BackTrackInfoBackReference) == (YarrStackSpaceForBackTrackInfoBackReference * sizeof(uintptr_t)));
 static_assert(sizeof(BackTrackInfoAlternative) == (YarrStackSpaceForBackTrackInfoAlternative * sizeof(uintptr_t)));
 static_assert(sizeof(BackTrackInfoParentheticalAssertion) == (YarrStackSpaceForBackTrackInfoParentheticalAssertion * sizeof(uintptr_t)));
 static_assert(sizeof(BackTrackInfoParenthesesOnce) == (YarrStackSpaceForBackTrackInfoParenthesesOnce * sizeof(uintptr_t)));
-static_assert(sizeof(Interpreter<UChar>::BackTrackInfoParentheses) <= (YarrStackSpaceForBackTrackInfoParentheses * sizeof(uintptr_t)));
+static_assert(sizeof(Interpreter<char16_t>::BackTrackInfoParentheses) <= (YarrStackSpaceForBackTrackInfoParentheses * sizeof(uintptr_t)));
 
 
 } }
