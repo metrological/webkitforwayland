@@ -154,7 +154,10 @@ Ref<Font> FontCache::lastResortFallbackFont(const FontDescription& fontDescripti
         typeface = SkTypeface::MakeEmpty();
     }
 
-    FontPlatformData platformData(WTFMove(typeface), fontDescription.computedSize(), false /* syntheticBold */, false /* syntheticOblique */,
+    bool needsSyntheticBold = fontDescription.hasAutoFontSynthesisWeight() && isFontWeightBold(fontDescription.weight());
+    bool needsSyntheticOblique = fontDescription.hasAutoFontSynthesisStyle() && isItalic(fontDescription.italic());
+
+    FontPlatformData platformData(WTFMove(typeface), fontDescription.computedSize(), needsSyntheticBold, needsSyntheticOblique,
         fontDescription.orientation(), fontDescription.widthVariant(), fontDescription.textRenderingMode(), computeFeatures(fontDescription, { }));
     return fontForPlatformData(platformData);
 }
