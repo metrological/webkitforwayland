@@ -503,6 +503,11 @@ webkit_web_view_run_async_javascript_function_in_world (WebKitWebView           
                                                         gpointer                  user_data);
 
 WEBKIT_API void
+webkit_web_view_run_async_javascript_function_in_world_finish (WebKitWebView            *web_view,
+                                                               GAsyncResult              *result,
+                                                               GError                   **error);
+
+WEBKIT_API void
 webkit_web_view_run_javascript_from_gresource        (WebKitWebView             *web_view,
                                                       const gchar               *resource,
                                                       GCancellable              *cancellable,

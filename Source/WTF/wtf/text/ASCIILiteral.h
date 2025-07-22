@@ -25,6 +25,7 @@
 
 #pragma once
 
+#include <span>
 #include <wtf/ASCIICType.h>
 #include <wtf/Forward.h>
 #include <wtf/StdLibExtras.h>
@@ -36,6 +37,7 @@ class PrintStream;
 class ASCIILiteral final {
 public:
     operator const char*() const { return m_characters; }
+    std::span<const char> spanIncludingNullTerminator() const { return { m_characters, length() }; }
 
     static constexpr ASCIILiteral fromLiteralUnsafe(const char* string)
     {
