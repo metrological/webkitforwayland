@@ -221,7 +221,7 @@ public:
             auto id = m_counters.get(static_cast<const void*>(name.data()));
             SysprofCaptureCounterValue counterValue;
             counterValue.v64 = value;
-            sysprof_collector_set_counters(&id.value(), &counterValue, 1);
+            sysprof_collector_set_counters(&id, &counterValue, 1);
         } else {
             unsigned newId = sysprof_collector_request_counters(1);
 

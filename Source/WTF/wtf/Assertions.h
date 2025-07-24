@@ -638,6 +638,11 @@ constexpr bool assertionFailureDueToUnreachableCode = false;
 
 #endif
 
+#if USE(SYSPROF_CAPTURE)
+#define _XSTRINGIFY(line) #line
+#define _STRINGIFY(line) _XSTRINGIFY(line)
+#endif
+
 #define PUBLIC_LOG_STRING PUBLIC_LOG_PREFIX "s"
 #define PRIVATE_LOG_STRING PRIVATE_LOG_PREFIX "s"
 
