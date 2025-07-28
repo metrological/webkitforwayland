@@ -822,13 +822,11 @@ MediaPlayerEnums::SupportsType GStreamerRegistryScanner::isContentTypeSupported(
     float height = contentType.parameter("height"_s).toFloat(&ok);
     if (!ok)
         height = 0;
-
-    if (videoDecodingLimits && (width > videoDecodingLimits->mediaMaxWidth || height > videoDecodingLimits->mediaMaxHeight))
-        return SupportsType::IsNotSupported;
-
     float frameRate = contentType.parameter("framerate"_s).toFloat(&ok);
-    // Limit frameRate only in case of highest supported resolution.
-    if (ok && videoDecodingLimits && width == videoDecodingLimits->mediaMaxWidth && height == videoDecodingLimits->mediaMaxHeight && frameRate > videoDecodingLimits->mediaMaxFrameRate)
+    if (!ok)
+        frameRate = 0;
+
+    if (videoDecodingLimits && (width > videoDecodingLimits->mediaMaxWidth || height > videoDecodingLimits->mediaMaxHeight || frameRate > videoDecodingLimits->mediaMaxFrameRate))
         return SupportsType::IsNotSupported;
 
     const auto& codecs = contentType.codecs();
