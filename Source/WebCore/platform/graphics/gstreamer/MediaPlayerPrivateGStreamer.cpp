@@ -2334,18 +2334,8 @@ void MediaPlayerPrivateGStreamer::updateMaxTimeLoaded(double percentage)
 
 void MediaPlayerPrivateGStreamer::updateBufferingStatus(GstBufferingMode mode, double percentage, bool resetHistory, bool shouldUpdateStates)
 {
-    GstStateChangeReturn getStateResult = gst_element_get_state(m_pipeline.get(), nullptr, nullptr, 0);
-
-    // If an async transition is in progress, we keep the previous buffering state and percentage so that the buffering
-    // state transition can be correctly detected once the state change completes, as updateBufferingStatus() might
-    // not get called again after reaching max level while we are still in the async transition state.
-    // This ensures consistency in case updateBufferingStatus() is called without calling updateStates(), as well as
-    // calls to updateStates() whithout prior calls to updateBufferingStatus().
-    if (getStateResult != GST_STATE_CHANGE_ASYNC)
-    {
-        m_wasBuffering = m_isBuffering;
-        m_previousBufferingPercentage = m_bufferingPercentage;
-    }
+    m_wasBuffering = m_isBuffering;
+    m_previousBufferingPercentage = m_bufferingPercentage;
 
 #ifndef GST_DISABLE_GST_DEBUG
     GUniquePtr<char> modeString(g_enum_to_string(GST_TYPE_BUFFERING_MODE, mode));
@@ -2892,6 +2882,15 @@ void MediaPlayerPrivateGStreamer::updateStates()
     case GST_STATE_CHANGE_ASYNC:
         GST_DEBUG_OBJECT(pipeline(), "Async: State: %s, pending: %s", gst_element_state_get_name(m_currentState), gst_element_state_get_name(pending));
         // Change in progress.
+
+        // Delay the m_isBuffering change by returning it to its previous value. Without this, the false --> true change
+        // would go unnoticed by the code that should trigger a pause.
+        if (m_wasBuffering != m_isBuffering && !m_isPaused && m_playbackRate) {
+            GST_TRACE_OBJECT(pipeline(), "[Buffering] Delaying m_isBuffering %s --> %s to force the proper change from not buffering to buffering when the async state change completes.", boolForPrinting(m_wasBuffering), boolForPrinting(m_isBuffering));
+            m_isBuffering = m_wasBuffering;
+            m_bufferingPercentage = m_previousBufferingPercentage;
+        }
+
         break;
     case GST_STATE_CHANGE_FAILURE:
         GST_DEBUG_OBJECT(pipeline(), "Failure: State: %s, pending: %s", gst_element_state_get_name(m_currentState), gst_element_state_get_name(pending));
