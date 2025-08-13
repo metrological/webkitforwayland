@@ -558,6 +558,7 @@ private:
     virtual void updateDownloadBufferingFlag();
     void processBufferingStats(GstMessage*);
     void updateBufferingStatus(GstBufferingMode, double percentage, bool resetHistory = false, bool shouldUpdateStates = true);
+    void updateBufferingStatus();
     void updateMaxTimeLoaded(double percentage);
 
 #if USE(GSTREAMER_MPEGTS)
