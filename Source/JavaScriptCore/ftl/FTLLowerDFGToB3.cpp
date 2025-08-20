@@ -23725,7 +23725,7 @@ IGNORE_CLANG_WARNINGS_END
     void speculateMapIteratorObject(Edge edge, LValue cell)
     {
         FTL_TYPE_CHECK(
-            jsValueValue(cell), edge, SpecObjectOther, isNotType(cell, JSMapIteratorType));
+            jsValueValue(cell), edge, SpecMapIteratorObject, isNotType(cell, JSMapIteratorType));
     }
 
     void speculateMapIteratorObject(Edge edge)
@@ -23747,7 +23747,7 @@ IGNORE_CLANG_WARNINGS_END
     void speculateSetIteratorObject(Edge edge, LValue cell)
     {
         FTL_TYPE_CHECK(
-            jsValueValue(cell), edge, SpecObjectOther, isNotType(cell, JSSetIteratorType));
+            jsValueValue(cell), edge, SpecSetIteratorObject, isNotType(cell, JSSetIteratorType));
     }
 
     void speculateSetIteratorObject(Edge edge)
