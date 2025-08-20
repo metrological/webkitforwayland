@@ -504,6 +504,7 @@ http/tests/inspector [ Skip ]
 http/tests/navigation/ping-attribute/ [ Skip ]
 http/tests/pointer-lock [ Skip ]
 http/tests/security [ Skip ]
+http/tests/security/offscreen-canvas-remote-read-remote-image.html [ Pass ]
 
 Bug(WPE) fast/dom/Geolocation/page-reload-cancel-permission-requests.html [ Skip ]
 Bug(WPE) fast/dom/Geolocation/requestQueuingForHiddenPage.html [ Skip ]
