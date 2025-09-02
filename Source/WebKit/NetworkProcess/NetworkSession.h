@@ -123,6 +123,13 @@ public:
 
     PAL::SessionID sessionID() const { return m_sessionID; }
     NetworkProcess& networkProcess() { return m_networkProcess; }
+
+    WebCore::BlobRegistryImpl& blobRegistry() { return m_blobRegistry; }
+    NetworkBroadcastChannelRegistry& broadcastChannelRegistry() { return m_broadcastChannelRegistry; }
+
+    NetworkStorageManager& storageManager() { return m_storageManager.get(); }
+
+    PCM::ManagerInterface& privateClickMeasurement() { return m_privateClickMeasurement.get(); }
     WebCore::NetworkStorageSession* networkStorageSession() const;
     CheckedPtr<WebCore::NetworkStorageSession> checkedNetworkStorageSession() const;
 
@@ -190,12 +197,9 @@ public:
     CheckedRef<PrefetchCache> checkedPrefetchCache();
     void clearPrefetchCache() { m_prefetchCache.clear(); }
 
-    virtual std::unique_ptr<WebSocketTask> createWebSocketTask(WebPageProxyIdentifier, std::optional<WebCore::FrameIdentifier>, std::optional<WebCore::PageIdentifier>, NetworkSocketChannel&, const WebCore::ResourceRequest&, const String& protocol, const WebCore::ClientOrigin&, bool hadMainFrameMainResourcePrivateRelayed, bool allowPrivacyProxy, OptionSet<WebCore::AdvancedPrivacyProtections>, WebCore::StoredCredentialsPolicy);
+    virtual RefPtr<WebSocketTask> createWebSocketTask(WebPageProxyIdentifier, std::optional<WebCore::FrameIdentifier>, std::optional<WebCore::PageIdentifier>, NetworkSocketChannel&, const WebCore::ResourceRequest&, const String& protocol, const WebCore::ClientOrigin&, bool hadMainFrameMainResourcePrivateRelayed, bool allowPrivacyProxy, OptionSet<WebCore::AdvancedPrivacyProtections>, WebCore::StoredCredentialsPolicy);
     virtual void removeWebSocketTask(SessionSet&, WebSocketTask&) { }
     virtual void addWebSocketTask(WebPageProxyIdentifier, WebSocketTask&) { }
-
-    WebCore::BlobRegistryImpl& blobRegistry() { return m_blobRegistry; }
-    NetworkBroadcastChannelRegistry& broadcastChannelRegistry() { return m_broadcastChannelRegistry; }
 
     unsigned testSpeedMultiplier() const { return m_testSpeedMultiplier; }
     bool allowsServerPreconnect() const { return m_allowsServerPreconnect; }
@@ -227,14 +231,10 @@ public:
 
     WebSharedWorkerServer* sharedWorkerServer() { return m_sharedWorkerServer.get(); }
     WebSharedWorkerServer& ensureSharedWorkerServer();
-
-    NetworkStorageManager& storageManager() { return m_storageManager.get(); }
     void clearCacheEngine();
 
     NetworkLoadScheduler& networkLoadScheduler();
     Ref<NetworkLoadScheduler> protectedNetworkLoadScheduler();
-
-    PCM::ManagerInterface& privateClickMeasurement() { return m_privateClickMeasurement.get(); }
     void setPrivateClickMeasurementDebugMode(bool);
     bool privateClickMeasurementDebugModeEnabled() const { return m_privateClickMeasurementDebugModeEnabled; }
 
@@ -359,6 +359,11 @@ protected:
         WebCore::Timer m_expirationTimer;
         RefPtr<NetworkResourceLoader> m_loader;
     };
+
+    struct ServiceWorkerInfo {
+        String databasePath;
+        bool processTerminationDelayEnabled { true };
+    };
     HashMap<NetworkResourceLoadIdentifier, Ref<CachedNetworkResourceLoader>> m_loadersAwaitingWebProcessTransfer;
 
     PrefetchCache m_prefetchCache;
@@ -375,13 +380,8 @@ protected:
     bool m_shouldRunServiceWorkersOnMainThreadForTesting { false };
     bool m_shouldSendPrivateTokenIPCForTesting { false };
     std::optional<unsigned> m_overrideServiceWorkerRegistrationCountTestingValue;
-    HashSet<std::unique_ptr<ServiceWorkerSoftUpdateLoader>> m_softUpdateLoaders;
+    HashSet<RefPtr<ServiceWorkerSoftUpdateLoader>> m_softUpdateLoaders;
     HashMap<WebCore::FetchIdentifier, WeakRef<ServiceWorkerFetchTask>> m_navigationPreloaders;
-
-    struct ServiceWorkerInfo {
-        String databasePath;
-        bool processTerminationDelayEnabled { true };
-    };
     std::optional<ServiceWorkerInfo> m_serviceWorkerInfo;
     RefPtr<WebCore::SWServer> m_swServer;
     const RefPtr<BackgroundFetchStoreImpl> m_backgroundFetchStore;
