@@ -163,7 +163,7 @@ GstElement* GStreamerCapturer::createSource()
         gst_pad_add_probe(srcPad.get(), static_cast<GstPadProbeType>(GST_PAD_PROBE_TYPE_PUSH | GST_PAD_PROBE_TYPE_BUFFER), [](GstPad*, GstPadProbeInfo* info, gpointer) -> GstPadProbeReturn {
             VideoFrameTimeMetadata metadata;
             metadata.captureTime = MonotonicTime::now().secondsSinceEpoch();
-            auto modifiedBuffer = webkitGstBufferSetVideoFrameTimeMetadata(GRefPtr(GST_PAD_PROBE_INFO_BUFFER(info)), metadata);
+            auto modifiedBuffer = webkitGstBufferSetVideoFrameTimeMetadata(adoptGRef(GST_PAD_PROBE_INFO_BUFFER(info)), metadata);
             GST_PAD_PROBE_INFO_DATA(info) = modifiedBuffer.leakRef();
             return GST_PAD_PROBE_OK;
         }, nullptr, nullptr);
