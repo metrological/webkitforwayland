@@ -1,3 +1,13 @@
+================
+WebKitGTK 2.50.0
+================
+
+What's new in WebKitGTK 2.50.0?
+
+  - Fix rendering with software rasterization enabled.
+  - Fix WebAudio issues after idling for a minute.
+  - Fix several crashes and rendering issues.
+
 =================
 WebKitGTK 2.49.90
 =================
