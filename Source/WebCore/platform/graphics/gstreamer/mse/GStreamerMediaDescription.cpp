@@ -58,7 +58,7 @@ String GStreamerMediaDescription::extractCodecName(const GRefPtr<GstCaps>& caps)
 
         auto originalMediaType = WebCore::gstStructureGetString(structure, "original-media-type"_s);
         RELEASE_ASSERT(originalMediaType);
-        gst_structure_set_name(structure, originalMediaType.toStringWithoutCopying().ascii().data());
+        gst_structure_set_name(structure, originalMediaType.utf8());
 
         // Remove the DRM related fields from the caps.
         for (int j = 0; j < gst_structure_n_fields(structure); ++j) {

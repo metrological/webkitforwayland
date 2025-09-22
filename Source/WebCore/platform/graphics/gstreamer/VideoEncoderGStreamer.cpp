@@ -193,7 +193,7 @@ static std::optional<unsigned> retrieveTemporalIndex(const GRefPtr<GstSample>& s
     }
 #ifndef GST_DISABLE_GST_DEBUG
     auto name = gstStructureGetName(structure);
-    GST_TRACE("Retrieval of temporal index from encoded format %s is not yet supported.", reinterpret_cast<const char*>(name.rawCharacters()));
+    GST_TRACE("Retrieval of temporal index from encoded format %s is not yet supported.", name.utf8());
 #endif
 #else
     UNUSED_PARAM(sample);

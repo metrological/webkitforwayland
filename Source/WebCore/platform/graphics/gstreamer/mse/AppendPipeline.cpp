@@ -226,12 +226,12 @@ AppendPipeline::AppendPipeline(SourceBufferPrivateGStreamer& sourceBufferPrivate
             if (demuxerElementName.isNull()) {
                 GST_ELEMENT_ERROR(appendPipeline->pipeline(), STREAM, WRONG_TYPE,
                     ("Unsupported caps for audio/mpeg mimetype: %s",
-                    gstStructureGetName(capsStructure).toStringWithoutCopying().utf8().data()), (nullptr));
+                    gstStructureGetName(capsStructure).utf8()), (nullptr));
                 return;
             }
 
             GST_DEBUG_OBJECT(appendPipeline->pipeline(), "Creating %s demuxer for caps: %s",
-                demuxerElementName.characters(), gstStructureGetName(capsStructure).toStringWithoutCopying().utf8().data());
+                demuxerElementName.characters(), gstStructureGetName(capsStructure).utf8());
             appendPipeline->m_demux = makeGStreamerElement(demuxerElementName);
             ASSERT(appendPipeline->m_demux);
 
@@ -428,11 +428,11 @@ std::tuple<GRefPtr<GstCaps>, AppendPipeline::StreamType, FloatSize> AppendPipeli
     auto originalMediaType = capsMediaType(demuxerSrcPadCaps);
     auto& gstRegistryScanner = GStreamerRegistryScannerMSE::singleton();
     auto shouldIgnore = std::find_if(s_ignoreMediaTypes.begin(), s_ignoreMediaTypes.end(), [&originalMediaType](const ASCIILiteral& type) {
-        return originalMediaType.startsWithIgnoringASCIICase(type);
+        return originalMediaType.toString().startsWithIgnoringASCIICase(type);
     }) != s_ignoreMediaTypes.end();
     if (shouldIgnore) {
         streamType = StreamType::Ignore;
-    } else if (!gstRegistryScanner.isCodecSupported(GStreamerRegistryScanner::Configuration::Decoding, originalMediaType.toStringWithoutCopying())) {
+    } else if (!gstRegistryScanner.isCodecSupported(GStreamerRegistryScanner::Configuration::Decoding, originalMediaType.toString())) {
         streamType = StreamType::Invalid;
     } else if (doCapsHaveType(demuxerSrcPadCaps, GST_VIDEO_CAPS_TYPE_PREFIX)) {
         presentationSize = getVideoResolutionFromCaps(demuxerSrcPadCaps).value_or(FloatSize());
@@ -466,7 +466,7 @@ void AppendPipeline::appsinkCapsChanged(Track& track)
     auto currentMediaType = capsMediaType(caps.get());
     auto trackMediaType = capsMediaType(track.caps.get());
     if (track.caps && currentMediaType != trackMediaType) {
-        GST_WARNING_OBJECT(pipeline(), "Track received incompatible caps, received '%s' for a track previously handling '%s'. Erroring out.", reinterpret_cast<const char*>(currentMediaType.rawCharacters()), reinterpret_cast<const char*>(trackMediaType.rawCharacters()));
+        GST_WARNING_OBJECT(pipeline(), "Track received incompatible caps, received '%s' for a track previously handling '%s'. Erroring out.", currentMediaType.utf8(), trackMediaType.utf8());
         m_sourceBufferPrivate.appendParsingFailed();
         return;
     }

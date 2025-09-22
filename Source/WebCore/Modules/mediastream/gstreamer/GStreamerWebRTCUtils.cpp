@@ -164,7 +164,7 @@ static inline RTCRtpEncodingParameters toRTCEncodingParameters(const GstStructur
         parameters.maxFramerate = *maxFramerate;
 
     if (auto rid = gstStructureGetString(rtcParameters, "rid"_s))
-        parameters.rid = makeString(rid);
+        parameters.rid = rid.toString();
 
     if (auto scaleResolutionDownBy = gstStructureGet<double>(rtcParameters, "scale-resolution-down-by"_s))
         parameters.scaleResolutionDownBy = *scaleResolutionDownBy;
@@ -207,7 +207,7 @@ RTCRtpSendParameters toRTCRtpSendParameters(const GstStructure* rtcParameters)
 
     RTCRtpSendParameters parameters;
     if (auto transactionId = gstStructureGetString(rtcParameters, "transaction-id"_s))
-        parameters.transactionId = makeString(transactionId);
+        parameters.transactionId = transactionId.toString();
 
     if (auto encodings = gst_structure_get_value(rtcParameters, "encodings")) {
         unsigned size = gst_value_list_get_size(encodings);
@@ -555,7 +555,7 @@ uint32_t UniqueSSRCGenerator::generateSSRC()
     return std::numeric_limits<uint32_t>::max();
 }
 
-std::optional<int> payloadTypeForEncodingName(StringView encodingName)
+std::optional<int> payloadTypeForEncodingName(const String& encodingName)
 {
     static HashMap<String, int> staticPayloadTypes = {
         { "PCMU"_s, 0 },
@@ -563,9 +563,8 @@ std::optional<int> payloadTypeForEncodingName(StringView encodingName)
         { "G722"_s, 9 },
     };
 
-    const auto key = encodingName.toStringWithoutCopying();
-    if (staticPayloadTypes.contains(key))
-        return staticPayloadTypes.get(key);
+    if (staticPayloadTypes.contains(encodingName))
+        return staticPayloadTypes.get(encodingName);
     return { };
 }
 
@@ -588,7 +587,7 @@ GRefPtr<GstCaps> capsFromRtpCapabilities(const RTCRtpCapabilities& capabilities,
             gst_structure_set(codecStructure, "encoding-params", G_TYPE_STRING, makeString(*codec.channels).ascii().data(), nullptr);
 
         if (auto encodingName = gstStructureGetString(codecStructure, "encoding-name"_s)) {
-            if (auto payloadType = payloadTypeForEncodingName(encodingName))
+            if (auto payloadType = payloadTypeForEncodingName(encodingName.toString()))
                 gst_structure_set(codecStructure, "payload", G_TYPE_INT, *payloadType, nullptr);
         }
 
@@ -661,7 +660,7 @@ GRefPtr<GstCaps> capsFromSDPMedia(const GstSDPMedia* media)
                 "a-sendonly", "a-recvonly", "a-end-of-candidates", nullptr);
 
             if (auto name = gstStructureGetString(structure, "encoding-name"_s)) {
-                auto encodingName = name.convertToASCIIUppercase();
+                auto encodingName = name.toString().convertToASCIIUppercase();
                 gst_structure_set(structure, "encoding-name", G_TYPE_STRING, encodingName.ascii().data(), nullptr);
             }
 
