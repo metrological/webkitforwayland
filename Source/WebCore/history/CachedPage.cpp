@@ -78,6 +78,30 @@ CachedPage::~CachedPage()
         m_cachedMainFrame->destroy();
 }
 
+static void fireEvents(Page& page)
+{
+    // Dispatching JavaScript events can cause frame destruction.
+    auto& mainFrame = page.mainFrame();
+
+    Vector<Ref<Frame>> childFrames;
+    for (auto* child = mainFrame.tree().traverseNextInPostOrder(CanWrap::Yes); child; child = child->tree().traverseNextInPostOrder(CanWrap::No))
+        childFrames.append(*child);
+
+    for (auto& child : childFrames) {
+        if (!child->tree().isDescendantOf(&mainFrame))
+            continue;
+        RefPtr document = child->document();
+        if (!document)
+            continue;
+
+        document->resume();
+
+        // This takes care of firing the visibilitychange event and making sure the document is reported as visible.
+        document->setVisibilityHiddenDueToDismissal(false);
+
+        document->dispatchPageshowEvent(PageshowEventPersisted);
+    }
+  }
 class CachedPageRestorationScope {
 public:
     CachedPageRestorationScope(Page& page)
@@ -143,10 +167,7 @@ void CachedPage::restore(Page& page)
             frameView->updateContentsSize();
     }
 
-    // TODO: should we trigger resume for all frames?
-    if (auto* document = page.mainFrame().document()) {
-        document->resume();
-    }
+    fireEvents(page);
 
 #if ENABLE(INTELLIGENT_TRACKING_PREVENTION)
     for (auto& domain : m_loadedSubresourceDomains)

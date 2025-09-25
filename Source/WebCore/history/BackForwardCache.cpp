@@ -403,16 +403,22 @@ static void destroyRenderTree(Frame& mainFrame)
     }
 }
 
-static void stopLoadingRecursively(Frame& frame)
+static void fireEventsAndStopLoadingRecursively(Frame& frame)
 {
     auto* document = frame.document();
     if (!document)
         return;
 
-    frame.loader().stopLoading(UnloadEventPolicy::None);
+    // stopLoading() will fire the pagehide event in each subframe and the HTML specification states
+    // that the parent document's ignore-opens-during-unload counter should be incremented while the
+    // pagehide event is being fired in its subframes:
+    // https://html.spec.whatwg.org/multipage/browsers.html#unload-a-document
+    IgnoreOpensDuringUnloadCountIncrementer ignoreOpensDuringUnloadCountIncrementer(document);
+    frame.loader().stopLoading(UnloadEventPolicy::UnloadAndPageHide);
+    document->freeze();
 
     for (RefPtr<Frame> child = frame.tree().firstChild(); child; child = child->tree().nextSibling())
-        stopLoadingRecursively(*child);
+        fireEventsAndStopLoadingRecursively(*child);
 }
 
 std::unique_ptr<CachedPage> BackForwardCache::trySuspendPage(Page& page, ForceSuspension forceSuspension)
@@ -431,13 +437,8 @@ std::unique_ptr<CachedPage> BackForwardCache::trySuspendPage(Page& page, ForceSu
     if (CheckedRef focusController { page.focusController() }; focusController->focusedFrame())
         focusController->setFocusedFrame(&page.mainFrame());
 
-    // Stop loading in all frames without triggering events pagehide and unload.
-    stopLoadingRecursively(page.mainFrame());
-
-    // TODO: should we trigger freeze for all frames?
-    if (auto* document = page.mainFrame().document()) {
-        document->freeze();
-    }
+    // Fire the pagehide and freeze events in all frames.
+    fireEventsAndStopLoadingRecursively(page.mainFrame());
 
     destroyRenderTree(page.mainFrame());
 
