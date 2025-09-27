@@ -63,7 +63,7 @@ public:
 
     constexpr const char* characters() const { return m_charactersWithNullTerminator.data(); }
     constexpr size_t length() const { return !m_charactersWithNullTerminator.empty() ? m_charactersWithNullTerminator.size() - 1 : 0; }
-    std::span<const LChar> span8() const { return { std::bit_cast<const LChar*>(characters()), length() }; }
+    std::span<const Latin1Character> span8() const { return { std::bit_cast<const Latin1Character*>(characters()), length() }; }
     std::span<const char> spanIncludingNullTerminator() const { return m_charactersWithNullTerminator; }
     size_t isEmpty() const { return m_charactersWithNullTerminator.size() <= 1; }
 
@@ -139,13 +139,13 @@ constexpr ASCIILiteral operator"" _s(const char* characters, size_t)
     return result;
 }
 
-constexpr std::span<const LChar> operator"" _span(const char* characters, size_t n)
+constexpr std::span<const Latin1Character> operator"" _span(const char* characters, size_t n)
 {
 #if ASSERT_ENABLED
     for (size_t i = 0; i < n; ++i)
         ASSERT_UNDER_CONSTEXPR_CONTEXT(isASCII(characters[i]));
 #endif
-    return std::span { std::bit_cast<const LChar*>(characters), n };
+    return std::span { std::bit_cast<const Latin1Character*>(characters), n };
 }
 
 } // inline StringLiterals

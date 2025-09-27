@@ -306,7 +306,7 @@ TEST(WTF_URLExtras, URLExtras_ParsingError)
     EXPECT_FALSE(url3.isValid());
     EXPECT_STREQ([[url3 absoluteString] UTF8String], "%C3%82%C2%B6");
     
-    std::array<LChar, 2> latin1 { 0xC2, 0xB6 };
+    std::array<Latin1Character, 2> latin1 { 0xC2, 0xB6 };
     WTF::URL url4 { String(latin1) };
     EXPECT_FALSE(url4.isValid());
     EXPECT_TRUE(url4.string().is8Bit());

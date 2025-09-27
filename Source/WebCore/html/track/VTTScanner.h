@@ -50,7 +50,7 @@ class VTTScanner {
 public:
     explicit VTTScanner(const String& line);
 
-    typedef const LChar* Position;
+    typedef const Latin1Character* Position;
 
     class Run {
     public:
@@ -78,7 +78,7 @@ public:
     // Scan the character |c|.
     bool scan(char);
     // Scan the first |charactersCount| characters of the string |characters|.
-    bool scan(std::span<const LChar> characters);
+    bool scan(std::span<const Latin1Character> characters);
 
     // Scan the literal |characters|.
     template<unsigned charactersCount>
@@ -87,21 +87,21 @@ public:
     // Skip (advance the input pointer) as long as the specified
     // |characterPredicate| returns true, and the input pointer is not passed
     // the end of the input.
-    template<bool characterPredicate(UChar)>
+    template<bool characterPredicate(char16_t)>
     void skipWhile();
 
     // Like skipWhile, but using a negated predicate.
-    template<bool characterPredicate(UChar)>
+    template<bool characterPredicate(char16_t)>
     void skipUntil();
 
     // Return the run of characters for which the specified
     // |characterPredicate| returns true. The start of the run will be the
     // current input pointer.
-    template<bool characterPredicate(UChar)>
+    template<bool characterPredicate(char16_t)>
     Run collectWhile();
 
     // Like collectWhile, but using a negated predicate.
-    template<bool characterPredicate(UChar)>
+    template<bool characterPredicate(char16_t)>
     Run collectUntil();
 
     // Scan the string |toMatch|, using the specified |run| as the sequence to
@@ -132,19 +132,19 @@ protected:
     Position position() const { return m_data.characters8; }
     Position end() const { return m_end.characters8; }
     void seekTo(Position);
-    UChar currentChar() const;
+    char16_t currentChar() const;
     void advance(unsigned amount = 1);
-    // Adapt a UChar-predicate to an LChar-predicate.
+    // Adapt a char16_t-predicate to an Latin1Character-predicate.
     // (For use with skipWhile/Until from ParsingUtilities.h).
-    template<bool characterPredicate(UChar)>
-    static inline bool LCharPredicateAdapter(LChar c) { return characterPredicate(c); }
+    template<bool characterPredicate(char16_t)>
+    static inline bool Latin1CharacterPredicateAdapter(Latin1Character c) { return characterPredicate(c); }
     union {
-        const LChar* characters8;
-        const UChar* characters16;
+        const Latin1Character* characters8;
+        const char16_t* characters16;
     } m_data;
     union {
-        const LChar* characters8;
-        const UChar* characters16;
+        const Latin1Character* characters8;
+        const char16_t* characters16;
     } m_end;
     const String m_source;
     bool m_is8Bit;
@@ -154,55 +154,55 @@ inline size_t VTTScanner::Run::length() const
 {
     if (m_is8Bit)
         return m_end - m_start;
-    return reinterpret_cast<const UChar*>(m_end) - reinterpret_cast<const UChar*>(m_start);
+    return reinterpret_cast<const char16_t*>(m_end) - reinterpret_cast<const char16_t*>(m_start);
 }
 
 template<unsigned charactersCount>
 inline bool VTTScanner::scan(const char (&characters)[charactersCount])
 {
-    return scan({ byteCast<LChar>(&characters[0]), charactersCount - 1 });
+    return scan({ byteCast<Latin1Character>(&characters[0]), charactersCount - 1 });
 }
 
-template<bool characterPredicate(UChar)>
+template<bool characterPredicate(char16_t)>
 inline void VTTScanner::skipWhile()
 {
     if (m_is8Bit)
-        WebCore::skipWhile<LCharPredicateAdapter<characterPredicate> >(m_data.characters8, m_end.characters8);
+        WebCore::skipWhile<Latin1CharacterPredicateAdapter<characterPredicate> >(m_data.characters8, m_end.characters8);
     else
         WebCore::skipWhile<characterPredicate>(m_data.characters16, m_end.characters16);
 }
 
-template<bool characterPredicate(UChar)>
+template<bool characterPredicate(char16_t)>
 inline void VTTScanner::skipUntil()
 {
     if (m_is8Bit)
-        WebCore::skipUntil<LCharPredicateAdapter<characterPredicate> >(m_data.characters8, m_end.characters8);
+        WebCore::skipUntil<Latin1CharacterPredicateAdapter<characterPredicate> >(m_data.characters8, m_end.characters8);
     else
         WebCore::skipUntil<characterPredicate>(m_data.characters16, m_end.characters16);
 }
 
-template<bool characterPredicate(UChar)>
+template<bool characterPredicate(char16_t)>
 inline VTTScanner::Run VTTScanner::collectWhile()
 {
     if (m_is8Bit) {
-        const LChar* current = m_data.characters8;
-        WebCore::skipWhile<LCharPredicateAdapter<characterPredicate>>(current, m_end.characters8);
+        const Latin1Character* current = m_data.characters8;
+        WebCore::skipWhile<Latin1CharacterPredicateAdapter<characterPredicate>>(current, m_end.characters8);
         return Run(position(), current, m_is8Bit);
     }
-    const UChar* current = m_data.characters16;
+    const char16_t* current = m_data.characters16;
     WebCore::skipWhile<characterPredicate>(current, m_end.characters16);
     return Run(position(), reinterpret_cast<Position>(current), m_is8Bit);
 }
 
-template<bool characterPredicate(UChar)>
+template<bool characterPredicate(char16_t)>
 inline VTTScanner::Run VTTScanner::collectUntil()
 {
     if (m_is8Bit) {
-        const LChar* current = m_data.characters8;
-        WebCore::skipUntil<LCharPredicateAdapter<characterPredicate> >(current, m_end.characters8);
+        const Latin1Character* current = m_data.characters8;
+        WebCore::skipUntil<Latin1CharacterPredicateAdapter<characterPredicate> >(current, m_end.characters8);
         return Run(position(), current, m_is8Bit);
     }
-    const UChar* current = m_data.characters16;
+    const char16_t* current = m_data.characters16;
     WebCore::skipUntil<characterPredicate>(current, m_end.characters16);
     return Run(position(), reinterpret_cast<Position>(current), m_is8Bit);
 }
@@ -213,7 +213,7 @@ inline void VTTScanner::seekTo(Position position)
     m_data.characters8 = position;
 }
 
-inline UChar VTTScanner::currentChar() const
+inline char16_t VTTScanner::currentChar() const
 {
     ASSERT(position() < end());
     return m_is8Bit ? *m_data.characters8 : *m_data.characters16;

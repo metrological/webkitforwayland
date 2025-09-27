@@ -2188,7 +2188,7 @@ template<class Delegate>
 ErrorCode parse(Delegate& delegate, const StringView pattern, CompileMode compileMode, unsigned backReferenceLimit = quantifyInfinite, bool isNamedForwardReferenceAllowed = true)
 {
     if (pattern.is8Bit())
-        return Parser<Delegate, LChar>(delegate, pattern, compileMode, backReferenceLimit, isNamedForwardReferenceAllowed).parse();
+        return Parser<Delegate, Latin1Character>(delegate, pattern, compileMode, backReferenceLimit, isNamedForwardReferenceAllowed).parse();
     return Parser<Delegate, char16_t>(delegate, pattern, compileMode, backReferenceLimit, isNamedForwardReferenceAllowed).parse();
 }
 

@@ -192,7 +192,7 @@ template<typename T> static bool insertInUniquedSortedVector(Vector<T>& vector, 
 template<typename CharacterType>
 class HTMLFastPathParser {
     using CharacterSpan = std::span<const CharacterType>;
-    static_assert(std::is_same_v<CharacterType, UChar> || std::is_same_v<CharacterType, LChar>);
+    static_assert(std::is_same_v<CharacterType, char16_t> || std::is_same_v<CharacterType, Latin1Character>);
 
 public:
     HTMLFastPathParser(CharacterSpan source, Document& document, ContainerNode& destinationParent)
@@ -473,7 +473,7 @@ private:
     // We first try to scan text as an unmodified subsequence of the input.
     // However, if there are escape sequences, we have to copy the text to a
     // separate buffer and we might go outside of `Char` range if we are in an
-    // `LChar` parser.
+    // `Latin1Character` parser.
     String scanText()
     {
         auto* start = m_parsingBuffer.position();

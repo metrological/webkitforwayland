@@ -139,7 +139,7 @@ template <typename CharacterType, typename FloatType = float> static std::option
     return number;
 }
 
-std::optional<float> parseNumber(StringParsingBuffer<LChar>& buffer, SuffixSkippingPolicy skip)
+std::optional<float> parseNumber(StringParsingBuffer<Latin1Character>& buffer, SuffixSkippingPolicy skip)
 {
     return genericParseNumber(buffer, skip);
 }
@@ -182,7 +182,7 @@ template <typename CharacterType> std::optional<bool> genericParseArcFlag(String
     return flag;
 }
 
-std::optional<bool> parseArcFlag(StringParsingBuffer<LChar>& buffer)
+std::optional<bool> parseArcFlag(StringParsingBuffer<Latin1Character>& buffer)
 {
     return genericParseArcFlag(buffer);
 }
@@ -407,7 +407,7 @@ template <typename CharacterType> static std::optional<FloatPoint> genericParseF
     return FloatPoint { *x, *y };
 }
 
-std::optional<FloatPoint> parseFloatPoint(StringParsingBuffer<LChar>& buffer)
+std::optional<FloatPoint> parseFloatPoint(StringParsingBuffer<Latin1Character>& buffer)
 {
     return genericParseFloatPoint(buffer);
 }

@@ -93,8 +93,8 @@ private:
         unsigned originalLength { 0 };
         unsigned length { 0 };
         union {
-            const LChar* currentCharacter8 { nullptr };
-            const UChar* currentCharacter16;
+            const Latin1Character* currentCharacter8 { nullptr };
+            const char16_t* currentCharacter16;
         };
         bool is8Bit { true };
         bool doNotExcludeLineNumbers { true };
@@ -133,7 +133,7 @@ private:
 
     bool m_isClosed { false };
 
-    UChar m_currentCharacter { 0 };
+    char16_t m_currentCharacter { 0 };
 
     unsigned m_numberOfCharactersConsumedPriorToCurrentSubstring { 0 };
     unsigned m_numberOfCharactersConsumedPriorToCurrentLine { 0 };
@@ -176,13 +176,13 @@ inline unsigned SegmentedString::Substring::numberOfCharactersConsumed() const
     return originalLength - length;
 }
 
-ALWAYS_INLINE UChar SegmentedString::Substring::currentCharacter() const
+ALWAYS_INLINE char16_t SegmentedString::Substring::currentCharacter() const
 {
     ASSERT(length);
     return is8Bit ? *currentCharacter8 : *currentCharacter16;
 }
 
-ALWAYS_INLINE UChar SegmentedString::Substring::currentCharacterPreIncrement()
+ALWAYS_INLINE char16_t SegmentedString::Substring::currentCharacterPreIncrement()
 {
     ASSERT(length);
     return is8Bit ? *++currentCharacter8 : *++currentCharacter16;

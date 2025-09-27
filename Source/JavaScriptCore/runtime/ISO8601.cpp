@@ -80,7 +80,7 @@ static void handleFraction(Duration& duration, int factor, StringView fractionSt
     ASSERT(fractionLength && fractionLength <= 9 && fractionString.containsOnlyASCII());
     ASSERT(fractionType == TemporalUnit::Hour || fractionType == TemporalUnit::Minute || fractionType == TemporalUnit::Second);
 
-    Vector<LChar, 9> padded(9, '0');
+    Vector<Latin1Character, 9> padded(9, '0');
     for (unsigned i = 0; i < fractionLength; i++)
         padded[i] = fractionString[i];
 
@@ -363,7 +363,7 @@ static std::optional<PlainTime> parseTimeSpec(StringParsingBuffer<CharacterType>
     if (!digits)
         return std::nullopt;
 
-    Vector<LChar, 9> padded(9, '0');
+    Vector<Latin1Character, 9> padded(9, '0');
     for (size_t i = 0; i < digits; ++i)
         padded[i] = buffer[i];
     buffer.advanceBy(digits);
@@ -566,7 +566,7 @@ static bool canBeTimeZone(const StringParsingBuffer<CharacterType>& buffer, Char
 }
 
 template<typename CharacterType>
-static std::optional<std::variant<Vector<LChar>, int64_t>> parseTimeZoneAnnotation(StringParsingBuffer<CharacterType>& buffer)
+static std::optional<std::variant<Vector<Latin1Character>, int64_t>> parseTimeZoneAnnotation(StringParsingBuffer<CharacterType>& buffer)
 {
     // https://tc39.es/proposal-temporal/#prod-TimeZoneAnnotation
     // TimeZoneAnnotation :
@@ -700,7 +700,7 @@ static std::optional<std::variant<Vector<LChar>, int64_t>> parseTimeZoneAnnotati
         if (!isValidComponent(currentNameComponentStartIndex, nameLength))
             return std::nullopt;
 
-        Vector<LChar> result(buffer.consume(nameLength));
+        Vector<Latin1Character> result(buffer.consume(nameLength));
 
         if (buffer.atEnd())
             return std::nullopt;
@@ -836,7 +836,7 @@ static std::optional<CalendarRecord> parseCalendar(StringParsingBuffer<Character
     if (!isValidComponent(currentNameComponentStartIndex, nameLength))
         return std::nullopt;
 
-    Vector<LChar, maxCalendarLength> result(buffer.consume(nameLength));
+    Vector<Latin1Character, maxCalendarLength> result(buffer.consume(nameLength));
 
     if (buffer.atEnd())
         return std::nullopt;
@@ -1297,7 +1297,7 @@ String formatTimeZoneOffsetString(int64_t offset)
 
     if (nanoseconds) {
         // Since nsPerSecond is 1000000000, stringified nanoseconds takes at most 9 characters (999999999).
-        auto fraction = numberToStringUnsigned<Vector<LChar, 9>>(nanoseconds);
+        auto fraction = numberToStringUnsigned<Vector<Latin1Character, 9>>(nanoseconds);
         unsigned paddingLength = 9 - fraction.size();
         unsigned index = fraction.size();
         std::optional<unsigned> validLength;
@@ -1332,7 +1332,7 @@ String temporalTimeToString(PlainTime plainTime, std::tuple<Precision, unsigned>
     if (precisionType == Precision::Auto) {
         if (!fractionNanoseconds)
             return makeString(pad('0', 2, plainTime.hour()), ':', pad('0', 2, plainTime.minute()), ':', pad('0', 2, plainTime.second()));
-        auto fraction = numberToStringUnsigned<Vector<LChar, 9>>(fractionNanoseconds);
+        auto fraction = numberToStringUnsigned<Vector<Latin1Character, 9>>(fractionNanoseconds);
         unsigned paddingLength = 9 - fraction.size();
         unsigned index = fraction.size();
         std::optional<unsigned> validLength;
@@ -1350,7 +1350,7 @@ String temporalTimeToString(PlainTime plainTime, std::tuple<Precision, unsigned>
     }
     if (!precisionValue)
         return makeString(pad('0', 2, plainTime.hour()), ':', pad('0', 2, plainTime.minute()), ':', pad('0', 2, plainTime.second()));
-    auto fraction = numberToStringUnsigned<Vector<LChar, 9>>(fractionNanoseconds);
+    auto fraction = numberToStringUnsigned<Vector<Latin1Character, 9>>(fractionNanoseconds);
     unsigned paddingLength = 9 - fraction.size();
     paddingLength = std::min(paddingLength, precisionValue);
     precisionValue -= paddingLength;

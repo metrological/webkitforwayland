@@ -145,7 +145,7 @@ ALWAYS_INLINE JSString* jsSpliceSubstringsWithSeparators(JSGlobalObject* globalO
         return jsEmptyString(vm);
 
     if (source.is8Bit() && allSeparators8Bit) {
-        std::span<LChar> buffer;
+        std::span<Latin1Character> buffer;
         auto impl = StringImpl::tryCreateUninitialized(totalLength, buffer);
         if (!impl) {
             throwOutOfMemoryError(globalObject, scope);

@@ -36,7 +36,7 @@ void StringBuilder::appendQuotedJSONString(const String& string)
     auto stringLengthValue = stringLength.value();
 
     if (is8Bit() && string.is8Bit()) {
-        if (auto* output = extendBufferForAppending<LChar>(saturatedSum<uint32_t>(m_length, stringLengthValue))) {
+        if (auto* output = extendBufferForAppending<Latin1Character>(saturatedSum<uint32_t>(m_length, stringLengthValue))) {
             auto* end = output + stringLengthValue;
             *output++ = '"';
             appendEscapedJSONStringContent(output, string.span8());

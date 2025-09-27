@@ -27,7 +27,7 @@ namespace WTF {
 
 namespace Internal {
 
-std::pair<LChar*, unsigned> appendHex(LChar* buffer, unsigned bufferSize, std::uintmax_t number, unsigned minimumDigits, HexConversionMode mode)
+std::pair<Latin1Character*, unsigned> appendHex(Latin1Character* buffer, unsigned bufferSize, std::uintmax_t number, unsigned minimumDigits, HexConversionMode mode)
 {
     auto end = buffer + bufferSize;
     auto start = end;

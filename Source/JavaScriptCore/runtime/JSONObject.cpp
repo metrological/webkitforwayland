@@ -829,7 +829,7 @@ inline unsigned FastStringifier<CharType, bufferMode>::usableBufferSize(unsigned
     // to limit recursion. Hence, we need to compute an appropriate m_capacity value.
     //
     // To do this, we empirically measured the worst case stack usage incurred by 1 recursion
-    // of any of the append methods. Assuming each call to append() only consumes 1 LChar in
+    // of any of the append methods. Assuming each call to append() only consumes 1 Latin1Character in
     // m_buffer, the amount of buffer size that FastStringifier is allowed to run with can be
     // estimated as:
     //
@@ -1128,12 +1128,12 @@ static ALWAYS_INLINE bool stringCopySameType(std::span<const CharType> span, Cha
     return false;
 }
 
-static ALWAYS_INLINE bool stringCopyUpconvert(std::span<const LChar> span, char16_t* cursor)
+static ALWAYS_INLINE bool stringCopyUpconvert(std::span<const Latin1Character> span, char16_t* cursor)
 {
 #if (CPU(ARM64) || CPU(X86_64)) && COMPILER(CLANG)
-    constexpr size_t stride = SIMD::stride<LChar>;
+    constexpr size_t stride = SIMD::stride<Latin1Character>;
     if (span.size() >= stride) {
-        using UnsignedType = std::make_unsigned_t<LChar>;
+        using UnsignedType = std::make_unsigned_t<Latin1Character>;
         using BulkType = decltype(SIMD::load(static_cast<const UnsignedType*>(nullptr)));
         constexpr auto quoteMask = SIMD::splat<UnsignedType>('"');
         constexpr auto escapeMask = SIMD::splat<UnsignedType>('\\');
@@ -1490,7 +1490,7 @@ static NEVER_INLINE String stringify(JSGlobalObject& globalObject, JSValue value
     if (LIKELY(std::bit_cast<uint8_t*>(currentStackPointer()) >= stackLimit)) {
         std::optional<FailureReason> failureReason;
         failureReason = std::nullopt;
-        if (String result = FastStringifier<LChar, BufferMode::StaticBuffer>::stringify(globalObject, value, replacer, space, failureReason); !result.isNull())
+        if (String result = FastStringifier<Latin1Character, BufferMode::StaticBuffer>::stringify(globalObject, value, replacer, space, failureReason); !result.isNull())
             return result;
         if (failureReason == FailureReason::Found16BitEarly) {
             failureReason = std::nullopt;
@@ -1504,7 +1504,7 @@ static NEVER_INLINE String stringify(JSGlobalObject& globalObject, JSValue value
             }
         } else if (failureReason == FailureReason::BufferFull) {
             failureReason = std::nullopt;
-            if (String result = FastStringifier<LChar, BufferMode::DynamicBuffer>::stringify(globalObject, value, replacer, space, failureReason); !result.isNull())
+            if (String result = FastStringifier<Latin1Character, BufferMode::DynamicBuffer>::stringify(globalObject, value, replacer, space, failureReason); !result.isNull())
                 return result;
         }
     }
@@ -1812,7 +1812,7 @@ static NEVER_INLINE JSValue jsonParseSlow(JSGlobalObject* globalObject, JSString
     JSONRanges ranges;
     JSValue unfiltered;
     if (view.is8Bit()) {
-        LiteralParser<LChar, JSONReviverMode::Enabled> jsonParser(globalObject, view.span8(), StrictJSON);
+        LiteralParser<Latin1Character, JSONReviverMode::Enabled> jsonParser(globalObject, view.span8(), StrictJSON);
         unfiltered = jsonParser.tryLiteralParse(Options::useJSONSourceTextAccess() ? &ranges : nullptr);
         EXCEPTION_ASSERT(!scope.exception() || !unfiltered);
         if (!unfiltered) {
@@ -1854,7 +1854,7 @@ JSC_DEFINE_HOST_FUNCTION(jsonProtoFuncParse, (JSGlobalObject* globalObject, Call
     }
 
     if (view->is8Bit()) {
-        LiteralParser<LChar, JSONReviverMode::Disabled> jsonParser(globalObject, view->span8(), StrictJSON);
+        LiteralParser<Latin1Character, JSONReviverMode::Disabled> jsonParser(globalObject, view->span8(), StrictJSON);
         JSValue unfiltered = jsonParser.tryLiteralParse();
         EXCEPTION_ASSERT(!scope.exception() || !unfiltered);
         if (!unfiltered) {
@@ -1887,7 +1887,7 @@ JSValue JSONParse(JSGlobalObject* globalObject, StringView json)
         return JSValue();
 
     if (json.is8Bit()) {
-        LiteralParser<LChar, JSONReviverMode::Disabled> jsonParser(globalObject, json.span8(), StrictJSON);
+        LiteralParser<Latin1Character, JSONReviverMode::Disabled> jsonParser(globalObject, json.span8(), StrictJSON);
         return jsonParser.tryLiteralParse();
     }
 
@@ -1904,7 +1904,7 @@ JSValue JSONParseWithException(JSGlobalObject* globalObject, StringView json)
         return JSValue();
 
     if (json.is8Bit()) {
-        LiteralParser<LChar, JSONReviverMode::Disabled> jsonParser(globalObject, json.span8(), StrictJSON);
+        LiteralParser<Latin1Character, JSONReviverMode::Disabled> jsonParser(globalObject, json.span8(), StrictJSON);
         JSValue result = jsonParser.tryLiteralParse();
         RETURN_IF_EXCEPTION(scope, { });
         if (!result)
@@ -1972,7 +1972,7 @@ JSC_DEFINE_HOST_FUNCTION(jsonProtoFuncRawJSON, (JSGlobalObject* globalObject, Ca
     {
         JSValue result;
         if (string.is8Bit()) {
-            LiteralParser<LChar, JSONReviverMode::Disabled> jsonParser(globalObject, string.span8(), StrictJSON);
+            LiteralParser<Latin1Character, JSONReviverMode::Disabled> jsonParser(globalObject, string.span8(), StrictJSON);
             result = jsonParser.tryLiteralParsePrimitiveValue();
             RETURN_IF_EXCEPTION(scope, { });
             if (UNLIKELY(!result)) {

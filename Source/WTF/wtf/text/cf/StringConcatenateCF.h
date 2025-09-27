@@ -47,7 +47,7 @@ inline StringTypeAdapter<CFStringRef>::StringTypeAdapter(CFStringRef string)
 {
 }
 
-template<> inline void StringTypeAdapter<CFStringRef>::writeTo<LChar>(LChar* destination) const
+template<> inline void StringTypeAdapter<CFStringRef>::writeTo<Latin1Character>(Latin1Character* destination) const
 {
     if (m_string)
         std::memcpy(destination, CFStringGetCStringPtr(m_string, kCFStringEncodingISOLatin1), CFStringGetLength(m_string));

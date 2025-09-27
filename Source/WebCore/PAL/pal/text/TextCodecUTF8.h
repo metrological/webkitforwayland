@@ -27,7 +27,7 @@
 
 #include "TextCodec.h"
 #include <unicode/utf8.h>
-#include <wtf/text/LChar.h>
+#include <wtf/text/Latin1Character.h>
 
 namespace PAL {
 
@@ -44,8 +44,8 @@ private:
     String decode(std::span<const uint8_t>, bool flush, bool stopOnError, bool& sawError) final;
     Vector<uint8_t> encode(StringView, UnencodableHandling) const final;
 
-    bool handlePartialSequence(LChar*& destination, std::span<const uint8_t>& source, bool flush);
-    void handlePartialSequence(UChar*& destination, std::span<const uint8_t>& source, bool flush, bool stopOnError, bool& sawError);
+    bool handlePartialSequence(Latin1Character*& destination, std::span<const uint8_t>& source, bool flush);
+    void handlePartialSequence(char16_t*& destination, std::span<const uint8_t>& source, bool flush, bool stopOnError, bool& sawError);
     void consumePartialSequenceByte();
 
     int m_partialSequenceSize { 0 };

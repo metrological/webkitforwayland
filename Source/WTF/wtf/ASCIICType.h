@@ -25,7 +25,7 @@
 #pragma once
 
 #include <wtf/Assertions.h>
-#include <wtf/text/LChar.h>
+#include <wtf/text/Latin1Character.h>
 
 // The behavior of many of the functions in the <ctype.h> header is dependent
 // on the current locale. But in the WebKit project, all uses of those functions
@@ -184,7 +184,7 @@ template<> inline char toASCIILower(char character)
     return static_cast<char>(asciiCaseFoldTable[static_cast<uint8_t>(character)]);
 }
 
-template<> inline LChar toASCIILower(LChar character)
+template<> inline Latin1Character toASCIILower(Latin1Character character)
 {
     return asciiCaseFoldTable[character];
 }

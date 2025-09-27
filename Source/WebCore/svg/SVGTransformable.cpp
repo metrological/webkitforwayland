@@ -152,12 +152,12 @@ template<typename CharacterType> static std::optional<SVGTransformValue> parseTr
     return std::nullopt;
 }
 
-std::optional<SVGTransformValue> SVGTransformable::parseTransformValue(SVGTransformValue::SVGTransformType type, StringParsingBuffer<LChar>& buffer)
+std::optional<SVGTransformValue> SVGTransformable::parseTransformValue(SVGTransformValue::SVGTransformType type, StringParsingBuffer<Latin1Character>& buffer)
 {
     return parseTransformValueGeneric(type, buffer);
 }
 
-std::optional<SVGTransformValue> SVGTransformable::parseTransformValue(SVGTransformValue::SVGTransformType type, StringParsingBuffer<UChar>& buffer)
+std::optional<SVGTransformValue> SVGTransformable::parseTransformValue(SVGTransformValue::SVGTransformType type, StringParsingBuffer<char16_t>& buffer)
 {
     return parseTransformValueGeneric(type, buffer);
 }
@@ -201,12 +201,12 @@ std::optional<SVGTransformValue::SVGTransformType> SVGTransformable::parseTransf
     });
 }
 
-std::optional<SVGTransformValue::SVGTransformType> SVGTransformable::parseTransformType(StringParsingBuffer<LChar>& buffer)
+std::optional<SVGTransformValue::SVGTransformType> SVGTransformable::parseTransformType(StringParsingBuffer<Latin1Character>& buffer)
 {
     return parseTransformTypeGeneric(buffer);
 }
 
-std::optional<SVGTransformValue::SVGTransformType> SVGTransformable::parseTransformType(StringParsingBuffer<UChar>& buffer)
+std::optional<SVGTransformValue::SVGTransformType> SVGTransformable::parseTransformType(StringParsingBuffer<char16_t>& buffer)
 {
     return parseTransformTypeGeneric(buffer);
 }

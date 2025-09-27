@@ -39,7 +39,7 @@ namespace TestWebKitAPI {
 #if CPU(ARM64)
 TEST(WTF_StringCommon, Find8NonASCII)
 {
-    Vector<LChar> vector(4096);
+    Vector<Latin1Character> vector(4096);
     vector.fill('a');
 
     EXPECT_FALSE(WTF::find8NonASCII(vector.subspan(0, 4096)));
@@ -206,41 +206,41 @@ TEST(WTF_StringCommon, CopyElements32To16)
 TEST(WTF_StringCommon, CharactersContain8)
 {
     {
-        Vector<LChar> source;
-        EXPECT_FALSE((charactersContain<LChar, 0>(source.span())));
-        EXPECT_FALSE((charactersContain<LChar, 0, 1>(source.span())));
-        EXPECT_FALSE((charactersContain<LChar, 0, 1, 2>(source.span())));
+        Vector<Latin1Character> source;
+        EXPECT_FALSE((charactersContain<Latin1Character, 0>(source.span())));
+        EXPECT_FALSE((charactersContain<Latin1Character, 0, 1>(source.span())));
+        EXPECT_FALSE((charactersContain<Latin1Character, 0, 1, 2>(source.span())));
     }
 
     {
-        Vector<LChar> source;
+        Vector<Latin1Character> source;
         for (unsigned i = 0; i < 15; ++i)
             source.append(i);
-        EXPECT_TRUE((charactersContain<LChar, 0>(source.span())));
-        EXPECT_TRUE((charactersContain<LChar, 1>(source.span())));
-        EXPECT_TRUE((charactersContain<LChar, 2>(source.span())));
-        EXPECT_TRUE((charactersContain<LChar, 2, 3>(source.span())));
-        EXPECT_TRUE((charactersContain<LChar, 16, 14>(source.span())));
-        EXPECT_FALSE((charactersContain<LChar, 16>(source.span())));
-        EXPECT_FALSE((charactersContain<LChar, 16, 15>(source.span())));
-        EXPECT_FALSE((charactersContain<LChar, 16, 15, 17>(source.span())));
-        EXPECT_FALSE((charactersContain<LChar, 16, 15, 17, 18>(source.span())));
-        EXPECT_FALSE((charactersContain<LChar, 0x81>(source.span())));
-        EXPECT_FALSE((charactersContain<LChar, 0x81, 0x82>(source.span())));
+        EXPECT_TRUE((charactersContain<Latin1Character, 0>(source.span())));
+        EXPECT_TRUE((charactersContain<Latin1Character, 1>(source.span())));
+        EXPECT_TRUE((charactersContain<Latin1Character, 2>(source.span())));
+        EXPECT_TRUE((charactersContain<Latin1Character, 2, 3>(source.span())));
+        EXPECT_TRUE((charactersContain<Latin1Character, 16, 14>(source.span())));
+        EXPECT_FALSE((charactersContain<Latin1Character, 16>(source.span())));
+        EXPECT_FALSE((charactersContain<Latin1Character, 16, 15>(source.span())));
+        EXPECT_FALSE((charactersContain<Latin1Character, 16, 15, 17>(source.span())));
+        EXPECT_FALSE((charactersContain<Latin1Character, 16, 15, 17, 18>(source.span())));
+        EXPECT_FALSE((charactersContain<Latin1Character, 0x81>(source.span())));
+        EXPECT_FALSE((charactersContain<Latin1Character, 0x81, 0x82>(source.span())));
     }
 
     {
-        Vector<LChar> source;
+        Vector<Latin1Character> source;
         for (unsigned i = 0; i < 250; ++i) {
             if (i & 0x1)
                 source.append(i);
         }
-        EXPECT_FALSE((charactersContain<LChar, 0>(source.span())));
-        EXPECT_FALSE((charactersContain<LChar, 0>(source.span())));
-        EXPECT_FALSE((charactersContain<LChar, 0xff>(source.span())));
-        EXPECT_TRUE((charactersContain<LChar, 0x81>(source.span())));
-        EXPECT_FALSE((charactersContain<LChar, 250>(source.span())));
-        EXPECT_TRUE((charactersContain<LChar, 249>(source.span())));
+        EXPECT_FALSE((charactersContain<Latin1Character, 0>(source.span())));
+        EXPECT_FALSE((charactersContain<Latin1Character, 0>(source.span())));
+        EXPECT_FALSE((charactersContain<Latin1Character, 0xff>(source.span())));
+        EXPECT_TRUE((charactersContain<Latin1Character, 0x81>(source.span())));
+        EXPECT_FALSE((charactersContain<Latin1Character, 250>(source.span())));
+        EXPECT_TRUE((charactersContain<Latin1Character, 249>(source.span())));
     }
 }
 
@@ -293,21 +293,21 @@ TEST(WTF_StringCommon, CharactersContain16)
             if (i & 0x1)
                 source.append(i + 0x1000);
         }
-        EXPECT_FALSE((charactersContain<UChar, 0>(source.span())));
-        EXPECT_FALSE((charactersContain<UChar, 0>(source.span())));
-        EXPECT_FALSE((charactersContain<UChar, 0xff>(source.span())));
-        EXPECT_FALSE((charactersContain<UChar, 0x81>(source.span())));
-        EXPECT_FALSE((charactersContain<UChar, 250>(source.span())));
-        EXPECT_FALSE((charactersContain<UChar, 249>(source.span())));
-        EXPECT_FALSE((charactersContain<UChar, 0x101>(source.span())));
-        EXPECT_TRUE((charactersContain<UChar, 0x1001>(source.span())));
-        EXPECT_FALSE((charactersContain<UChar, 0x1000>(source.span())));
-        EXPECT_FALSE((charactersContain<UChar, 0x1100>(source.span())));
-        EXPECT_FALSE((charactersContain<UChar, 0x1000 + 256>(source.span())));
-        EXPECT_FALSE((charactersContain<UChar, 0x1000 + 250>(source.span())));
-        EXPECT_TRUE((charactersContain<UChar, 0x1000 + 249>(source.span())));
-        EXPECT_TRUE((charactersContain<UChar, 0x1000 + 249, 0>(source.span())));
-        EXPECT_FALSE((charactersContain<UChar, 0x1000 + 250, 0>(source.span())));
+        EXPECT_FALSE((charactersContain<char16_t, 0>(source.span())));
+        EXPECT_FALSE((charactersContain<char16_t, 0>(source.span())));
+        EXPECT_FALSE((charactersContain<char16_t, 0xff>(source.span())));
+        EXPECT_FALSE((charactersContain<char16_t, 0x81>(source.span())));
+        EXPECT_FALSE((charactersContain<char16_t, 250>(source.span())));
+        EXPECT_FALSE((charactersContain<char16_t, 249>(source.span())));
+        EXPECT_FALSE((charactersContain<char16_t, 0x101>(source.span())));
+        EXPECT_TRUE((charactersContain<char16_t, 0x1001>(source.span())));
+        EXPECT_FALSE((charactersContain<char16_t, 0x1000>(source.span())));
+        EXPECT_FALSE((charactersContain<char16_t, 0x1100>(source.span())));
+        EXPECT_FALSE((charactersContain<char16_t, 0x1000 + 256>(source.span())));
+        EXPECT_FALSE((charactersContain<char16_t, 0x1000 + 250>(source.span())));
+        EXPECT_TRUE((charactersContain<char16_t, 0x1000 + 249>(source.span())));
+        EXPECT_TRUE((charactersContain<char16_t, 0x1000 + 249, 0>(source.span())));
+        EXPECT_FALSE((charactersContain<char16_t, 0x1000 + 250, 0>(source.span())));
     }
 }
 

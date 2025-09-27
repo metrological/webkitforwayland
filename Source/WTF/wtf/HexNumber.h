@@ -29,17 +29,17 @@ enum HexConversionMode { Lowercase, Uppercase };
 
 namespace Internal {
 
-inline const LChar* hexDigitsForMode(HexConversionMode mode)
+inline const Latin1Character* hexDigitsForMode(HexConversionMode mode)
 {
-    static const LChar lowercaseHexDigits[17] = "0123456789abcdef";
-    static const LChar uppercaseHexDigits[17] = "0123456789ABCDEF";
+    static const Latin1Character lowercaseHexDigits[17] = "0123456789abcdef";
+    static const Latin1Character uppercaseHexDigits[17] = "0123456789ABCDEF";
     return mode == Lowercase ? lowercaseHexDigits : uppercaseHexDigits;
 }
 
-WTF_EXPORT_PRIVATE std::pair<LChar*, unsigned> appendHex(LChar* buffer, unsigned bufferSize, std::uintmax_t number, unsigned minimumDigits, HexConversionMode);
+WTF_EXPORT_PRIVATE std::pair<Latin1Character*, unsigned> appendHex(Latin1Character* buffer, unsigned bufferSize, std::uintmax_t number, unsigned minimumDigits, HexConversionMode);
 
 template<size_t arraySize, typename NumberType>
-inline std::pair<LChar*, unsigned> appendHex(std::array<LChar, arraySize>& buffer, NumberType number, unsigned minimumDigits, HexConversionMode mode)
+inline std::pair<Latin1Character*, unsigned> appendHex(std::array<Latin1Character, arraySize>& buffer, NumberType number, unsigned minimumDigits, HexConversionMode mode)
 {
     return appendHex(&buffer.front(), buffer.size(), static_cast<typename std::make_unsigned<NumberType>::type>(number), minimumDigits, mode);
 }
@@ -49,10 +49,10 @@ inline std::pair<LChar*, unsigned> appendHex(std::array<LChar, arraySize>& buffe
 struct HexNumberBuffer {
     WTF_MAKE_STRUCT_FAST_ALLOCATED;
 
-    std::array<LChar, 16> buffer;
+    std::array<Latin1Character, 16> buffer;
     unsigned length;
 
-    std::span<const LChar> span() const LIFETIME_BOUND { return std::span { buffer }.last(length); }
+    std::span<const Latin1Character> span() const LIFETIME_BOUND { return std::span { buffer }.last(length); }
 };
 
 template<typename NumberType> HexNumberBuffer hex(NumberType number, unsigned minimumDigits = 0, HexConversionMode mode = Uppercase)

@@ -281,9 +281,9 @@ DecodedHTMLEntity consumeHTMLEntity(SegmentedString& source, UChar additionalAll
     return consumeHTMLEntity(SegmentedStringSource { source }, additionalAllowedCharacter);
 }
 
-DecodedHTMLEntity consumeHTMLEntity(StringParsingBuffer<LChar>& source)
+DecodedHTMLEntity consumeHTMLEntity(StringParsingBuffer<Latin1Character>& source)
 {
-    return consumeHTMLEntity(StringParsingBufferSource<LChar> { source }, 0);
+    return consumeHTMLEntity(StringParsingBufferSource<Latin1Character> { source }, 0);
 }
 
 DecodedHTMLEntity consumeHTMLEntity(StringParsingBuffer<UChar>& source)

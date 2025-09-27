@@ -55,7 +55,7 @@ bool VTTScanner::scan(char c)
     return true;
 }
 
-bool VTTScanner::scan(std::span<const LChar> characters)
+bool VTTScanner::scan(std::span<const Latin1Character> characters)
 {
     unsigned matchLength = m_is8Bit ? m_end.characters8 - m_data.characters8 : m_end.characters16 - m_data.characters16;
     if (matchLength < characters.size())

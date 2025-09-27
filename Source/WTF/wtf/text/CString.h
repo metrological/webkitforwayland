@@ -46,7 +46,7 @@ public:
     size_t length() const { return m_length; }
 
 WTF_ALLOW_UNSAFE_BUFFER_USAGE_BEGIN
-    std::span<const LChar> span() const LIFETIME_BOUND { return unsafeMakeSpan(reinterpret_cast_ptr<const LChar*>(this + 1), m_length); }
+    std::span<const Latin1Character> span() const LIFETIME_BOUND { return unsafeMakeSpan(reinterpret_cast_ptr<const Latin1Character*>(this + 1), m_length); }
     std::span<const char> spanIncludingNullTerminator() const LIFETIME_BOUND { return unsafeMakeSpan(reinterpret_cast_ptr<const char*>(this + 1), m_length + 1); }
 WTF_ALLOW_UNSAFE_BUFFER_USAGE_END
 
@@ -126,7 +126,7 @@ template<> struct DefaultHash<CString> : CStringHash { };
 template<typename> struct HashTraits;
 template<> struct HashTraits<CString> : SimpleClassHashTraits<CString> { };
 
-inline CString::CString(std::span<const uint8_t> bytes)
+inline CString::CString(std::span<const Latin1Character> bytes)
     : CString(byteCast<char>(bytes))
 {
 }

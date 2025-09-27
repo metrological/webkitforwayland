@@ -183,8 +183,8 @@ function createTables(prefix, maxValue, canonicalGroups)
     }
     print("};");
     print();
-    // Create canonical table for LChar domain
-    let line = "const uint16_t canonicalTableLChar[256] = {";
+    // Create canonical table for Latin1Character domain
+    let line = "const uint16_t canonicalTableLatin1Character[256] = {";
     for (let i = 0; i < 256; i++) {
         if (!(i % 16)) {
             print(line);
