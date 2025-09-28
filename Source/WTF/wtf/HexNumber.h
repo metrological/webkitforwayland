@@ -29,13 +29,6 @@ enum HexConversionMode { Lowercase, Uppercase };
 
 namespace Internal {
 
-inline const Latin1Character* hexDigitsForMode(HexConversionMode mode)
-{
-    static const Latin1Character lowercaseHexDigits[17] = "0123456789abcdef";
-    static const Latin1Character uppercaseHexDigits[17] = "0123456789ABCDEF";
-    return mode == Lowercase ? lowercaseHexDigits : uppercaseHexDigits;
-}
-
 WTF_EXPORT_PRIVATE std::pair<Latin1Character*, unsigned> appendHex(Latin1Character* buffer, unsigned bufferSize, std::uintmax_t number, unsigned minimumDigits, HexConversionMode);
 
 template<size_t arraySize, typename NumberType>
