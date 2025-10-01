@@ -477,6 +477,15 @@ void MediaPlayerPrivateGStreamerMSE::updateStates()
         }
     }
 
+    if (m_isEndReached) {
+        // m_isEndReached always makes HTMLMediaElement think playback is paused,
+        // despite the actual pipeline state. Notifying playback state change
+        // here would sync HTMLMediaElement state to paused while the pipeline
+        // could be in PLAYING state. That could effectively pause the pipeline
+        // without any pause request from the user.
+        shouldUpdatePlaybackState = false;
+    }
+
     if (!shouldUpdatePlaybackState)
         return;
 
