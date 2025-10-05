@@ -179,7 +179,7 @@ inline unsigned SegmentedString::Substring::numberOfCharactersConsumed() const
 ALWAYS_INLINE char16_t SegmentedString::Substring::currentCharacter() const
 {
     ASSERT(length);
-    return is8Bit ? *currentCharacter8 : *currentCharacter16;
+    return is8Bit ? char16_t { *currentCharacter8 } : *currentCharacter16;
 }
 
 ALWAYS_INLINE char16_t SegmentedString::Substring::currentCharacterPreIncrement()

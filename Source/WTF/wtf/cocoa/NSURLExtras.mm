@@ -317,7 +317,7 @@ NSData *originalURLData(NSURL *URL)
 
 NSString *userVisibleString(NSURL *URL)
 {
-    return URLHelpers::userVisibleURL(span(originalURLData(URL)));
+    return URLHelpers::userVisibleURL(byteCast<Latin1Character>(span(originalURLData(URL))));
 }
 
 BOOL isUserVisibleURL(NSString *string)

@@ -227,7 +227,7 @@ RefPtr<SharedBuffer> MockCDM::sanitizeResponse(const SharedBuffer& response) con
     if (!charactersAreAllASCII(contiguousResponse->span()))
         return nullptr;
 
-    for (auto word : StringView(contiguousResponse->span()).split(' ')) {
+    for (auto word : StringView(byteCast<Latin1Character>(contiguousResponse->span())).split(' ')) {
         if (word == "valid-response"_s)
             return contiguousResponse;
     }
@@ -283,7 +283,7 @@ void MockCDMInstance::initializeWithConfiguration(const MediaKeySystemConfigurat
 void MockCDMInstance::setServerCertificate(Ref<SharedBuffer>&& certificate, SuccessCallback&& callback)
 {
     Ref contiguousData = certificate->makeContiguous();
-    callback(equalLettersIgnoringASCIICase(StringView { contiguousData->span() }, "valid"_s) ? Succeeded : Failed);
+    callback(equalLettersIgnoringASCIICase(StringView { byteCast<Latin1Character>(contiguousData->span()) }, "valid"_s) ? Succeeded : Failed);
 }
 
 void MockCDMInstance::setStorageDirectory(const String&)
@@ -341,7 +341,7 @@ void MockCDMInstanceSession::updateLicense(const String& sessionID, LicenseType,
         return;
     }
 
-    Vector<String> responseVector = String(response->makeContiguous()->span()).split(' ');
+    Vector<String> responseVector = String(byteCast<Latin1Character>(response->makeContiguous()->span())).split(' ');
 
     if (responseVector.contains(String("invalid-format"_s))) {
         callback(false, std::nullopt, std::nullopt, std::nullopt, SuccessValue::Failed);

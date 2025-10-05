@@ -216,7 +216,7 @@ inline void VTTScanner::seekTo(Position position)
 inline char16_t VTTScanner::currentChar() const
 {
     ASSERT(position() < end());
-    return m_is8Bit ? *m_data.characters8 : *m_data.characters16;
+    return m_is8Bit ? char16_t { *m_data.characters8 } : *m_data.characters16;
 }
 
 inline void VTTScanner::advance(unsigned amount)

@@ -531,7 +531,7 @@ bool TextResourceDecoder::checkForHeadCharset(std::span<const uint8_t> data, boo
         int len = 0;
         int pos = findXMLEncoding(ptr, xmlDeclarationEnd - ptr, len);
         if (pos != -1)
-            setEncoding(findTextEncoding(ptr + pos, len), EncodingFromXMLHeader);
+            setEncoding(findTextEncoding(byteCast<Latin1Character>(ptr + pos), len), EncodingFromXMLHeader);
         // continue looking for a charset - it may be specified in an HTTP-Equiv meta
     } else if (bytesEqual(ptr, '<', 0, '?', 0, 'x', 0)) {
         setEncoding(PAL::UTF16LittleEndianEncoding(), AutoDetectedEncoding);

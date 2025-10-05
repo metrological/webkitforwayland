@@ -56,7 +56,7 @@ String bytesAsString(CFURLRef url)
     RELEASE_ASSERT(bytesLength <= static_cast<CFIndex>(String::MaxLength));
     Latin1Character* buffer;
     auto result = String::createUninitialized(bytesLength, buffer);
-    CFURLGetBytes(url, buffer, bytesLength);
+    CFURLGetBytes(url, byteCast<UInt8>(buffer()), bytesLength);
     return result;
 }
 
@@ -90,7 +90,7 @@ bool isSameOrigin(CFURLRef a, const URL& b)
     auto aBytes = bytesAsVector(a);
     RELEASE_ASSERT(aBytes.size() <= String::MaxLength);
 
-    StringView aString { aBytes.span() };
+    StringView aString { byteCast<Latin1Character>(aBytes.span()) };
     StringView bString { b.string() };
 
     if (!b.hasPath())

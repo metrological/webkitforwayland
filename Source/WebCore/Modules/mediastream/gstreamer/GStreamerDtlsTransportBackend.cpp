@@ -80,12 +80,11 @@ void GStreamerDtlsTransportBackendObserver::stateChanged()
             GUniqueOutPtr<char> remoteCertificate;
             GUniqueOutPtr<char> certificate;
             g_object_get(m_backend.get(), "remote-certificate", &remoteCertificate.outPtr(), "certificate", &certificate.outPtr(), nullptr);
-
             if (remoteCertificate)
-                certificates.append(JSC::ArrayBuffer::create(span8(remoteCertificate.get())));
+                certificates.append(JSC::ArrayBuffer::create(byteCast<uint8_t>(span8(remoteCertificate.get()))));
 
             if (certificate)
-                certificates.append(JSC::ArrayBuffer::create(span8(certificate.get())));
+                certificates.append(JSC::ArrayBuffer::create(byteCast<uint8_t>(span8(certificate.get()))));
         }
         m_client->onStateChanged(toRTCDtlsTransportState(state), WTFMove(certificates));
     });

@@ -327,7 +327,7 @@ String FileReaderLoader::stringResult()
         // No conversion is needed.
         break;
     case ReadAsBinaryString:
-        m_stringResult = m_rawData->span().first(m_bytesLoaded);
+        m_stringResult = byteCast<Latin1Character>(m_rawData->span().first(m_bytesLoaded));
         break;
     case ReadAsText:
         convertToText();

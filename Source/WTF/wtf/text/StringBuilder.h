@@ -278,8 +278,7 @@ inline unsigned StringBuilder::capacity() const
 
 inline char16_t StringBuilder::operator[](unsigned i) const
 {
-    RELEASE_ASSERT_WITH_SECURITY_IMPLICATION(i < length());
-    return is8Bit() ? characters<Latin1Character>()[i] : characters<char16_t>()[i];
+    return is8Bit() ? char16_t { span8()[i] } : span16()[i];
 }
 
 inline bool StringBuilder::is8Bit() const
