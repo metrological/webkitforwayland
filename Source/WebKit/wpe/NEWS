@@ -1,4 +1,20 @@
 =================
+WPE WebKit 2.50.1
+=================
+
+What's new in WPE WebKit 2.50.1?
+
+  - Improve text rendering performance.
+  - On Android, the built library no longer includes versioning
+    information in its name.
+  - Fix audio playback broken on Instagram.
+  - Fix blurry rendering of SVG patterns when zoomed.
+  - Fix rendering of layers with fractional transforms.
+  - Fix the build with ENABLE(VIDEO) disabled.
+  - Fix the build in s390x.
+  - Fix several crashes and rendering issues.
+
+=================
 WPE WebKit 2.50.0
 =================
 
