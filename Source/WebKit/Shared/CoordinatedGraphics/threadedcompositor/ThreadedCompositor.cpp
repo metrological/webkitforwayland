@@ -135,28 +135,12 @@ void ThreadedCompositor::suspend()
     m_compositingRunLoop->suspend();
     m_compositingRunLoop->performTaskSync([this, protectedThis = Ref { *this }] {
         m_scene->setActive(false);
+        if (!m_nonCompositedWebGLEnabled) {
+            m_context->suspend();
+            m_client.didDestroyGLContext();
+            m_nativeSurfaceHandle = 0;
+        }
     });
-}
-
-void ThreadedCompositor::suspendToTransparent()
-{
-    // If we're in nonCompositedWebGL mode, the WebGLRenderingContext will have painted the
-    // transparent background. We don't need to do anything besides suspending.
-    if (m_nonCompositedWebGLEnabled) {
-        suspend();
-        return;
-    }
-
-    // When not in nonCompositedWebGL, we need to request a redraw to paint the transparent
-    // background, and when the scene is completed, suspend.
-    if (++m_suspendedCount > 1)
-        return;
-
-    // Set the flag for transparent and request a redraw.
-    m_compositingRunLoop->performTaskSync([this, protectedThis = Ref { *this }] {
-        m_suspendToTransparentState = SuspendToTransparentState::Requested;
-    });
-    m_compositingRunLoop->scheduleUpdate();
 }
 
 void ThreadedCompositor::resume()
@@ -166,16 +150,13 @@ void ThreadedCompositor::resume()
         return;
 
     m_compositingRunLoop->performTaskSync([this, protectedThis = Ref { *this }] {
+        if (!m_nativeSurfaceHandle) {
+            m_nativeSurfaceHandle = m_client.nativeSurfaceHandleForCompositing();
+            m_context->resume((GLNativeWindowType) m_nativeSurfaceHandle);
+        }
+
         m_scene->setActive(true);
-        m_suspendToTransparentState = SuspendToTransparentState::None;
     });
-#if ENABLE(RESIZE_WAYLAND_SURFACES_ON_SUSPEND_PAINTING)
-    if (!m_nonCompositedWebGLEnabled) {
-        // need to resize the view on resume
-        Locker locker { m_attributes.lock };
-        m_attributes.needsResize = true;
-    }
-#endif
 
     m_compositingRunLoop->resume();
     m_compositingRunLoop->scheduleUpdate();
@@ -289,20 +270,8 @@ void ThreadedCompositor::renderLayerTree()
     // GL viewport is updated separately, if necessary. This establishes sequencing where
     // everything inside the will-render and did-render scope is done for a constant-sized scene,
     // and similarly all GL operations are done inside that specific scope.
-#if !ENABLE(RESIZE_WAYLAND_SURFACES_ON_SUSPEND_PAINTING)
     if (needsResize)
         m_client.resize(viewportSize);
-#else
-    // since we got this far, we know m_nonCompositedWebGLEnabled is false, no need to check
-    if (needsResize && m_suspendToTransparentState != SuspendToTransparentState::Requested) {
-        m_client.resize(viewportSize);
-    } else if (m_suspendToTransparentState == SuspendToTransparentState::Requested) {
-        // resizing the surfaces, to conserve the memory; going too small (like 1x1) will not properly work
-        // on some platformns, so choosing 16x16 (should only take around 3*1kB in suspended, instead of eg. 3*8MB for HD)
-        constexpr IntSize suspendedSize(16, 16);
-        m_client.resize(suspendedSize);
-    }
-#endif
 
     m_client.willRenderFrame();
 
@@ -313,27 +282,9 @@ void ThreadedCompositor::renderLayerTree()
     glClear(GL_COLOR_BUFFER_BIT);
 
     m_scene->applyStateChanges(states);
-    if (m_suspendToTransparentState != SuspendToTransparentState::Requested)
-        m_scene->paintToCurrentGLContext(viewportTransform, FloatRect { FloatPoint { }, viewportSize }, m_paintFlags);
-    else
-        m_suspendToTransparentState = SuspendToTransparentState::WaitingForFrameComplete;
+    m_scene->paintToCurrentGLContext(viewportTransform, FloatRect { FloatPoint { }, viewportSize }, m_paintFlags);
 
     m_context->swapBuffers();
-
-#if ENABLE(RESIZE_WAYLAND_SURFACES_ON_SUSPEND_PAINTING)
-    // since we got this far, we know m_nonCompositedWebGLEnabled is false, no need to check
-    if (m_suspendToTransparentState == SuspendToTransparentState::WaitingForFrameComplete) {
-        /*  With triple buffering we normally have 3 screen buffers. The backing surfaces may only be really
-            resized when they're presented - so we need 3 buffer swaps to make sure all these surfaces
-            are resized to the requested suspendedSize, thus saving the memory in suspend
-            (one swapBuffers is already done above) */
-        for (int i=0; i<2; ++i) {
-            glClearColor(0, 0, 0, 0);
-            glClear(GL_COLOR_BUFFER_BIT);
-            m_context->swapBuffers();
-        }
-    }
-#endif
 
     if (m_scene->isActive())
         m_client.didRenderFrame();
@@ -353,12 +304,6 @@ void ThreadedCompositor::sceneUpdateFinished()
         Locker locker { m_attributes.lock };
         shouldDispatchDisplayRefreshCallback = m_attributes.clientRendersNextFrame
             || m_displayRefreshMonitor->requiresDisplayRefreshCallback();
-    }
-
-    if (m_suspendToTransparentState == SuspendToTransparentState::WaitingForFrameComplete) {
-        m_compositingRunLoop->suspend();
-        m_scene->setActive(false);
-        m_suspendToTransparentState = SuspendToTransparentState::None;
     }
 
     Locker stateLocker { m_compositingRunLoop->stateLock() };

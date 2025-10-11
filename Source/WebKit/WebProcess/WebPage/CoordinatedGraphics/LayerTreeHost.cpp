@@ -260,7 +260,7 @@ void LayerTreeHost::targetRefreshRateDidChange(uint32_t rate)
 void LayerTreeHost::pauseRendering()
 {
     m_isSuspended = true;
-    m_compositor->suspendToTransparent();
+    m_compositor->suspend();
 }
 
 void LayerTreeHost::resumeRendering()
