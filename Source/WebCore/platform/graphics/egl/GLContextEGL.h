@@ -101,6 +101,9 @@ private:
 
     GCGLContext platformContext() override;
 
+    void suspend() override;
+    void resume(GLNativeWindowType windowHandle) override;
+
     enum EGLSurfaceType { PbufferSurface, WindowSurface, PixmapSurface, Surfaceless };
 
     GLContextEGL(PlatformDisplay&, EGLContext, EGLSurface, EGLConfig, EGLSurfaceType);

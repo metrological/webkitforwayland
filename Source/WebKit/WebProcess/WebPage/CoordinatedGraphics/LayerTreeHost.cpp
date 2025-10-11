@@ -80,7 +80,8 @@ LayerTreeHost::LayerTreeHost(WebPage& webPage)
     ASSERT(m_webPage.drawingArea());
     m_displayID = std::numeric_limits<uint32_t>::max() - m_webPage.drawingArea()->identifier().toUInt64();
     bool nonCompositedWebGLEnabled = webPage.corePage()->settings().nonCompositedWebGLEnabled();
-    m_compositor = ThreadedCompositor::create(m_compositorClient, m_compositorClient, m_displayID, scaledSize, scaleFactor, paintFlags, nonCompositedWebGLEnabled);
+    bool destroyWindowOnFreeze = webPage.corePage()->settings().pageLifecycleAPIDestroyWindowOnFreeze();
+    m_compositor = ThreadedCompositor::create(m_compositorClient, m_compositorClient, m_displayID, scaledSize, scaleFactor, paintFlags, nonCompositedWebGLEnabled, destroyWindowOnFreeze);
     m_layerTreeContext.contextID = m_surface->surfaceID();
 
     didChangeViewport();
@@ -109,7 +110,7 @@ void LayerTreeHost::setLayerFlushSchedulingEnabled(bool layerFlushingEnabled)
     }
 
     cancelPendingLayerFlush();
-    m_compositor->suspend();
+    m_compositor->suspendToTransparent();
 }
 
 void LayerTreeHost::setShouldNotifyAfterNextScheduledLayerFlush(bool notifyAfterScheduledLayerFlush)

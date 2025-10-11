@@ -99,6 +99,25 @@ void GLContextEGL::destroyWPETarget()
         wpe_renderer_backend_egl_offscreen_target_destroy(m_wpeTarget);
 }
 
+void GLContextEGL::suspend()
+{
+    EGLDisplay display = m_display.eglDisplay();
+    glBindFramebuffer(GL_FRAMEBUFFER, 0);
+    eglMakeCurrent(display, EGL_NO_SURFACE, EGL_NO_SURFACE, EGL_NO_CONTEXT);
+    eglDestroySurface(display, m_surface);
+    m_surface = EGL_NO_SURFACE;
+}
+
+void GLContextEGL::resume(GLNativeWindowType windowHandle)
+{
+    EGLDisplay display = m_display.eglDisplay();
+    m_surface = eglCreateWindowSurface(display, m_config, reinterpret_cast<EGLNativeWindowType>(windowHandle), nullptr);
+    if (m_surface == EGL_NO_SURFACE) {
+        WTFLogAlways("Cannot recreate EGL WPE window surface: %s\n", lastErrorString());
+        return;
+    }
+}
+
 } // namespace WebCore
 
 #endif // USE(EGL) && USE(WPE_RENDERER)

@@ -109,6 +109,8 @@ public:
     virtual bool isEGLContext() const = 0;
 
     virtual GCGLContext platformContext() = 0;
+    virtual void suspend() = 0;
+    virtual void resume(GLNativeWindowType windowHandle) = 0;
 
 protected:
     GLContext(PlatformDisplay&);

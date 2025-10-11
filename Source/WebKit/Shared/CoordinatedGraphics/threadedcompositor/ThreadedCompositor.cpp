@@ -47,15 +47,16 @@
 namespace WebKit {
 using namespace WebCore;
 
-Ref<ThreadedCompositor> ThreadedCompositor::create(Client& client, ThreadedDisplayRefreshMonitor::Client& displayRefreshMonitorClient, PlatformDisplayID displayID, const IntSize& viewportSize, float scaleFactor, TextureMapper::PaintFlags paintFlags, bool nonCompositedWebGLEnabled)
+Ref<ThreadedCompositor> ThreadedCompositor::create(Client& client, ThreadedDisplayRefreshMonitor::Client& displayRefreshMonitorClient, PlatformDisplayID displayID, const IntSize& viewportSize, float scaleFactor, TextureMapper::PaintFlags paintFlags, bool nonCompositedWebGLEnabled, bool destroyWindowOnFreeze)
 {
-    return adoptRef(*new ThreadedCompositor(client, displayRefreshMonitorClient, displayID, viewportSize, scaleFactor, paintFlags, nonCompositedWebGLEnabled));
+    return adoptRef(*new ThreadedCompositor(client, displayRefreshMonitorClient, displayID, viewportSize, scaleFactor, paintFlags, nonCompositedWebGLEnabled, destroyWindowOnFreeze));
 }
 
-ThreadedCompositor::ThreadedCompositor(Client& client, ThreadedDisplayRefreshMonitor::Client& displayRefreshMonitorClient, PlatformDisplayID displayID, const IntSize& viewportSize, float scaleFactor, TextureMapper::PaintFlags paintFlags, bool nonCompositedWebGLEnabled)
+ThreadedCompositor::ThreadedCompositor(Client& client, ThreadedDisplayRefreshMonitor::Client& displayRefreshMonitorClient, PlatformDisplayID displayID, const IntSize& viewportSize, float scaleFactor, TextureMapper::PaintFlags paintFlags, bool nonCompositedWebGLEnabled, bool destroyWindowOnFreeze)
     : m_client(client)
     , m_paintFlags(paintFlags)
     , m_nonCompositedWebGLEnabled(nonCompositedWebGLEnabled)
+    , m_destroyWindowOnFreeze(destroyWindowOnFreeze)
     , m_compositingRunLoop(makeUnique<CompositingRunLoop>([this] { renderLayerTree(); }))
     , m_displayRefreshMonitor(ThreadedDisplayRefreshMonitor::create(displayID, displayRefreshMonitorClient))
 {
@@ -135,6 +136,11 @@ void ThreadedCompositor::suspend()
     m_compositingRunLoop->suspend();
     m_compositingRunLoop->performTaskSync([this, protectedThis = Ref { *this }] {
         m_scene->setActive(false);
+        if (!m_nonCompositedWebGLEnabled && m_destroyWindowOnFreeze) {
+            m_context->suspend();
+            m_client.didDestroyGLContext();
+            m_nativeSurfaceHandle = 0;
+        }
     });
 }
 
@@ -142,7 +148,8 @@ void ThreadedCompositor::suspendToTransparent()
 {
     // If we're in nonCompositedWebGL mode, the WebGLRenderingContext will have painted the
     // transparent background. We don't need to do anything besides suspending.
-    if (m_nonCompositedWebGLEnabled) {
+    // If we want to destroy the window on freeze, we should just suspend.
+    if (m_nonCompositedWebGLEnabled || m_destroyWindowOnFreeze) {
         suspend();
         return;
     }
@@ -166,6 +173,13 @@ void ThreadedCompositor::resume()
         return;
 
     m_compositingRunLoop->performTaskSync([this, protectedThis = Ref { *this }] {
+        if (m_destroyWindowOnFreeze && !m_nativeSurfaceHandle) {
+            m_nativeSurfaceHandle = m_client.nativeSurfaceHandleForCompositing();
+            m_context->resume((GLNativeWindowType) m_nativeSurfaceHandle);
+            m_scene->setActive(true);
+            return;
+        }
+
         m_scene->setActive(true);
         m_suspendToTransparentState = SuspendToTransparentState::None;
     });
