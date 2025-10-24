@@ -553,6 +553,13 @@ void CDMInstanceSessionThunder::sessionFailure()
     m_sessionChangedCallbacks.clear();
 }
 
+void CDMInstanceSessionThunder::sessionSuccess()
+{
+    for (auto& sessionChangedCallback : m_sessionChangedCallbacks)
+        sessionChangedCallback(true, nullptr);
+    m_sessionChangedCallbacks.clear();
+}
+
 void CDMInstanceSessionThunder::updateLicense(const String& sessionID, LicenseType, Ref<SharedBuffer>&& response, LicenseUpdateCallback&& callback)
 {
     ASSERT_UNUSED(sessionID, sessionID == m_sessionID);
@@ -663,8 +670,10 @@ void CDMInstanceSessionThunder::removeSessionData(const String& sessionID, Licen
     m_sessionChangedCallbacks.append([this, callback = WTFMove(callback)](bool success, RefPtr<SharedBuffer>&& buffer) mutable {
         ASSERT(isMainThread());
         if (success) {
-            if (!buffer)
+            if (!buffer) {
+                GST_DEBUG("callback for setting Released key status");
                 callback(m_keyStore.allKeysAs(MediaKeyStatus::Released), nullptr, SuccessValue::Succeeded);
+            }
             else {
                 ParsedResponseMessage parsedResponseMessage(buffer);
                 ASSERT(parsedResponseMessage);
@@ -684,7 +693,23 @@ void CDMInstanceSessionThunder::removeSessionData(const String& sessionID, Licen
         }
     });
     if (!m_session || m_sessionID.isEmpty() || opencdm_session_remove(m_session->get()))
+    {
+        GST_DEBUG("sessionFailure will be called");
         sessionFailure();
+    }
+    else
+    {
+        GST_DEBUG("opencdm_session_remove success");
+        sessionSuccess();
+    }
+
+        GST_DEBUG("Unreferencing keys from store and clearing them");
+
+        m_session = BoxPtr<OpenCDMSession>();
+        auto instance = cdmInstanceThunder();
+        if (instance)
+            instance->unrefAllKeysFrom(m_keyStore);
+        m_keyStore.clear();
 }
 
 void CDMInstanceSessionThunder::storeRecordOfKeyUsage(const String&)
