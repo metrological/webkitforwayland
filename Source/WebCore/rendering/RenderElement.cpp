@@ -454,10 +454,6 @@ void RenderElement::updateShapeImage(const Style::ShapeOutside* oldShapeValue, c
 
 bool RenderElement::repaintBeforeStyleChange(StyleDifference diff, const RenderStyle& oldStyle, const RenderStyle& newStyle)
 {
-    if (oldStyle.usedVisibility() == Visibility::Hidden) {
-        // Repaint on hidden renderer is a no-op.
-        return false;
-    }
     enum class RequiredRepaint { None, RendererOnly, RendererAndDescendantsRenderersWithLayers };
     auto shouldRepaintBeforeStyleChange = [&]() -> RequiredRepaint {
         if (!parent()) {
@@ -540,6 +536,10 @@ bool RenderElement::repaintBeforeStyleChange(StyleDifference diff, const RenderS
 
     if (shouldRepaintBeforeStyleChange == RequiredRepaint::RendererOnly) {
         if (isOutOfFlowPositioned() && downcast<RenderLayerModelObject>(*this).checkedLayer()->isSelfPaintingLayer()) {
+            if (oldStyle.usedVisibility() == Visibility::Hidden) {
+                // Repaint on hidden renderer is a no-op.
+                return false;
+            }
             if (auto cachedClippedOverflowRect = downcast<RenderLayerModelObject>(*this).checkedLayer()->cachedClippedOverflowRect()) {
                 repaintUsingContainer(containerForRepaint().renderer.get(), *cachedClippedOverflowRect);
                 return true;
