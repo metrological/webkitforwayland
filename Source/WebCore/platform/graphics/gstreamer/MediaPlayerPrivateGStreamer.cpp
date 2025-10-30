@@ -349,6 +349,11 @@ void MediaPlayerPrivateGStreamer::load(const String& urlString)
         return;
     }
 
+    if (!isProtocolAllowed(url)) {
+        loadingFailed(MediaPlayer::NetworkState::FormatError, MediaPlayer::ReadyState::HaveNothing, true);
+        return;
+    }
+
     if (!ensureGStreamerInitialized()) {
         loadingFailed(MediaPlayer::NetworkState::FormatError, MediaPlayer::ReadyState::HaveNothing, true);
         return;
