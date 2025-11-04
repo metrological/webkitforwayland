@@ -182,6 +182,7 @@ public:
     };
     Ref<AbortHandler> registerAbortHandler();
 
+    NavigateEvent* ongoingNavigateEvent() { return m_ongoingNavigateEvent.get(); } // This may get called on the GC thread.
     RefPtr<NavigateEvent> protectedOngoingNavigateEvent() { return m_ongoingNavigateEvent; }
 
     void updateNavigationEntry(Ref<HistoryItem>&&, ShouldCopyStateObjectFromCurrentEntry);
