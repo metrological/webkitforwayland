@@ -684,6 +684,42 @@ webkit_web_view_is_web_process_responsive_finish     (WebKitWebView             
 WEBKIT_API pid_t
 webkit_web_view_get_web_process_identifier           (WebKitWebView             *web_view);
 
+
+WEBKIT_API gboolean
+webkit_web_view_hide_plc                             (WebKitWebView             *web_view);
+
+WEBKIT_API gboolean
+webkit_web_view_show_plc                             (WebKitWebView             *web_view);
+
+WEBKIT_API gboolean
+webkit_web_view_focus_plc                            (WebKitWebView             *web_view);
+
+WEBKIT_API gboolean
+webkit_web_view_blur_plc                             (WebKitWebView             *web_view);
+
+WEBKIT_API gboolean
+webkit_web_view_freeze_plc                           (WebKitWebView             *web_view,
+                                                      GCancellable              *cancellable,
+                                                      GAsyncReadyCallback       callback,
+                                                      gpointer                  user_data);
+
+WEBKIT_API gboolean
+webkit_web_view_freeze_plc_finish                    (WebKitWebView             *web_view,
+                                                      GAsyncResult              *result,
+                                                      GError                    **error);
+
+WEBKIT_API gboolean
+webkit_web_view_resume_plc                           (WebKitWebView             *web_view,
+                                                      GCancellable              *cancellable,
+                                                      GAsyncReadyCallback       callback,
+                                                      gpointer                  user_data);
+
+WEBKIT_API gboolean
+webkit_web_view_resume_plc_finish                    (WebKitWebView             *web_view,
+                                                      GAsyncResult              *result,
+                                                      GError                    **error);
+
+
 G_END_DECLS
 
 #endif

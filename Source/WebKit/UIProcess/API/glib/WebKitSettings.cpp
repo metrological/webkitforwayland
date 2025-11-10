@@ -189,6 +189,8 @@ enum {
     PROP_ENABLE_ICE_CANDIDATE_FILTERING,
     PROP_WEBRTC_UDP_PORTS_RANGE,
     PROP_SCREEN_SUPPORTS_HDR,
+    PROP_ENABLE_PAGE_LIFECYCLE,
+    PROP_DESTROY_WINDOW_ON_FREEZE,
     N_PROPERTIES,
 };
 
@@ -452,6 +454,12 @@ ALLOW_DEPRECATED_DECLARATIONS_END
     case PROP_SCREEN_SUPPORTS_HDR:
         webkit_settings_set_screen_supports_hdr(settings, g_value_get_boolean(value));
         break;
+    case PROP_ENABLE_PAGE_LIFECYCLE:
+        webkit_settings_set_enable_page_lifecycle(settings, g_value_get_boolean(value));
+        break;
+    case PROP_DESTROY_WINDOW_ON_FREEZE:
+        webkit_settings_set_destroy_window_on_freeze(settings, g_value_get_boolean(value));
+        break;
     default:
         G_OBJECT_WARN_INVALID_PROPERTY_ID(object, propId, paramSpec);
         break;
@@ -685,6 +693,12 @@ ALLOW_DEPRECATED_DECLARATIONS_END
         break;
     case PROP_SCREEN_SUPPORTS_HDR:
         g_value_set_boolean(value, webkit_settings_get_screen_supports_hdr(settings));
+        break;
+    case PROP_ENABLE_PAGE_LIFECYCLE:
+        g_value_set_boolean(value, webkit_settings_get_enable_page_lifecycle(settings));
+        break;
+    case PROP_DESTROY_WINDOW_ON_FREEZE:
+        g_value_set_boolean(value, webkit_settings_get_destroy_window_on_freeze(settings));
         break;
     default:
         G_OBJECT_WARN_INVALID_PROPERTY_ID(object, propId, paramSpec);
@@ -1825,6 +1839,32 @@ static void webkit_settings_class_init(WebKitSettingsClass* klass)
         _("Screen supports HDR"),
         _("Does screen support HDR."),
         FALSE,
+        readWriteConstructParamFlags);
+
+     /**
+     * WebKitSettings:enable-page-lifecycle:
+     *
+     * Whether to enable the Page LifeCycle API.
+     *
+     */
+    sObjProperties[PROP_ENABLE_PAGE_LIFECYCLE] = g_param_spec_boolean(
+        "enable-page-lifecycle",
+        _("Enable Page Lifecycle"),
+        _("Whether to enable the Page Lifecycle API."),
+        TRUE,
+        readWriteConstructParamFlags);
+
+    /**
+     * WebKitSettings:destroy-window-on-freeze:
+     *
+     * Whether to destroy the native window on freeze.
+     *
+     */
+    sObjProperties[PROP_DESTROY_WINDOW_ON_FREEZE] = g_param_spec_boolean(
+        "destroy-window-on-freeze",
+        _("Destroy window on freeze"),
+        _("Whether to destroy the native window on freeze."),
+        TRUE,
         readWriteConstructParamFlags);
 
     g_object_class_install_properties(gObjectClass, N_PROPERTIES, sObjProperties);
@@ -4603,4 +4643,74 @@ webkit_settings_set_screen_supports_hdr(WebKitSettings* settings, gboolean scree
 
     priv->preferences->setScreenSupportsHDR(screenSupportsHDR);
     g_object_notify_by_pspec(G_OBJECT(settings), sObjProperties[PROP_SCREEN_SUPPORTS_HDR]);
+}
+
+/**
+ * webkit_settings_get_enable_page_lifecycle:
+ * @settings: a #WebKitSettings
+ *
+ * Get the #WebKitSettings:enable-page-lifecycle property.
+ *
+ * Returns: %TRUE If the native window should be destroyed when feezing or %FALSE otherwise.
+ */
+gboolean webkit_settings_get_enable_page_lifecycle(WebKitSettings* settings)
+{
+    g_return_val_if_fail(WEBKIT_IS_SETTINGS(settings), FALSE);
+
+    return settings->priv->preferences->pageLifecycleAPIEnabled();
+}
+
+/**
+ * webkit_settings_set_enable_page_lifecycle:
+ * @settings: a #WebKitSettings
+ * @enabled: Value to be set
+ *
+ * Set the #WebKitSettings:enable-page-lifecycle property.
+ */
+void webkit_settings_set_enable_page_lifecycle(WebKitSettings* settings, gboolean enable)
+{
+    g_return_if_fail(WEBKIT_IS_SETTINGS(settings));
+
+    WebKitSettingsPrivate* priv = settings->priv;
+    bool currentValue = priv->preferences->pageLifecycleAPIEnabled();
+    if (currentValue == enable)
+        return;
+
+    priv->preferences->setPageLifecycleAPIEnabled(enable);
+    g_object_notify(G_OBJECT(settings), "enable-page-lifecycle");
+}
+
+/**
+ * webkit_settings_get_destroy_window_on_freeze:
+ * @settings: a #WebKitSettings
+ *
+ * Get the #WebKitSettings:destroy-window-on-freeze property.
+ *
+ * Returns: %TRUE If the native window should be destroyed when feezing or %FALSE otherwise.
+ */
+gboolean webkit_settings_get_destroy_window_on_freeze(WebKitSettings* settings)
+{
+    g_return_val_if_fail(WEBKIT_IS_SETTINGS(settings), FALSE);
+
+    return settings->priv->preferences->pageLifecycleAPIDestroyWindowOnFreeze();
+}
+
+/**
+ * webkit_settings_set_destroy_window_on_freeze:
+ * @settings: a #WebKitSettings
+ * @enabled: Value to be set
+ *
+ * Set the #WebKitSettings:destroy-window-on-freeze property.
+ */
+void webkit_settings_set_destroy_window_on_freeze(WebKitSettings* settings, gboolean destroy)
+{
+    g_return_if_fail(WEBKIT_IS_SETTINGS(settings));
+
+    WebKitSettingsPrivate* priv = settings->priv;
+    bool currentValue = priv->preferences->pageLifecycleAPIDestroyWindowOnFreeze();
+    if (currentValue == destroy)
+        return;
+
+    priv->preferences->setPageLifecycleAPIDestroyWindowOnFreeze(destroy);
+    g_object_notify(G_OBJECT(settings), "destroy-window-on-freeze");
 }
