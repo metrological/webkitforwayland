@@ -82,7 +82,7 @@ WebAssemblyGCStructure* JSWebAssemblyStruct::createStructure(VM& vm, JSGlobalObj
     const Wasm::TypeDefinition& type = unexpandedType->expand();
     RELEASE_ASSERT(rtt->kind() == Wasm::RTTKind::Struct);
     RELEASE_ASSERT(type.is<Wasm::StructType>());
-    return WebAssemblyGCStructure::create(vm, globalObject, TypeInfo(WebAssemblyGCObjectType, StructureFlags), info(), WTFMove(unexpandedType), WTFMove(type), WTFMove(rtt));
+    return WebAssemblyGCStructure::create(vm, globalObject, TypeInfo(WebAssemblyGCObjectType, StructureFlags), info(), WTFMove(unexpandedType), type, WTFMove(rtt));
 }
 
 } // namespace JSC

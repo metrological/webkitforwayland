@@ -40,7 +40,7 @@ WebAssemblyGCStructure* JSWebAssemblyArray::createStructure(VM& vm, JSGlobalObje
     const Wasm::TypeDefinition& type = unexpandedType->expand();
     RELEASE_ASSERT(type.is<Wasm::ArrayType>());
     RELEASE_ASSERT(rtt->kind() == Wasm::RTTKind::Array);
-    return WebAssemblyGCStructure::create(vm, globalObject, TypeInfo(WebAssemblyGCObjectType, StructureFlags), info(), WTFMove(unexpandedType), WTFMove(type), WTFMove(rtt));
+    return WebAssemblyGCStructure::create(vm, globalObject, TypeInfo(WebAssemblyGCObjectType, StructureFlags), info(), WTFMove(unexpandedType), type, WTFMove(rtt));
 }
 
 template<typename T>
