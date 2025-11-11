@@ -210,6 +210,17 @@
 #include "MediaSessionCoordinator.h"
 #endif
 
+/*
+#ifdef ALWAYS_LOG
+#undef ALWAYS_LOG
+#endif
+#define ALWAYS_LOG(channelName, ...) do { \
+        UNUSED_PARAM(channelName); \
+        auto logMessage = makeString(toString(__VA_ARGS__)...); \
+        printf("%s", logMessage.utf8().data()); \
+    } while (false)
+*/
+
 namespace WTF {
 template <>
 struct LogArgument<URL> {
@@ -607,6 +618,8 @@ HTMLMediaElement::HTMLMediaElement(const QualifiedName& tagName, Document& docum
 #endif
 {
     allMediaElements().add(*this);
+
+    int* error = LOGIDENTIFIER;
 
     ALWAYS_LOG(LOGIDENTIFIER);
 
