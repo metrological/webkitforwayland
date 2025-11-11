@@ -563,8 +563,6 @@ void WTFLogAlways(const char* format, ...)
     va_list args;
     va_start(args, format);
     WTFLogAlwaysV(format, args);
-    fprintf(stdout, ">>> ");
-    fprintf(stdout, format, args); fflush(stdout);
     va_end(args);
 }
 

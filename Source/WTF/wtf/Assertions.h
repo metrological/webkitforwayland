@@ -769,7 +769,6 @@ static constexpr bool unreachableForValue = false;
         WTF::TextStream stream(WTF::TextStream::LineMode::SingleLine); \
         stream << commands; \
         WTFLogAlways("%s", stream.release().utf8().data()); \
-        fprintf(stderr, "%s", stream.release().utf8().data()); fflush(stderr); \
     } while (0)
 
 /* RELEASE_ASSERT */
