@@ -170,6 +170,7 @@ void MediaPlayerPrivateGStreamerMSE::pause()
         return;
     }
 
+    GST_DEBUG_OBJECT(pipeline(), "Setting m_isPaused true because of pause()");
     m_isPaused = true;
     m_playbackRatePausedState = PlaybackRatePausedState::ManuallyPaused;
     updateStates();
@@ -187,7 +188,7 @@ void MediaPlayerPrivateGStreamerMSE::willSeekToTarget(const MediaTime& time)
 {
     MediaPlayerPrivateInterface::willSeekToTarget(time);
     // Don't consider the stream as EOS anymore after a seek.
-    m_isEndReached = false;
+    //m_isEndReached = false;
 }
 
 void MediaPlayerPrivateGStreamerMSE::checkPlayingConsistency()
@@ -472,6 +473,7 @@ void MediaPlayerPrivateGStreamerMSE::updateStates()
             shouldUpdatePlaybackState = true;
         }
     } else if (!isWaitingPreroll && !shouldBePlaying && m_isPipelinePlaying) {
+        GST_DEBUG_OBJECT(pipeline(), "changePipelineState(GST_STATE_PAUSED) because of m_isPipelinePlaying in updateStates(): m_isPaused: %s, readyState(): %s, m_playbackRatePausedState condition: %s", boolForPrinting(m_isPaused), dumpReadyState(readyState()), boolForPrinting((m_playbackRatePausedState != PlaybackRatePausedState::RatePaused) || m_playbackRatePausedState == PlaybackRatePausedState::ShouldMoveToPlaying));
         auto result = changePipelineState(GST_STATE_PAUSED);
         if (result == ChangePipelineStateResult::Failed)
             GST_ERROR_OBJECT(pipeline(), "Setting the pipeline to PAUSED failed");

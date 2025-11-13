@@ -1478,6 +1478,7 @@ void HTMLMediaElement::prepareForLoad()
         m_readyStateMaximum = HAVE_NOTHING;
 
         // 6.6 - If the paused attribute is false, then set it to true.
+        ALWAYS_LOG(LOGIDENTIFIER, "setPaused(true)");
         setPaused(true);
         setPlaying(false);
 
@@ -3249,6 +3250,7 @@ void HTMLMediaElement::setReadyState(MediaPlayer::ReadyState state)
         if (!canTransition && canTransition.error() == MediaPlaybackDenialReason::UserGestureRequired)
             ALWAYS_LOG(LOGIDENTIFIER, "Autoplay blocked, user gesture required");
 
+        ALWAYS_LOG(LOGIDENTIFIER, "pauseInternal because of setReadyState()");
         pauseInternal();
         setAutoplayEventPlaybackState(AutoplayEventPlaybackState::PreventedAutoplay);
     }
@@ -3936,8 +3938,10 @@ void HTMLMediaElement::finishSeek()
     if (RefPtr mediaSource = m_mediaSource)
         mediaSource->monitorSourceBuffers();
 #endif
-    if (wasPlayingBeforeSeeking)
+    if (wasPlayingBeforeSeeking) {
+        ALWAYS_LOG(LOGIDENTIFIER, "playInternal because of wasPlayingBeforeSeeking");
         playInternal();
+    }
 
     m_seekAfterPlaybackEnded = false;
 }
@@ -4333,6 +4337,7 @@ void HTMLMediaElement::play(DOMPromiseDeferred<void>&& promise)
         removeBehaviorRestrictionsAfterFirstUserGesture();
 
     m_pendingPlayPromises.append(WTFMove(promise));
+    ALWAYS_LOG(LOGIDENTIFIER, "playInternal because of play(promise)");
     playInternal();
 }
 
@@ -4350,6 +4355,7 @@ void HTMLMediaElement::play()
     if (processingUserGestureForMedia())
         removeBehaviorRestrictionsAfterFirstUserGesture();
 
+    ALWAYS_LOG(LOGIDENTIFIER, "playInternal because of play()");
     playInternal();
 }
 
@@ -4438,6 +4444,7 @@ void HTMLMediaElement::pause()
     if (processingUserGestureForMedia())
         removeBehaviorRestrictionsAfterFirstUserGesture(MediaElementSession::RequireUserGestureToControlControlsManager);
 
+    ALWAYS_LOG(LOGIDENTIFIER, "pauseInternal because of pause()");
     pauseInternal();
     // If we have a pending seek, ensure playback doesn't resume.
     m_wasPlayingBeforeSeeking = false;
@@ -4479,6 +4486,7 @@ void HTMLMediaElement::pauseInternal()
     setAutoplayEventPlaybackState(AutoplayEventPlaybackState::None);
 
     if (!m_paused && !m_pausedInternal) {
+        ALWAYS_LOG(LOGIDENTIFIER, "setPaused(true) because !m_paused && !m_pausedInternal");
         setPaused(true);
         scheduleTimeupdateEvent(false);
         scheduleEvent(eventNames().pauseEvent);
@@ -4587,6 +4595,7 @@ ExceptionOr<void> HTMLMediaElement::setVolume(double volume)
 
     if (isPlaying() && !mediaSession().playbackStateChangePermitted(MediaPlaybackState::Playing)) {
         scheduleRejectPendingPlayPromises(DOMException::create(ExceptionCode::NotAllowedError));
+        ALWAYS_LOG(LOGIDENTIFIER, "pauseInternal because of setVolume()");
         pauseInternal();
         setAutoplayEventPlaybackState(AutoplayEventPlaybackState::PreventedAutoplay);
     }
@@ -4723,9 +4732,12 @@ void HTMLMediaElement::togglePlayState()
     // this method is only called from the built-in media controller
     if (canPlay()) {
         updatePlaybackRate();
+        ALWAYS_LOG(LOGIDENTIFIER, "playInternal because of togglePlayState()");
         playInternal();
-    } else
+    } else {
+        ALWAYS_LOG(LOGIDENTIFIER, "pauseInternal because of togglePlayState()");
         pauseInternal();
+    }
 }
 
 void HTMLMediaElement::beginScrubbing()
@@ -4831,6 +4843,7 @@ void HTMLMediaElement::playbackProgressTimerFired()
         m_fragmentEndTime = MediaTime::invalidTime();
         if (!m_mediaController && !m_paused) {
             // changes paused to true and fires a simple event named pause at the media element.
+            ALWAYS_LOG(LOGIDENTIFIER, "pauseInternal because of playbackProgressTimerFired() and currentMediaTime() beyond m_fragmentEndTime");
             pauseInternal();
         }
     }
@@ -4882,6 +4895,7 @@ void HTMLMediaElement::mediaPlayerDidAddAudioTrack(AudioTrackPrivate& track)
 {
     if (isPlaying() && !mediaSession().playbackStateChangePermitted(MediaPlaybackState::Playing)) {
         scheduleRejectPendingPlayPromises(DOMException::create(ExceptionCode::NotAllowedError));
+        ALWAYS_LOG(LOGIDENTIFIER, "pauseInternal because of mediaPlayerDidAddAudioTrack() and !playbackStateChangePermitted()");
         pauseInternal();
         setAutoplayEventPlaybackState(AutoplayEventPlaybackState::PreventedAutoplay);
     }
@@ -5789,6 +5803,7 @@ void HTMLMediaElement::mediaPlayerTimeChanged()
             // has still ended playback and paused is false,
             if (!m_mediaController && !m_paused) {
                 // changes paused to true and fires a simple event named pause at the media element.
+                ALWAYS_LOG(LOGIDENTIFIER, "setPaused(true) because now >= dur (EOS on media with know duration)");
                 setPaused(true);
                 scheduleEvent(eventNames().pauseEvent);
                 mediaSession().clientWillPausePlayback();
@@ -5825,6 +5840,7 @@ void HTMLMediaElement::mediaPlayerTimeChanged()
                 scheduleEvent(eventNames().endedEvent);
                 if (!wasSeeking)
                     addBehaviorRestrictionsOnEndIfNecessary();
+                ALWAYS_LOG(LOGIDENTIFIER, "setPaused(true) because of EOS in MediaStream");
                 setPaused(true);
                 setPlaying(false);
             }
@@ -5967,10 +5983,13 @@ void HTMLMediaElement::mediaPlayerPlaybackStateChanged()
         return;
 
     beginProcessingMediaPlayerCallback();
-    if (playerPaused)
+    if (playerPaused) {
+        ALWAYS_LOG(LOGIDENTIFIER, "pauseInternal because of mediaPlayerPlaybackStateChanged()");
         pauseInternal();
-    else
+    } else {
+        ALWAYS_LOG(LOGIDENTIFIER, "playInternal because of mediaPlayerPlaybackStateChanged()");
         playInternal();
+    }
     endProcessingMediaPlayerCallback();
 }
 
@@ -6132,6 +6151,7 @@ void HTMLMediaElement::mediaPlayerCharacteristicChanged()
 
     if (!paused() && !mediaSession().playbackStateChangePermitted(MediaPlaybackState::Playing)) {
         scheduleRejectPendingPlayPromises(DOMException::create(ExceptionCode::NotAllowedError));
+        ALWAYS_LOG(LOGIDENTIFIER, "pauseInternal because of mediaPlayerCharacteristicChanged() and !playbackStateChangePermitted()");
         pauseInternal();
         setAutoplayEventPlaybackState(AutoplayEventPlaybackState::PreventedAutoplay);
     }
@@ -6205,38 +6225,58 @@ double HTMLMediaElement::liveUpdateInterval() const
 
 bool HTMLMediaElement::potentiallyPlaying() const
 {
-    if (isBlockedOnMediaController())
+    if (isBlockedOnMediaController()) {
+        ALWAYS_LOG(LOGIDENTIFIER, "false because isBlockedOnMediaController()");
         return false;
+    }
 
-    if (!couldPlayIfEnoughData())
+    if (!couldPlayIfEnoughData()) {
+        ALWAYS_LOG(LOGIDENTIFIER, "false because !couldPlayIfEnoughData()");
         return false;
+    }
 
-    if (m_readyState >= HAVE_FUTURE_DATA)
+    if (m_readyState >= HAVE_FUTURE_DATA) {
+        ALWAYS_LOG(LOGIDENTIFIER, "true because m_readyState >= HAVE_FUTURE_DATA. m_readyState: ", convertEnumerationToString(m_readyState));
         return true;
+    }
 
+    ALWAYS_LOG(LOGIDENTIFIER, boolForPrinting(m_readyStateMaximum >= HAVE_FUTURE_DATA && m_readyState < HAVE_FUTURE_DATA), " because m_readyStateMaximum >= HAVE_FUTURE_DATA && m_readyState < HAVE_FUTURE_DATA. m_readyStateMaximum: ", convertEnumerationToString(m_readyStateMaximum), ", m_readyState: ", convertEnumerationToString(m_readyState));
     return m_readyStateMaximum >= HAVE_FUTURE_DATA && m_readyState < HAVE_FUTURE_DATA;
 }
 
 bool HTMLMediaElement::couldPlayIfEnoughData() const
 {
-    if (paused())
+    if (paused()) {
+        ALWAYS_LOG(LOGIDENTIFIER, "false because paused");
         return false;
+    }
 
-    if (endedPlayback())
+    if (endedPlayback()) {
+        ALWAYS_LOG(LOGIDENTIFIER, "false because endedPlayback");
         return false;
+    }
 
-    if (stoppedDueToErrors())
+    if (stoppedDueToErrors()) {
+        ALWAYS_LOG(LOGIDENTIFIER, "false because stoppedDueToErrors");
         return false;
+    }
 
-    if (pausedForUserInteraction())
+    if (pausedForUserInteraction()) {
+        ALWAYS_LOG(LOGIDENTIFIER, "false because pausedForUserInteraction");
         return false;
+    }
 
-    if (!canProduceAudio() || PlatformMediaSessionManager::sharedManager().hasActiveAudioSession())
+    if (!canProduceAudio() || PlatformMediaSessionManager::sharedManager().hasActiveAudioSession()) {
+        ALWAYS_LOG(LOGIDENTIFIER, "true because !canProduceAudio or hasActiveAudioSession");
         return true;
+    }
 
-    if (mediaSession().activeAudioSessionRequired() && mediaSession().blockedBySystemInterruption())
+    if (mediaSession().activeAudioSessionRequired() && mediaSession().blockedBySystemInterruption()) {
+        ALWAYS_LOG(LOGIDENTIFIER, "false because blockedBySystemInterruption");
         return false;
+    }
 
+    ALWAYS_LOG(LOGIDENTIFIER, "true");
     return true;
 }
 
@@ -7399,9 +7439,10 @@ void HTMLMediaElement::exitFullscreen()
         return;
 
     if (!paused() && mediaSession().requiresFullscreenForVideoPlayback()) {
-        if (!document().settings().allowsInlineMediaPlaybackAfterFullscreen() || isVideoTooSmallForInlinePlayback())
+        if (!document().settings().allowsInlineMediaPlaybackAfterFullscreen() || isVideoTooSmallForInlinePlayback()) {
+            ALWAYS_LOG(LOGIDENTIFIER, "pauseInternal because of exitFullScreen()");
             pauseInternal();
-        else {
+        } else {
             // Allow inline playback, but set a flag so pausing and starting again (e.g. when scrubbing or looping) won't go back to fullscreen.
             // Also set the controls attribute so the user will be able to control playback.
             m_temporarilyAllowingInlinePlaybackAfterFullscreen = true;
@@ -8911,8 +8952,10 @@ bool HTMLMediaElement::isSuspended() const
 void HTMLMediaElement::suspendPlayback()
 {
     ALWAYS_LOG(LOGIDENTIFIER, "paused = ", paused());
-    if (!paused())
+    if (!paused()) {
+        ALWAYS_LOG(LOGIDENTIFIER, "pauseInternal because of suspendPlayback()");
         pauseInternal();
+    }
 }
 
 void HTMLMediaElement::resumeAutoplaying()
@@ -9459,6 +9502,7 @@ void HTMLMediaElement::updateShouldPlay()
 {
     if (!paused() && !mediaSession().playbackStateChangePermitted(MediaPlaybackState::Playing)) {
         scheduleRejectPendingPlayPromises(DOMException::create(ExceptionCode::NotAllowedError));
+        ALWAYS_LOG(LOGIDENTIFIER, "pauseInternal because of updateShouldPlay()");
         pauseInternal();
         setAutoplayEventPlaybackState(AutoplayEventPlaybackState::PreventedAutoplay);
     } else if (canTransitionFromAutoplayToPlay())

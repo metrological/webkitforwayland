@@ -526,6 +526,7 @@ void MediaPlayerPrivateGStreamer::pause()
     if (currentState < GST_STATE_PAUSED && pendingState <= GST_STATE_PAUSED)
         return;
 
+    GST_DEBUG_OBJECT(pipeline(), "changePipelineState(GST_STATE_PAUSED) because of pause()");
     auto result = changePipelineState(GST_STATE_PAUSED);
     if (result == ChangePipelineStateResult::Ok) {
         GST_INFO_OBJECT(pipeline(), "Pause");
@@ -624,6 +625,7 @@ bool MediaPlayerPrivateGStreamer::doSeek(const SeekTarget& target, float rate)
 
         // Make sure that m_isBuffering is set to true, so that when buffering completes it's set to false again and playback resumes.
         updateBufferingStatus(GST_BUFFERING_STREAM, 0.0, true, false);
+        GST_DEBUG_OBJECT(pipeline(), "changePipelineState(GST_STATE_PAUSED) because of doSeek()");
         changePipelineState(GST_STATE_PAUSED);
     }
 
@@ -700,6 +702,7 @@ void MediaPlayerPrivateGStreamer::seekToTarget(const SeekTarget& inTarget)
         if (m_isEndReached && (!player->isLooping() || !isSeamlessSeekingEnabled())) {
             GST_DEBUG_OBJECT(pipeline(), "[Seek] reset pipeline");
             m_shouldResetPipeline = true;
+            GST_DEBUG_OBJECT(pipeline(), "changePipelineState(GST_STATE_PAUSED) because of seekToTarget()");
             if (changePipelineState(GST_STATE_PAUSED) == ChangePipelineStateResult::Failed)
                 loadingFailed(MediaPlayer::NetworkState::Empty);
         }
@@ -824,6 +827,7 @@ void MediaPlayerPrivateGStreamer::setRate(float rate)
             && m_playbackRatePausedState != PlaybackRatePausedState::RatePaused) {
             GST_INFO_OBJECT(pipeline(), "Pausing stream because of zero playback rate in setRate");
             m_playbackRatePausedState = PlaybackRatePausedState::RatePaused;
+            GST_DEBUG_OBJECT(pipeline(), "changePipelineState(GST_STATE_PAUSED) because of setRate()");
             changePipelineState(GST_STATE_PAUSED);
             updatePlaybackRate();
         }
@@ -1374,6 +1378,7 @@ void MediaPlayerPrivateGStreamer::commitLoad()
 
     // GStreamer needs to have the pipeline set to a paused state to
     // start providing anything useful.
+    GST_DEBUG_OBJECT(pipeline(), "changePipelineState(GST_STATE_PAUSED) because of commitLoad()");
     changePipelineState(GST_STATE_PAUSED);
 
     updateDownloadBufferingFlag();
@@ -2877,14 +2882,18 @@ void MediaPlayerPrivateGStreamer::updateStates()
             if (!m_playbackRate) {
                 GST_INFO_OBJECT(pipeline(), "[Buffering] Pausing stream because of zero playback rate.");
                 m_playbackRatePausedState = PlaybackRatePausedState::RatePaused;
+                GST_DEBUG_OBJECT(pipeline(), "changePipelineState(GST_STATE_PAUSED) because of zero playback rate during updateStates()");
                 changePipelineState(GST_STATE_PAUSED);
             } else if (shouldPauseForBuffering) {
                 GST_INFO_OBJECT(pipeline(), "[Buffering] Pausing stream for buffering.");
                 m_playbackRatePausedState = PlaybackRatePausedState::BufferingPaused;
+                GST_DEBUG_OBJECT(pipeline(), "changePipelineState(GST_STATE_PAUSED) because of buffering during updateStates()");
                 changePipelineState(GST_STATE_PAUSED);
             }
-        } else
+        } else {
+            GST_DEBUG_OBJECT(pipeline(), "Setting m_isPaused true because m_currentState < GST_STATE_PAUSED");
             m_isPaused = true;
+        }
 
         GST_DEBUG_OBJECT(pipeline(), "Old state: %s, new state: %s (requested: %s)", gst_element_state_get_name(m_oldState), gst_element_state_get_name(m_currentState), gst_element_state_get_name(m_requestedState));
         if (m_requestedState == GST_STATE_PAUSED && m_currentState == GST_STATE_PAUSED) {
@@ -2937,9 +2946,10 @@ void MediaPlayerPrivateGStreamer::updateStates()
 
         if (m_currentState == GST_STATE_READY)
             m_readyState = MediaPlayer::ReadyState::HaveNothing;
-        else if (m_currentState == GST_STATE_PAUSED)
+        else if (m_currentState == GST_STATE_PAUSED) {
+            GST_DEBUG_OBJECT(pipeline(), "Setting m_isPaused true because m_currentState == GST_STATE_PAUSED");
             m_isPaused = true;
-        else if (m_currentState == GST_STATE_PLAYING)
+        } else if (m_currentState == GST_STATE_PLAYING)
             m_isPaused = false;
 
         if (!m_isPaused && m_playbackRate)
@@ -3141,7 +3151,9 @@ void MediaPlayerPrivateGStreamer::didEnd()
     m_waitingForStreamsSelectedEvent = true;
 
     if (player && !player->isLooping() && !isMediaSource()) {
+        GST_DEBUG_OBJECT(pipeline(), "Setting m_isPaused true because of didEnd()");
         m_isPaused = true;
+        GST_DEBUG_OBJECT(pipeline(), "changePipelineState(GST_STATE_PAUSED) because of didEnd()");
         changePipelineState(GST_STATE_PAUSED);
         m_didDownloadFinish = false;
         configureMediaStreamAudioTracks();
