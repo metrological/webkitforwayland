@@ -428,11 +428,11 @@ std::tuple<GRefPtr<GstCaps>, AppendPipeline::StreamType, FloatSize> AppendPipeli
     auto originalMediaType = capsMediaType(demuxerSrcPadCaps);
     auto& gstRegistryScanner = GStreamerRegistryScannerMSE::singleton();
     auto shouldIgnore = std::find_if(s_ignoreMediaTypes.begin(), s_ignoreMediaTypes.end(), [&originalMediaType](const ASCIILiteral& type) {
-        return originalMediaType.toString().startsWithIgnoringASCIICase(type);
+        return startsWithLettersIgnoringASCIICase(originalMediaType.span(), type);
     }) != s_ignoreMediaTypes.end();
     if (shouldIgnore) {
         streamType = StreamType::Ignore;
-    } else if (!gstRegistryScanner.isCodecSupported(GStreamerRegistryScanner::Configuration::Decoding, originalMediaType.toString())) {
+    } else if (!gstRegistryScanner.isCodecSupported(GStreamerRegistryScanner::Configuration::Decoding, originalMediaType.span())) {
         streamType = StreamType::Invalid;
     } else if (doCapsHaveType(demuxerSrcPadCaps, GST_VIDEO_CAPS_TYPE_PREFIX)) {
         presentationSize = getVideoResolutionFromCaps(demuxerSrcPadCaps).value_or(FloatSize());

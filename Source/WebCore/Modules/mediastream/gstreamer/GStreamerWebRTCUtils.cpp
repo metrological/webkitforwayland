@@ -164,7 +164,7 @@ static inline RTCRtpEncodingParameters toRTCEncodingParameters(const GstStructur
         parameters.maxFramerate = *maxFramerate;
 
     if (auto rid = gstStructureGetString(rtcParameters, "rid"_s))
-        parameters.rid = rid.toString();
+        parameters.rid = rid.span();
 
     if (auto scaleResolutionDownBy = gstStructureGet<double>(rtcParameters, "scale-resolution-down-by"_s))
         parameters.scaleResolutionDownBy = *scaleResolutionDownBy;
@@ -186,7 +186,7 @@ static inline RTCRtpCodecParameters toRTCCodecParameters(const GstStructure* rtc
         parameters.payloadType = *pt;
 
     if (auto mimeType = gstStructureGetString(rtcParameters, "mime-type"_s))
-        parameters.mimeType = mimeType.toString();
+        parameters.mimeType = mimeType.span();
 
     if (auto clockRate = gstStructureGet<unsigned>(rtcParameters, "clock-rate"_s))
         parameters.clockRate = *clockRate;
@@ -195,7 +195,7 @@ static inline RTCRtpCodecParameters toRTCCodecParameters(const GstStructure* rtc
         parameters.channels = *channels;
 
     if (auto fmtpLine = gstStructureGetString(rtcParameters, "fmtp-line"_s))
-        parameters.sdpFmtpLine = fmtpLine.toString();
+        parameters.sdpFmtpLine = fmtpLine.span();
 
     return parameters;
 }
@@ -207,7 +207,7 @@ RTCRtpSendParameters toRTCRtpSendParameters(const GstStructure* rtcParameters)
 
     RTCRtpSendParameters parameters;
     if (auto transactionId = gstStructureGetString(rtcParameters, "transaction-id"_s))
-        parameters.transactionId = transactionId.toString();
+        parameters.transactionId = transactionId.span();
 
     if (auto encodings = gst_structure_get_value(rtcParameters, "encodings")) {
         unsigned size = gst_value_list_get_size(encodings);
@@ -587,7 +587,7 @@ GRefPtr<GstCaps> capsFromRtpCapabilities(const RTCRtpCapabilities& capabilities,
             gst_structure_set(codecStructure, "encoding-params", G_TYPE_STRING, makeString(*codec.channels).ascii().data(), nullptr);
 
         if (auto encodingName = gstStructureGetString(codecStructure, "encoding-name"_s)) {
-            if (auto payloadType = payloadTypeForEncodingName(encodingName.toString()))
+            if (auto payloadType = payloadTypeForEncodingName(encodingName.span()))
                 gst_structure_set(codecStructure, "payload", G_TYPE_INT, *payloadType, nullptr);
         }
 
@@ -660,8 +660,8 @@ GRefPtr<GstCaps> capsFromSDPMedia(const GstSDPMedia* media)
                 "a-sendonly", "a-recvonly", "a-end-of-candidates", nullptr);
 
             if (auto name = gstStructureGetString(structure, "encoding-name"_s)) {
-                auto encodingName = name.toString().convertToASCIIUppercase();
-                gst_structure_set(structure, "encoding-name", G_TYPE_STRING, encodingName.ascii().data(), nullptr);
+                auto encodingName = convertToASCIIUppercase(name.span());
+                gst_structure_set(structure, "encoding-name", G_TYPE_STRING, encodingName.data(), nullptr);
             }
 
             // Remove ssrc- attributes that end up being accumulated in fmtp SDP media parameters.

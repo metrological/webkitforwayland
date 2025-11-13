@@ -69,17 +69,17 @@ void GStreamerIncomingTrackProcessor::configure(ThreadSafeWeakPtr<GStreamerMedia
         m_data.ssrc = *ssrc;
         auto msIdAttributeName = makeString("ssrc-"_s, *ssrc, "-msid"_s);
         if (auto msIdAttribute = gstStructureGetString(structure, CStringView::unsafeFromUTF8(msIdAttributeName.utf8().data()))) {
-            auto components = msIdAttribute.toString().split(' ');
+            auto components = String(msIdAttribute.span()).split(' ');
             if (components.size() == 2)
-                m_sdpMsIdAndTrackId = { components[0], components[1] };
+                m_sdpMsIdAndTrackId = { WTFMove(components[0]), WTFMove(components[1]) };
         }
     }
-    auto msIdAttribute = gstStructureGetString(structure, "a-msid"_s).toString();
+    auto msIdAttribute = gstStructureGetString(structure, "a-msid"_s);
     if (!msIdAttribute.isEmpty()) {
-        if (msIdAttribute.startsWith(' '))
-            m_sdpMsIdAndTrackId = { emptyString(), msIdAttribute.substring(1) };
+        if (startsWith(msIdAttribute.span(), " "_s))
+            m_sdpMsIdAndTrackId = { emptyString(), msIdAttribute.span().subspan(1) };
         else {
-            auto components = msIdAttribute.split(' ');
+            auto components = String(msIdAttribute.span()).split(' ');
             if (components.size() == 2)
                 m_sdpMsIdAndTrackId = { components[0], components[1] };
         }
@@ -188,8 +188,8 @@ GRefPtr<GstElement> GStreamerIncomingTrackProcessor::incomingTrackProcessor()
     if (!forceEarlyVideoDecoding) {
         auto structure = gst_caps_get_structure(m_data.caps.get(), 0);
         ASSERT(gst_structure_has_name(structure, "application/x-rtp"));
-        auto encodingName = gstStructureGetString(structure, "encoding-name"_s).toString();
-        auto mediaType = makeString("video/x-"_s, encodingName.convertToASCIILowercase());
+        auto encodingName = gstStructureGetString(structure, "encoding-name"_s);
+        auto mediaType = makeString("video/x-"_s, String(encodingName.span()).convertToASCIILowercase());
         auto codecCaps = adoptGRef(gst_caps_new_empty_simple(mediaType.ascii().data()));
 
         auto& scanner = GStreamerRegistryScanner::singleton();

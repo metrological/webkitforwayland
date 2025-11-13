@@ -93,6 +93,7 @@ public:
     size_t length() const;
 
     bool isNull() const { return !m_buffer; }
+    bool isEmpty() const { return isNull() || m_buffer->length() <= 1; }
     bool isSafeToSendToAnotherThread() const;
 
     CStringBuffer* buffer() const LIFETIME_BOUND { return m_buffer.get(); }
@@ -113,6 +114,9 @@ private:
 WTF_EXPORT_PRIVATE bool operator==(const CString&, const CString&);
 WTF_EXPORT_PRIVATE bool operator==(const CString&, const char*);
 WTF_EXPORT_PRIVATE bool operator<(const CString&, const CString&);
+
+WTF_EXPORT_PRIVATE CString convertToASCIILowercase(std::span<const char8_t>);
+WTF_EXPORT_PRIVATE CString convertToASCIIUppercase(std::span<const char8_t>);
 
 struct CStringHash {
     static unsigned hash(const CString& string) { return string.hash(); }
@@ -158,3 +162,5 @@ inline size_t CString::length() const
 } // namespace WTF
 
 using WTF::CString;
+using WTF::convertToASCIILowercase;
+using WTF::convertToASCIIUppercase;

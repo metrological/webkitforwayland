@@ -130,6 +130,24 @@ template<bool characterPredicate(char16_t)> bool skipExactly(std::span<const cha
     return false;
 }
 
+template<bool characterPredicate(char8_t), typename CharacterType> bool skipExactly(std::span<CharacterType>& buffer) requires(std::is_same_v<std::remove_const_t<CharacterType>, char8_t>)
+{
+    if (!buffer.empty() && characterPredicate(buffer[0])) {
+        skip(buffer, 1);
+        return true;
+    }
+    return false;
+}
+
+template<bool characterPredicate(char), typename CharacterType> bool skipExactly(std::span<CharacterType>& buffer) requires(std::is_same_v<std::remove_const_t<CharacterType>, char>)
+{
+    if (!buffer.empty() && characterPredicate(buffer[0])) {
+        skip(buffer, 1);
+        return true;
+    }
+    return false;
+}
+
 template<typename CharacterType, typename DelimiterType> void skipUntil(StringParsingBuffer<CharacterType>& buffer, DelimiterType delimiter)
 {
     while (buffer.hasCharactersRemaining() && *buffer != delimiter)
@@ -153,6 +171,22 @@ template<bool characterPredicate(Latin1Character), typename CharacterType> void 
 }
 
 template<bool characterPredicate(char16_t)> void skipUntil(std::span<const char16_t>& data)
+{
+    size_t index = 0;
+    while (index < data.size() && !characterPredicate(data[index]))
+        ++index;
+    skip(data, index);
+}
+
+template<bool characterPredicate(char8_t), typename CharacterType> void skipUntil(std::span<CharacterType>& data) requires(std::is_same_v<std::remove_const_t<CharacterType>, char8_t>)
+{
+    size_t index = 0;
+    while (index < data.size() && !characterPredicate(data[index]))
+        ++index;
+    skip(data, index);
+}
+
+template<bool characterPredicate(char), typename CharacterType> void skipUntil(std::span<CharacterType>& data) requires(std::is_same_v<std::remove_const_t<CharacterType>, char>)
 {
     size_t index = 0;
     while (index < data.size() && !characterPredicate(data[index]))
@@ -195,6 +229,22 @@ template<bool characterPredicate(Latin1Character), typename CharacterType> void 
 }
 
 template<bool characterPredicate(char16_t)> void skipWhile(std::span<const char16_t>& data)
+{
+    size_t index = 0;
+    while (index < data.size() && characterPredicate(data[index]))
+        ++index;
+    skip(data, index);
+}
+
+template<bool characterPredicate(char8_t), typename CharacterType> void skipWhile(std::span<CharacterType>& data) requires(std::is_same_v<std::remove_const_t<CharacterType>, char8_t>)
+{
+    size_t index = 0;
+    while (index < data.size() && characterPredicate(data[index]))
+        ++index;
+    skip(data, index);
+}
+
+template<bool characterPredicate(char), typename CharacterType> void skipWhile(std::span<CharacterType>& data) requires(std::is_same_v<std::remove_const_t<CharacterType>, char>)
 {
     size_t index = 0;
     while (index < data.size() && characterPredicate(data[index]))

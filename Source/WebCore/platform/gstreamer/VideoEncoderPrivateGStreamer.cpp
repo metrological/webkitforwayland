@@ -665,11 +665,11 @@ static void webkit_video_encoder_class_init(WebKitVideoEncoderClass* klass)
             const auto& encodedCaps = self->priv->encodedCaps;
             if (LIKELY(!gst_caps_is_any(encodedCaps.get()) && !gst_caps_is_empty(encodedCaps.get()))) {
                 auto structure = gst_caps_get_structure(encodedCaps.get(), 0);
-                auto profile = gstStructureGetString(structure, "profile"_s).toString();
+                auto profile = gstStructureGetString(structure, "profile"_s);
 
-                if (profile.findIgnoringASCIICase("high"_s) != notFound)
+                if (containsIgnoringASCIICase(profile.span(), "high"_s))
                     gst_preset_load_preset(GST_PRESET(self->priv->encoder.get()), "Profile High");
-                else if (profile.findIgnoringASCIICase("main"_s) != notFound)
+                else if (containsIgnoringASCIICase(profile.span(), "main"_s))
                     gst_preset_load_preset(GST_PRESET(self->priv->encoder.get()), "Profile Main");
             }
         }, "bitrate"_s, setBitrateKbitPerSec, "key-int-max"_s, [](GstElement* encoder, BitrateMode mode) {

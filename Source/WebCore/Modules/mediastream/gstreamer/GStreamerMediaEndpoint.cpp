@@ -1053,7 +1053,7 @@ GRefPtr<GstPad> GStreamerMediaEndpoint::requestPad(const GRefPtr<GstCaps>& allow
         }
         std::optional<int> payloadType;
         if (auto encodingName = gstStructureGetString(structure, "encoding-name"_s))
-            payloadType = payloadTypeForEncodingName(encodingName.toString());
+            payloadType = payloadTypeForEncodingName(encodingName.span());
 
         if (!payloadType) {
             if (availablePayloadType < 128)

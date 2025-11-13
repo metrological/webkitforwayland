@@ -209,7 +209,7 @@ void GStreamerCaptureDeviceManager::addDevice(GRefPtr<GstDevice>&& device)
     auto identifier = label;
     bool isMock = false;
     if (auto persistentId = gstStructureGetString(properties.get(), "persistent-id"_s)) {
-        identifier = persistentId.toString();
+        identifier = persistentId.span();
         isMock = true;
     }
 

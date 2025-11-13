@@ -37,6 +37,7 @@
 #include <wtf/CheckedArithmetic.h>
 #include <wtf/Compiler.h>
 #include <wtf/GetPtr.h>
+#include <wtf/NotFound.h>
 #include <wtf/TypeCasts.h>
 
 // Use this macro to declare and define a debug-only global variable that may have a
@@ -779,31 +780,77 @@ int compareSpans(std::span<T, TExtent> a, std::span<U, UExtent> b)
     return result;
 }
 
-template<typename T> concept ByteType = sizeof(T) == 1 && ((std::is_integral_v<T> && !std::same_as<T, bool>) || std::same_as<T, std::byte>) && !std::is_const_v<T>;
+template<typename T, typename U>
+concept TriviallyComparableCodeUnits = std::is_same_v<std::remove_const_t<T>, std::remove_const_t<U>> || (!std::is_same_v<std::remove_const_t<T>, char8_t> && !std::is_same_v<std::remove_const_t<U>, char8_t>);
+
+template<typename T>
+concept CanBeConstByteType = sizeof(T) == 1 && ((std::is_integral_v<T> && !std::same_as<T, bool>) || std::same_as<T, std::byte>);
+
+template<typename T, typename U>
+concept TriviallyComparableOneByteCodeUnits = TriviallyComparableCodeUnits<T, U> && CanBeConstByteType<T> && CanBeConstByteType<U>;
+
+// Returns the index of the first occurrence of |needed| in |haystack| or notFound if not present.
+template<typename T, std::size_t TExtent, typename U, std::size_t UExtent>
+    requires(TriviallyComparableOneByteCodeUnits<T, U>)
+size_t find(std::span<T, TExtent> haystack, std::span<U, UExtent> needle)
+{
+#if !HAVE(MEMMEM)
+    if (needle.empty())
+        return 0;
+
+    if (haystack.size() < needle.size())
+        return notFound;
+
+    size_t lastPossiblePosition = haystack.size() - needle.size();
+
+    for (size_t i = 0; i <= lastPossiblePosition; ++i) {
+        auto candidateSpan = haystack.subspan(i, needle.size());
+        if (equalSpans(candidateSpan, needle))
+            return i;
+    }
+
+    return notFound;
+#else
+    auto* result = static_cast<T*>(memmem(haystack.data(), haystack.size(), needle.data(), needle.size())); // NOLINT
+    if (!result)
+        return notFound;
+    return result - haystack.data();
+#endif
+}
+
+template<typename T, std::size_t TExtent, typename U, std::size_t UExtent>
+    requires(TriviallyComparableOneByteCodeUnits<T, U>)
+size_t contains(std::span<T, TExtent> haystack, std::span<U, UExtent> needle)
+{
+    return find(haystack, needle) != notFound;
+}
+
+template<typename T>
+concept NonConstByteType = CanBeConstByteType<T> && !std::is_const_v<T>;
 
 template<typename> struct ByteCastTraits;
 
-template<ByteType T> struct ByteCastTraits<T> {
-    template<ByteType U> static constexpr U cast(T character) { return static_cast<U>(character); }
+template<NonConstByteType T> struct ByteCastTraits<T> {
+    template<NonConstByteType U> static constexpr U cast(T character) { return static_cast<U>(character); }
 };
 
-template<ByteType T> struct ByteCastTraits<T*> {
-    template<ByteType U> static constexpr auto cast(T* pointer) { return std::bit_cast<U*>(pointer); }
+template<NonConstByteType T> struct ByteCastTraits<T*> {
+    template<NonConstByteType U> static constexpr auto cast(T* pointer) { return std::bit_cast<U*>(pointer); }
 };
 
-template<ByteType T> struct ByteCastTraits<const T*> {
-    template<ByteType U> static constexpr auto cast(const T* pointer) { return std::bit_cast<const U*>(pointer); }
+template<NonConstByteType T> struct ByteCastTraits<const T*> {
+    template<NonConstByteType U> static constexpr auto cast(const T* pointer) { return std::bit_cast<const U*>(pointer); }
 };
 
-template<ByteType T, size_t Extent> struct ByteCastTraits<std::span<T, Extent>> {
-    template<ByteType U> static constexpr auto cast(std::span<T, Extent> span) { return spanReinterpretCast<U>(span); }
+template<NonConstByteType T, size_t Extent> struct ByteCastTraits<std::span<T, Extent>> {
+    template<NonConstByteType U> static constexpr auto cast(std::span<T, Extent> span) { return spanReinterpretCast<U>(span); }
 };
 
-template<ByteType T, size_t Extent> struct ByteCastTraits<std::span<const T, Extent>> {
-    template<ByteType U> static constexpr auto cast(std::span<const T, Extent> span) { return spanReinterpretCast<const U>(span); }
+template<NonConstByteType T, size_t Extent> struct ByteCastTraits<std::span<const T, Extent>> {
+    template<NonConstByteType U> static constexpr auto cast(std::span<const T, Extent> span) { return spanReinterpretCast<const U>(span); }
 };
 
-template<ByteType T, typename U> constexpr auto byteCast(const U& value)
+template<NonConstByteType T, typename U> constexpr auto byteCast(const U& value)
 {
     return ByteCastTraits<U>::template cast<T>(value);
 }
