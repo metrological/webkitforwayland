@@ -83,7 +83,7 @@ public:
     void sizeDidChange(const WebCore::IntSize& newSize);
     void targetRefreshRateDidChange(unsigned);
 
-    void pauseRendering();
+    void pauseRendering(bool toTransparent = false);
     void resumeRendering();
 
     WebCore::GraphicsLayerFactory* graphicsLayerFactory();

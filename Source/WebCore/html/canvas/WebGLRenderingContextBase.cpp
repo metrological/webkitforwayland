@@ -1211,8 +1211,11 @@ void WebGLRenderingContextBase::addActivityStateChangeObserverIfNecessary()
 
     // We are only interested in visibility changes for contexts
     // that are using the high-performance GPU.
+    // We also use the activityState changes when nonCompositedWebGL is enabled, but not
+    // if we're using PageLifecycle, as we don't hide to transparent there.
     m_nonCompositedWebGLEnabled = canvas->document().frame()->settings().nonCompositedWebGLEnabled();
-    if (!isHighPerformanceContext(m_context) && !m_nonCompositedWebGLEnabled)
+    m_usingPageLifecycle = canvas->document().frame()->settings().pageLifecycleAPIEnabled();
+    if (!isHighPerformanceContext(m_context) && (!m_nonCompositedWebGLEnabled || m_usingPageLifecycle))
         return;
 
     auto* page = canvas->document().page();
