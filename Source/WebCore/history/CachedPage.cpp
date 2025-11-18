@@ -78,7 +78,7 @@ CachedPage::~CachedPage()
         m_cachedMainFrame->destroy();
 }
 
-static void firePageShowEvent(Page& page)
+static void firePageShowOrResumeEvent(Page& page)
 {
     // Dispatching JavaScript events can cause frame destruction.
     auto& mainFrame = page.mainFrame();
@@ -93,10 +93,20 @@ static void firePageShowEvent(Page& page)
         if (!document)
             continue;
 
-        // This takes care of firing the visibilitychange event and making sure the document is reported as visible.
-        document->setVisibilityHiddenDueToDismissal(false);
+        {
+        // TODO: use this part of code only in case of Page Lifecycle implementation in particular for 'resume'.
+        document->resume();
+        }
 
-        document->dispatchPageshowEvent(PageshowEventPersisted);
+        {
+        // TODO: use this part of code only in case of navigation. For now I assume we never use bfCache in navigation
+        //       so this code is disabled.
+
+        // This takes care of firing the visibilitychange event and making sure the document is reported as visible.
+        // document->setVisibilityHiddenDueToDismissal(false);
+
+        // document->dispatchPageshowEvent(PageshowEventPersisted);
+        }
     }
 }
 
@@ -165,7 +175,7 @@ void CachedPage::restore(Page& page)
             frameView->updateContentsSize();
     }
 
-    firePageShowEvent(page);
+    firePageShowOrResumeEvent(page);
 
 #if ENABLE(INTELLIGENT_TRACKING_PREVENTION)
     for (auto& domain : m_loadedSubresourceDomains)

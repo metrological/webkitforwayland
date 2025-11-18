@@ -403,22 +403,34 @@ static void destroyRenderTree(Frame& mainFrame)
     }
 }
 
-static void firePageHideEventRecursively(Frame& frame)
+static void firePageHideOrFreezeEventRecursively(Frame& frame)
 {
     auto* document = frame.document();
     if (!document)
         return;
 
+    {
+    // TODO: use this part of implementation only in case of navigation. For now I assume we never
+    //       use bfCache for navigation so this code is disabled.
+
     // stopLoading() will fire the pagehide event in each subframe and the HTML specification states
     // that the parent document's ignore-opens-during-unload counter should be incremented while the
     // pagehide event is being fired in its subframes:
     // https://html.spec.whatwg.org/multipage/browsers.html#unload-a-document
-    IgnoreOpensDuringUnloadCountIncrementer ignoreOpensDuringUnloadCountIncrementer(document);
+    // IgnoreOpensDuringUnloadCountIncrementer ignoreOpensDuringUnloadCountIncrementer(document);
 
-    frame.loader().stopLoading(UnloadEventPolicy::UnloadAndPageHide);
+    // frame.loader().stopLoading(UnloadEventPolicy::UnloadAndPageHide);
+    }
+
+    {
+    // TODO: this part of code is used for Page Lifecycle implementation in particular for 'freeze'.
+
+    frame.loader().stopLoading(UnloadEventPolicy::None);
+    document->freeze();
+    }
 
     for (RefPtr<Frame> child = frame.tree().firstChild(); child; child = child->tree().nextSibling())
-        firePageHideEventRecursively(*child);
+        firePageHideOrFreezeEventRecursively(*child);
 }
 
 std::unique_ptr<CachedPage> BackForwardCache::trySuspendPage(Page& page, ForceSuspension forceSuspension)
@@ -438,7 +450,7 @@ std::unique_ptr<CachedPage> BackForwardCache::trySuspendPage(Page& page, ForceSu
         focusController->setFocusedFrame(&page.mainFrame());
 
     // Fire the pagehide event in all frames.
-    firePageHideEventRecursively(page.mainFrame());
+    firePageHideOrFreezeEventRecursively(page.mainFrame());
 
     destroyRenderTree(page.mainFrame());
 
