@@ -583,6 +583,7 @@ WebPage::WebPage(PageIdentifier pageID, WebPageCreationParameters&& parameters)
 #if ENABLE(APP_HIGHLIGHTS)
     , m_appHighlightsVisible(parameters.appHighlightsVisible)
 #endif
+    , m_renderSingleFrameIfRenderingPausedTimer(*this, &WebPage::renderSingleFrameIfRenderingPausedTimerFired)
 {
     ASSERT(m_identifier);
     WEBPAGE_RELEASE_LOG(Loading, "constructor:");
@@ -3844,6 +3845,9 @@ void WebPage::resume(CompletionHandler<void(bool)>&& completionHandler)
     Ref<ResumeEventNotifier> notifier = adoptRef(*new ResumeEventNotifier());
     notifier->setCompletionHandler([this, completionHandler = std::exchange(completionHandler, { })] () mutable {
         m_isLifecycleSuspended = false;
+        // This is the last step of the resume before moving into hidden state, so we want to request
+        // a single frame here.
+        m_drawingArea->renderSingleFrameIfRenderingPaused();
         completionHandler(true);
     });
 
@@ -7259,6 +7263,15 @@ void WebPage::dispatchDidReachLayoutMilestone(OptionSet<WebCore::LayoutMilestone
         updateIntrinsicContentSizeIfNeeded(mainFrameView()->autoSizingIntrinsicContentSize());
     }
 
+    if (milestones.contains(DidFirstLayout) && m_page->settings().pageLifecycleAPIEnabled() && !m_isLifecycleSuspended) {
+        // The page finished its first layout. This can happen when the page is loaded for the first time or
+        // when the view is resuming. If m_isLifecycleSuspended is false it means that it's the first load
+        // so this is the point where we want to request a single frame if the view is hidden. We cannot try
+        // to render the frame directly because scripts are disallowed at this point, and we may need them when
+        // rendering, so request the frame with a timer.
+        m_renderSingleFrameIfRenderingPausedTimer.startOneShot(0_s);
+    }
+
     send(Messages::WebPageProxy::DidReachLayoutMilestone(milestones));
 }
 
@@ -8249,6 +8262,11 @@ void WebPage::clearNotificationPermissionState()
     static_cast<WebNotificationClient&>(WebCore::NotificationController::from(m_page.get())->client()).clearNotificationPermissionState();
 }
 #endif
+
+void WebPage::renderSingleFrameIfRenderingPausedTimerFired()
+{
+    m_drawingArea->renderSingleFrameIfRenderingPaused();
+}
 
 } // namespace WebKit
 

@@ -85,6 +85,7 @@ public:
 
     void pauseRendering(bool toTransparent = false);
     void resumeRendering();
+    void renderSingleFrameWhilePaused();
 
     WebCore::GraphicsLayerFactory* graphicsLayerFactory();
 
@@ -220,6 +221,7 @@ private:
     double m_transientZoomScale { 1 };
     WebCore::FloatPoint m_transientZoomOrigin;
 #endif
+    bool m_usingPageLifecycle { false };
 };
 
 #if !USE(COORDINATED_GRAPHICS)

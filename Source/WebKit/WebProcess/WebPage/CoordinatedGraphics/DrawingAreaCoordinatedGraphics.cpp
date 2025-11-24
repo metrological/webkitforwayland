@@ -82,6 +82,10 @@ DrawingAreaCoordinatedGraphics::DrawingAreaCoordinatedGraphics(WebPage& webPage,
         m_webPage.corePage()->suspendActiveDOMObjectsAndAnimations();
         m_isViewSuspended = true;
     }
+
+    // Launch on hidden state situation.
+    if (m_usingPageLifecycle && !parameters.activityState.contains(ActivityState::IsVisible))
+        suspendPainting();
 }
 
 DrawingAreaCoordinatedGraphics::~DrawingAreaCoordinatedGraphics() = default;
@@ -933,6 +937,14 @@ void DrawingAreaCoordinatedGraphics::display(UpdateInfo& updateInfo)
 uint64_t DrawingAreaCoordinatedGraphics::nativeWindowID() const
 {
     return m_layerTreeHost ? m_layerTreeHost->nativeWindowID() : 0;
+}
+
+void DrawingAreaCoordinatedGraphics::renderSingleFrameIfRenderingPaused()
+{
+    if (!m_isPaintingSuspended || !m_usingPageLifecycle || !m_layerTreeHost)
+        return;
+
+    m_layerTreeHost->renderSingleFrameWhilePaused();
 }
 
 } // namespace WebKit

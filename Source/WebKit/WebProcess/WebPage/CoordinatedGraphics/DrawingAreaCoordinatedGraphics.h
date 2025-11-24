@@ -109,6 +109,8 @@ private:
 
     uint64_t nativeWindowID() const final;
 
+    void renderSingleFrameIfRenderingPaused() final;
+
     uint64_t m_backingStoreStateID { 0 };
 
     // Whether painting is enabled. If painting is disabled, any calls to setNeedsDisplay and scroll are ignored.

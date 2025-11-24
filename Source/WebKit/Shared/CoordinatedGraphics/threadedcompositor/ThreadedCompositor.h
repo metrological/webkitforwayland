@@ -81,6 +81,7 @@ public:
     void suspend();
     void suspendToTransparent();
     void resume();
+    void renderSingleFrame();
 
 private:
     ThreadedCompositor(Client&, ThreadedDisplayRefreshMonitor::Client&, WebCore::PlatformDisplayID, const WebCore::IntSize&, float scaleFactor, WebCore::TextureMapper::PaintFlags, bool);

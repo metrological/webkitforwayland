@@ -2031,6 +2031,8 @@ private:
     bool hasPendingEditorStateUpdate() const;
     bool shouldAvoidComputingPostLayoutDataForEditorState() const;
 
+    void renderSingleFrameIfRenderingPausedTimerFired();
+
     WebCore::PageIdentifier m_identifier;
 
     std::unique_ptr<WebCore::Page> m_page;
@@ -2510,6 +2512,7 @@ private:
 #if ENABLE(IMAGE_ANALYSIS_ENHANCEMENTS)
     WeakHashSet<WebCore::HTMLImageElement> m_elementsToExcludeFromRemoveBackground;
 #endif
+    WebCore::Timer m_renderSingleFrameIfRenderingPausedTimer;
 };
 
 #if !PLATFORM(IOS_FAMILY)
