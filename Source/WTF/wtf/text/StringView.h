@@ -256,7 +256,7 @@ private:
 template<typename CharacterType, size_t inlineCapacity> void append(Vector<CharacterType, inlineCapacity>&, StringView);
 
 bool equal(StringView, StringView);
-bool equal(StringView, const Latin1Character* b);
+bool equal(StringView, std::span<const Latin1Character>);
 
 bool equalIgnoringASCIICase(StringView, StringView);
 bool equalIgnoringASCIICase(StringView, ASCIILiteral);
@@ -411,8 +411,8 @@ inline StringView::StringView(std::span<const char16_t> characters)
 }
 
 inline StringView::StringView(const char* characters)
+    : StringView { unsafeSpan(characters) }
 {
-    initialize(WTF::span8(characters));
 }
 
 inline StringView::StringView(std::span<const char> characters)
@@ -792,25 +792,24 @@ ALWAYS_INLINE bool equal(StringView a, StringView b)
     return equalCommon(a, b);
 }
 
-inline bool equal(StringView a, const Latin1Character* b)
+inline bool equal(StringView a, std::span<const Latin1Character> b)
 {
-    if (!b)
+    if (!b.data())
         return !a.isEmpty();
     if (a.isEmpty())
-        return !b;
+        return !b.data();
 
-    auto bSpan = span8(byteCast<char>(b));
-    if (a.length() != bSpan.size())
+    if (a.length() != b.size())
         return false;
 
     if (a.is8Bit())
-        return equal(a.span8().data(), bSpan);
-    return equal(a.span16().data(), bSpan);
+        return equal(a.span8().data(), b);
+    return equal(a.span16().data(), b);
 }
 
 ALWAYS_INLINE bool equal(StringView a, ASCIILiteral b)
 {
-    return equal(a, b.span8().data());
+    return equal(a, b.span8());
 }
 
 inline bool equalIgnoringASCIICase(StringView a, StringView b)

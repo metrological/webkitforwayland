@@ -20,6 +20,7 @@
 
 #pragma once
 
+#include "StringCommon.h"
 #include <wtf/text/UniquedStringImpl.h>
 
 namespace WTF {
@@ -113,7 +114,7 @@ ALWAYS_INLINE Ref<AtomStringImpl> AtomStringImpl::add(ASCIILiteral literal)
 
 ALWAYS_INLINE RefPtr<AtomStringImpl> AtomStringImpl::addCString(const char* s)
 {
-    return s ? add(WTF::span8(s)) : nullptr;
+    return s ? add(byteCast<Latin1Character>(WTF::unsafeSpan(s))) : nullptr;
 }
 
 template<typename StringTableProvider>

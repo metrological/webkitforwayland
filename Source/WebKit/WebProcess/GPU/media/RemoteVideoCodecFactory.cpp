@@ -181,7 +181,7 @@ void RemoteVideoCodecFactory::createEncoder(const String& codec, const WebCore::
     std::map<std::string, std::string> parameters;
     if (type == VideoCodecType::H264) {
         if (auto position = codec.find('.');position != notFound && position != codec.length()) {
-            auto profileLevelId = spanReinterpretCast<const char>(codec.span8().subspan(position + 1));
+            auto profileLevelId = byteCast<char>(codec.span8().subspan(position + 1));
             parameters["profile-level-id"] = std::string(profileLevelId.data(), profileLevelId.size());
         }
     }

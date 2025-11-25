@@ -67,9 +67,9 @@ private:
     char m_character;
 };
 
-template<> class StringTypeAdapter<UChar, void> {
+template<> class StringTypeAdapter<char16_t, void> {
 public:
-    StringTypeAdapter(UChar character)
+    StringTypeAdapter(char16_t character)
         : m_character { character }
     {
     }
@@ -83,10 +83,10 @@ public:
         *destination = m_character;
     }
 
-    void writeTo(UChar* destination) const { *destination = m_character; }
+    void writeTo(char16_t* destination) const { *destination = m_character; }
 
 private:
-    UChar m_character;
+    char16_t m_character;
 };
 
 template<> class StringTypeAdapter<char32_t, void> {
@@ -125,31 +125,9 @@ inline unsigned stringLength(size_t length)
     return static_cast<unsigned>(length);
 }
 
-template<> class StringTypeAdapter<const Latin1Character*, void> {
+template<> class StringTypeAdapter<const char16_t*, void> {
 public:
-    StringTypeAdapter(const Latin1Character* characters)
-        : m_characters { characters }
-        , m_length { computeLength(characters) }
-    {
-    }
-
-    unsigned length() const { return m_length; }
-    bool is8Bit() const { return true; }
-    template<typename CharacterType> void writeTo(CharacterType* destination) const { StringImpl::copyCharacters(destination, { m_characters, m_length }); }
-
-private:
-    static unsigned computeLength(const Latin1Character* characters)
-    {
-        return stringLength(std::strlen(byteCast<char>(characters)));
-    }
-
-    const Latin1Character* m_characters;
-    unsigned m_length;
-};
-
-template<> class StringTypeAdapter<const UChar*, void> {
-public:
-    StringTypeAdapter(const UChar* characters)
+    StringTypeAdapter(const char16_t* characters)
         : m_characters { characters }
         , m_length { computeLength(characters) }
     {
@@ -161,7 +139,7 @@ public:
     void writeTo(char16_t* destination) const { StringImpl::copyCharacters(destination, { m_characters, m_length }); }
 
 private:
-    static unsigned computeLength(const UChar* characters)
+    static unsigned computeLength(const char16_t* characters)
     {
         size_t length = 0;
         while (characters[length])
@@ -169,7 +147,7 @@ private:
         return stringLength(length);
     }
 
-    const UChar* m_characters;
+    const char16_t* m_characters;
     unsigned m_length;
 };
 

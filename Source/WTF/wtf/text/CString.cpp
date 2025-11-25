@@ -50,7 +50,7 @@ CString::CString(const char* string)
     if (!string)
         return;
 
-    init(WTF::span(string));
+    init(WTF::unsafeSpan(string));
 }
 
 CString::CString(std::span<const char> string)

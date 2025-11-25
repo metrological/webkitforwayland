@@ -20,6 +20,7 @@
 
 #pragma once
 
+#include "StringCommon.h"
 #include <utility>
 #include <wtf/text/AtomStringImpl.h>
 #include <wtf/text/WTFString.h>
@@ -282,7 +283,7 @@ inline AtomString AtomString::fromUTF8(const char* characters)
         return nullAtom();
     if (!*characters)
         return emptyAtom();
-    return fromUTF8Internal(span(characters));
+    return fromUTF8Internal(unsafeSpan(characters));
 }
 
 inline AtomString String::toExistingAtomString() const

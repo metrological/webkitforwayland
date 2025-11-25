@@ -70,6 +70,8 @@
  */
 
 #include "config.h"
+#include "StdLibExtras.h"
+#include "text/StringCommon.h"
 #include <wtf/DateMath.h>
 
 #include <algorithm>
@@ -959,7 +961,7 @@ double parseDate(std::span<const Latin1Character> dateString, bool& isLocalTime)
             for (auto& knownZone : knownZones) {
                 // Since the passed-in length is used for both strings, the following checks that
                 // dateString has the time zone name as a prefix, not that it is equal.
-                auto tzName = span8(knownZone.tzName);
+                auto tzName = byteCast<Latin1Character>(unsafeSpan(knownZone.tzName));
                 if (dateString.size() >= tzName.size() && equalLettersIgnoringASCIICaseWithLength(dateString, tzName, tzName.size())) {
                     offset = knownZone.tzOffset;
                     dateString = dateString.subspan(tzName.size());
