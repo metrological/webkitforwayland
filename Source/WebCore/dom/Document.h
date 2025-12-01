@@ -1696,6 +1696,9 @@ public:
     // This should be used over the settings lazy loading image flag due to a quirk, which may occur causing website images to fail to load properly.
     bool lazyImageLoadingEnabled() const;
 
+    void freeze();
+    void resume(CompletionHandler<void(Document&)>&&);
+
 protected:
     enum ConstructionFlags { Synthesized = 1, NonRenderedPlaceholder = 1 << 1 };
     WEBCORE_EXPORT Document(Frame*, const Settings&, const URL&, DocumentClasses = { }, unsigned constructionFlags = 0, ScriptExecutionContextIdentifier = { });
@@ -2292,6 +2295,8 @@ private:
     Vector<Function<void()>> m_whenIsVisibleHandlers;
 
     WeakHashSet<Element> m_elementsWithPendingUserAgentShadowTreeUpdates;
+
+    bool m_frozen { false };
 };
 
 Element* eventTargetElementForDocument(Document*);

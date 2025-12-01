@@ -69,6 +69,8 @@ public:
     void markPagesForCaptionPreferencesChanged();
 #endif
 
+    void setUsePageLifecycleEvents(bool use) { m_usePageLifecycleEvents = use; }
+
 private:
     BackForwardCache();
     ~BackForwardCache() = delete; // Make sure nobody accidentally calls delete -- WebCore does not delete singletons.
@@ -86,6 +88,8 @@ private:
 #if ASSERT_ENABLED
     bool m_isInRemoveAllItemsForPage { false };
 #endif
+
+    bool m_usePageLifecycleEvents { false };
 
     friend class WTF::NeverDestroyed<BackForwardCache>;
 };

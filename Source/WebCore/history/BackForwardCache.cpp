@@ -403,7 +403,7 @@ static void destroyRenderTree(Frame& mainFrame)
     }
 }
 
-static void firePageHideEventRecursively(Frame& frame)
+static void firePageHideEventRecursively(Frame& frame, bool usePageLifecycleEvents)
 {
     auto* document = frame.document();
     if (!document)
@@ -415,10 +415,11 @@ static void firePageHideEventRecursively(Frame& frame)
     // https://html.spec.whatwg.org/multipage/browsers.html#unload-a-document
     IgnoreOpensDuringUnloadCountIncrementer ignoreOpensDuringUnloadCountIncrementer(document);
 
-    frame.loader().stopLoading(UnloadEventPolicy::UnloadAndPageHide);
+    UnloadEventPolicy eventPolicy = usePageLifecycleEvents ? UnloadEventPolicy::None : UnloadEventPolicy::UnloadAndPageHide;
+    frame.loader().stopLoading(eventPolicy);
 
     for (RefPtr<Frame> child = frame.tree().firstChild(); child; child = child->tree().nextSibling())
-        firePageHideEventRecursively(*child);
+        firePageHideEventRecursively(*child, usePageLifecycleEvents);
 }
 
 std::unique_ptr<CachedPage> BackForwardCache::trySuspendPage(Page& page, ForceSuspension forceSuspension)
@@ -438,7 +439,7 @@ std::unique_ptr<CachedPage> BackForwardCache::trySuspendPage(Page& page, ForceSu
         focusController->setFocusedFrame(&page.mainFrame());
 
     // Fire the pagehide event in all frames.
-    firePageHideEventRecursively(page.mainFrame());
+    firePageHideEventRecursively(page.mainFrame(), m_usePageLifecycleEvents);
 
     destroyRenderTree(page.mainFrame());
 
