@@ -2794,8 +2794,15 @@ PartialResult WARN_UNUSED_RETURN BBQJIT::addF32Copysign(Value lhs, Value rhs, Va
                 }
 #else
                 m_jit.absFloat(lhsLocation.asFPR(), resultLocation.asFPR());
-                if (signBit)
+                if (signBit) {
+#if CPU(X86_64)
+                    m_jit.moveFloatTo32(resultLocation.asFPR(), wasmScratchGPR);
+                    m_jit.xor32(TrustedImm32(std::bit_cast<uint32_t>(static_cast<float>(-0.0))), wasmScratchGPR);
+                    m_jit.move32ToFloat(wasmScratchGPR, resultLocation.asFPR());
+#else
                     m_jit.negateFloat(resultLocation.asFPR(), resultLocation.asFPR());
+#endif
+                }
 #endif
             }
         )
