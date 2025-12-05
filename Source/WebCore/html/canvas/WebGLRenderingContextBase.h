@@ -1213,6 +1213,8 @@ private:
 #endif
     // The ordinal number of when the context was last active (drew, read pixels).
     uint64_t m_activeOrdinal { 0 };
+    bool m_queueContextRestoredEvent { false };
+    bool m_forceDispatchContextLostEvent { false };
 };
 
 #if !USE(ANGLE)
