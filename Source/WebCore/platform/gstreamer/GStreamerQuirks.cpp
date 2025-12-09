@@ -76,16 +76,15 @@ GStreamerQuirksManager::GStreamerQuirksManager(bool isForTesting, bool loadQuirk
     if (!loadQuirksFromEnvironment)
         return;
 
-    const char* quirksList = g_getenv("WEBKIT_GST_QUIRKS");
-    GST_DEBUG("Attempting to parse requested quirks: %s", GST_STR_NULL(quirksList));
-    if (quirksList) {
-        StringView quirks { std::span { quirksList, strlen(quirksList) } };
-        if (WTF::equalLettersIgnoringASCIICase(quirks, "help"_s)) {
+    auto quirksString = CStringView::unsafeFromUTF8(g_getenv("WEBKIT_GST_QUIRKS"));
+    GST_DEBUG("Attempting to parse requested quirks: %s", GST_STR_NULL(quirksString.utf8()));
+    if (quirksString) {
+        if (WTF::equalLettersIgnoringASCIICase(quirksString.span(), "help"_s)) {
             gst_printerrln("Supported quirks for WEBKIT_GST_QUIRKS are: amlogic, broadcom, bcmnexus, openmax, realtek, rialto, westeros");
             return;
         }
 
-        for (const auto& identifier : quirks.split(',')) {
+        for (const auto& identifier : String(quirksString.span()).split(',')) {
             std::unique_ptr<GStreamerQuirk> quirk;
             if (WTF::equalLettersIgnoringASCIICase(identifier, "amlogic"_s))
                 quirk = WTF::makeUnique<GStreamerQuirkAmLogic>();
@@ -102,7 +101,7 @@ GStreamerQuirksManager::GStreamerQuirksManager(bool isForTesting, bool loadQuirk
             else if (WTF::equalLettersIgnoringASCIICase(identifier, "westeros"_s))
                 quirk = WTF::makeUnique<GStreamerQuirkWesteros>();
             else {
-                GST_WARNING("Unknown quirk requested: %s. Skipping", identifier.toStringWithoutCopying().ascii().data());
+                GST_WARNING("Unknown quirk requested: %s. Skipping", identifier.ascii().data());
                 continue;
             }
 
@@ -114,28 +113,27 @@ GStreamerQuirksManager::GStreamerQuirksManager(bool isForTesting, bool loadQuirk
         }
     }
 
-    const char* holePunchQuirk = g_getenv("WEBKIT_GST_HOLE_PUNCH_QUIRK");
-    GST_DEBUG("Attempting to parse requested hole-punch quirk: %s", GST_STR_NULL(holePunchQuirk));
-    if (!holePunchQuirk)
+    auto identifierString = CStringView::unsafeFromUTF8(g_getenv("WEBKIT_GST_HOLE_PUNCH_QUIRK"));
+    GST_DEBUG("Attempting to parse requested hole-punch quirk: %s", GST_STR_NULL(identifierString.utf8()));
+    if (!identifierString)
         return;
 
-    StringView identifier { std::span { holePunchQuirk, strlen(holePunchQuirk) } };
-    if (WTF::equalLettersIgnoringASCIICase(identifier, "help"_s)) {
+    if (WTF::equalLettersIgnoringASCIICase(identifierString.span(), "help"_s)) {
         gst_printerrln("Supported quirks for WEBKIT_GST_HOLE_PUNCH_QUIRK are: fake, bcmnexus, rialto, westeros");
         return;
     }
 
     // TODO: Maybe check this is coherent (somehow) with the quirk(s) selected above.
-    if (WTF::equalLettersIgnoringASCIICase(identifier, "bcmnexus"_s))
+    if (WTF::equalLettersIgnoringASCIICase(identifierString.span(), "bcmnexus"_s))
         m_holePunchQuirk = WTF::makeUnique<GStreamerHolePunchQuirkBcmNexus>();
-    else if (WTF::equalLettersIgnoringASCIICase(identifier, "rialto"_s))
+    else if (WTF::equalLettersIgnoringASCIICase(identifierString.span(), "rialto"_s))
         m_holePunchQuirk = WTF::makeUnique<GStreamerHolePunchQuirkRialto>();
-    else if (WTF::equalLettersIgnoringASCIICase(identifier, "westeros"_s))
+    else if (WTF::equalLettersIgnoringASCIICase(identifierString.span(), "westeros"_s))
         m_holePunchQuirk = WTF::makeUnique<GStreamerHolePunchQuirkWesteros>();
-    else if (WTF::equalLettersIgnoringASCIICase(identifier, "fake"_s))
+    else if (WTF::equalLettersIgnoringASCIICase(identifierString.span(), "fake"_s))
         m_holePunchQuirk = WTF::makeUnique<GStreamerHolePunchQuirkFake>();
     else
-        GST_WARNING("HolePunch quirk %s un-supported.", identifier.toStringWithoutCopying().ascii().data());
+        GST_WARNING("HolePunch quirk %s un-supported.", identifierString.utf8());
 }
 
 bool GStreamerQuirksManager::isEnabled() const
@@ -271,7 +269,7 @@ unsigned GStreamerQuirksManager::getAdditionalPlaybinFlags() const
         GST_DEBUG("Final quirk flags: %u", flags);
     else {
         GST_DEBUG("Quirks didn't request any specific playbin flags, returning default text+soft-colorbalance.");
-        flags = getGstPlayFlag("text") | getGstPlayFlag("soft-colorbalance");
+        flags = getGstPlayFlag("text"_s) | getGstPlayFlag("soft-colorbalance"_s);
     }
     return flags;
 }

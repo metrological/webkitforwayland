@@ -207,9 +207,9 @@ bool GStreamerVideoCapturer::setFrameRate(double frameRate)
     return true;
 }
 
-static std::optional<int> getMaxIntValueFromStructure(const GstStructure* structure, const char* fieldName)
+static std::optional<int> getMaxIntValueFromStructure(const GstStructure* structure, ASCIILiteral fieldName)
 {
-    const GValue* value = gst_structure_get_value(structure, fieldName);
+    const GValue* value = gst_structure_get_value(structure, fieldName.characters());
     if (!value)
         return std::nullopt;
 
@@ -243,9 +243,9 @@ static std::optional<int> getMaxIntValueFromStructure(const GstStructure* struct
     return (maxInt > -G_MAXINT) ? std::make_optional<>(maxInt) : std::nullopt;
 }
 
-static std::optional<double> getMaxFractionValueFromStructure(const GstStructure* structure, const char* fieldName)
+static std::optional<double> getMaxFractionValueFromStructure(const GstStructure* structure, ASCIILiteral fieldName)
 {
-    const GValue* value = gst_structure_get_value(structure, fieldName);
+    const GValue* value = gst_structure_get_value(structure, fieldName.characters());
     if (!value)
         return std::nullopt;
 
@@ -329,15 +329,15 @@ void GStreamerVideoCapturer::reconfigure()
     auto deviceCaps = adoptGRef(gst_device_get_caps(m_device->device()));
     gst_caps_foreach(deviceCaps.get(),
         reinterpret_cast<GstCapsForeachFunc>(+[](GstCapsFeatures*, GstStructure* structure, MimeTypeSelector* selector) -> gboolean {
-            auto width = getMaxIntValueFromStructure(structure, "width");
+            auto width = getMaxIntValueFromStructure(structure, "width"_s);
             if (!width.has_value())
                 return TRUE;
 
-            auto height = getMaxIntValueFromStructure(structure, "height");
+            auto height = getMaxIntValueFromStructure(structure, "height"_s);
             if (!height.has_value())
                 return TRUE;
 
-            auto frameRate = getMaxFractionValueFromStructure(structure, "framerate");
+            auto frameRate = getMaxFractionValueFromStructure(structure, "framerate"_s);
             if (!frameRate.has_value())
                 return TRUE;
 

@@ -38,7 +38,7 @@ public:
     std::optional<bool> isHardwareAccelerated(GstElementFactory*) final;
     std::optional<GstElementFactoryListType> audioVideoDecoderFactoryListType() const final { return GST_ELEMENT_FACTORY_TYPE_PARSER; }
     Vector<String> disallowedWebAudioDecoders() const final { return m_disallowedWebAudioDecoders; }
-    unsigned getAdditionalPlaybinFlags() const final { return getGstPlayFlag("text") | getGstPlayFlag("native-audio"); }
+    unsigned getAdditionalPlaybinFlags() const final { return getGstPlayFlag("text"_s) | getGstPlayFlag("native-audio"_s); }
     bool shouldParseIncomingLibWebRTCBitStream() const final { return false; }
     bool needsCustomInstantRateChange() const final { return true; }
 

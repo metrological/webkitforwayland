@@ -600,7 +600,8 @@ void MermaidBuilder::dumpElement(GStreamerElementHarness& harness, GstElement* e
         element= harness.element();
     auto elementId = makeString(WTF::unsafeSpan(GST_ELEMENT_NAME(element)), '_', m_elementCounter);
     m_elementCounter++;
-    m_stringBuilder.append("subgraph "_s, elementId, " [<center>"_s, WTF::unsafeSpan(G_OBJECT_TYPE_NAME(element)), "\\n<small>"_s, WTF::unsafeSpan(GST_ELEMENT_NAME(element)), "]\n"_s);
+    m_stringBuilder.append("subgraph "_s, elementId, " [<center>"_s, unsafeSpan(G_OBJECT_TYPE_NAME(element)),
+        "\\n<small>"_s, unsafeSpan(GST_ELEMENT_NAME(element)), "]\n"_s);
 
     if (GST_IS_BIN(element)) {
         for (auto element : GstIteratorAdaptor<GstElement>(GUniquePtr<GstIterator>(gst_bin_iterate_recurse(GST_BIN_CAST(element)))))
@@ -658,7 +659,7 @@ String MermaidBuilder::describeCaps(const GRefPtr<GstCaps>& caps)
             GUniquePtr<char> serializedValue(gst_value_serialize(value));
             String valueString = WTF::unsafeSpan(serializedValue.get());
             if (valueString.length() > 25)
-                builder.append(valueString.substring(0, 25), WTF::unsafeSpan("…"));
+                builder.append(valueString.substring(0, 25), "…"_s);
             else
                 builder.append(valueString);
             builder.append("<br/>"_s);
@@ -677,7 +678,7 @@ std::span<const uint8_t> MermaidBuilder::span() const
 void GStreamerElementHarness::dumpGraph(ASCIILiteral filenamePrefix)
 {
 #ifndef GST_DISABLE_GST_DEBUG
-    const char* dumpPath = g_getenv("WEBKIT_GST_HARNESS_DUMP_DIR");
+    auto dumpPath = CStringView::unsafeFromUTF8(g_getenv("WEBKIT_GST_HARNESS_DUMP_DIR"));
     if (!dumpPath)
         return;
 
@@ -687,7 +688,7 @@ void GStreamerElementHarness::dumpGraph(ASCIILiteral filenamePrefix)
 
     MermaidBuilder builder;
     builder.process(*this);
-    auto path = FileSystem::pathByAppendingComponent(String::fromUTF8(dumpPath), filename);
+    auto path = FileSystem::pathByAppendingComponent(String(dumpPath.span()), filename);
     FileSystem::overwriteEntireFile(path, builder.span());
 #else
     UNUSED_PARAM(filenamePrefix);

@@ -193,10 +193,10 @@ void GStreamerCaptureDeviceManager::addDevice(GRefPtr<GstDevice>&& device)
 
     CaptureDevice::DeviceType type = deviceType();
     GUniquePtr<char> deviceClassChar(gst_device_get_device_class(device.get()));
-    auto deviceClass = String::fromLatin1(deviceClassChar.get());
-    if (type == CaptureDevice::DeviceType::Microphone && !deviceClass.startsWith("Audio"_s))
+    auto deviceClass = CStringView::unsafeFromUTF8(deviceClassChar.get());
+    if (type == CaptureDevice::DeviceType::Microphone && !startsWith(deviceClass.span(), "Audio"_s))
         return;
-    if (type == CaptureDevice::DeviceType::Camera && !deviceClass.startsWith("Video"_s))
+    if (type == CaptureDevice::DeviceType::Camera && !startsWith(deviceClass.span(), "Video"_s))
         return;
 
     // This isn't really a UID but should be good enough (libwebrtc

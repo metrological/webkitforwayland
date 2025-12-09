@@ -41,11 +41,11 @@ GStreamerQuirkRialto::GStreamerQuirkRialto()
 {
     GST_DEBUG_CATEGORY_INIT(webkit_rialto_quirks_debug, "webkitquirksrialto", 0, "WebKit Rialto Quirks");
 
-    std::array<const char *, 2> rialtoSinks = { "rialtomsevideosink", "rialtomseaudiosink" };
+    std::array<ASCIILiteral, 2> rialtoSinks = { "rialtomsevideosink"_s, "rialtomseaudiosink"_s };
 
-    for (const auto* sink : rialtoSinks) {
-        auto sinkFactory = adoptGRef(gst_element_factory_find(sink));
-        if (UNLIKELY(!sinkFactory))
+    for (auto sink : rialtoSinks) {
+        auto sinkFactory = adoptGRef(gst_element_factory_find(sink.characters()));
+        if (!sinkFactory) [[unlikely]]
             continue;
 
         gst_object_unref(gst_plugin_feature_load(GST_PLUGIN_FEATURE(sinkFactory.get())));
@@ -78,7 +78,7 @@ bool GStreamerQuirkRialto::isPlatformSupported() const
 
 void GStreamerQuirkRialto::configureElement(GstElement* element, const OptionSet<ElementRuntimeCharacteristics>& characteristics)
 {
-    if (!g_strcmp0(G_OBJECT_TYPE_NAME(G_OBJECT(element)), "GstURIDecodeBin3")) {
+    if (equal(unsafeSpan(G_OBJECT_TYPE_NAME(G_OBJECT(element))), "GstURIDecodeBin3"_s)) {
         GRefPtr<GstCaps> defaultCaps;
         g_object_get(element, "caps", &defaultCaps.outPtr(), nullptr);
         defaultCaps = adoptGRef(gst_caps_merge(gst_caps_ref(m_sinkCaps.get()), defaultCaps.leakRef()));

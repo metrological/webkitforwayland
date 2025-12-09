@@ -34,7 +34,7 @@ public:
 
     void configureElement(GstElement*, const OptionSet<ElementRuntimeCharacteristics>&) final;
     std::optional<bool> isHardwareAccelerated(GstElementFactory*) final;
-    unsigned getAdditionalPlaybinFlags() const final { return getGstPlayFlag("text") | getGstPlayFlag("native-video"); }
+    unsigned getAdditionalPlaybinFlags() const final { return getGstPlayFlag("text"_s) | getGstPlayFlag("native-video"_s); }
     bool needsCustomInstantRateChange() const final { return true; }
 
 private:

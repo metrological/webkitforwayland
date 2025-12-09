@@ -38,7 +38,7 @@ namespace WebCore {
 #if !LOG_DISABLED || ENABLE(ENCRYPTED_MEDIA)
 struct PadProbeInformation {
     AppendPipeline* appendPipeline;
-    const char* description;
+    ASCIILiteral description;
     gulong probeId;
 };
 #endif
@@ -55,14 +55,11 @@ public:
     SourceBufferPrivateGStreamer& sourceBufferPrivate() { return m_sourceBufferPrivate; }
     MediaPlayerPrivateGStreamerMSE* playerPrivate() { return m_playerPrivate; }
 
-private:
     // Similar to TrackPrivateBaseGStreamer::TrackType, but with a new value (Invalid) for when the codec is
     // not supported on this system, which should result in ParsingFailed error being thrown in SourceBuffer.
     enum StreamType { Audio, Video, Text, Unknown, Invalid, Ignore };
-#ifndef GST_DISABLE_GST_DEBUG
-    static const char * streamTypeToString(StreamType);
-#endif
 
+private:
     struct Track {
         // Track objects are created on pad-added for the first initialization segment, and destroyed after
         // the pipeline state has been set to GST_STATE_NULL.

@@ -405,7 +405,7 @@ static String x509Serialize(X509* x509)
     if (length <= 0)
         return { };
 
-    return String::fromUTF8({ data, static_cast<size_t>(length) });
+    return String(byteCast<Latin1Character>(unsafeMakeSpan(data, length)));
 }
 
 static String privateKeySerialize(EVP_PKEY* privateKey)
@@ -422,7 +422,7 @@ static String privateKeySerialize(EVP_PKEY* privateKey)
     if (length <= 0)
         return { };
 
-    return String::fromUTF8({ data, static_cast<size_t>(length) });
+    return String(byteCast<Latin1Character>(unsafeMakeSpan(data, length)));
 }
 
 std::optional<Ref<RTCCertificate>> generateCertificate(Ref<SecurityOrigin>&& origin, const PeerConnectionBackend::CertificateInformation& info)
@@ -528,12 +528,12 @@ std::optional<Ref<RTCCertificate>> generateCertificate(Ref<SecurityOrigin>&& ori
     return RTCCertificate::create(WTFMove(origin), expirationTime.milliseconds(), WTFMove(fingerprints), WTFMove(pem), WTFMove(serializedPrivateKey));
 }
 
-bool sdpMediaHasAttributeKey(const GstSDPMedia* media, const char* key)
+bool sdpMediaHasAttributeKey(const GstSDPMedia* media, ASCIILiteral key)
 {
     unsigned len = gst_sdp_media_attributes_len(media);
     for (unsigned i = 0; i < len; i++) {
         const auto* attribute = gst_sdp_media_get_attribute(media, i);
-        if (!g_strcmp0(attribute->key, key))
+        if (equal(unsafeSpan(attribute->key), key))
             return true;
     }
 
@@ -609,13 +609,14 @@ GstWebRTCRTPTransceiverDirection getDirectionFromSDPMedia(const GstSDPMedia* med
     for (unsigned i = 0; i < gst_sdp_media_attributes_len(media); i++) {
         const auto* attribute = gst_sdp_media_get_attribute(media, i);
 
-        if (!g_strcmp0(attribute->key, "sendonly"))
+        auto key = CStringView::unsafeFromUTF8(attribute->key);
+        if (key == "sendonly"_s)
             return GST_WEBRTC_RTP_TRANSCEIVER_DIRECTION_SENDONLY;
-        if (!g_strcmp0(attribute->key, "sendrecv"))
+        if (key == "sendrecv"_s)
             return GST_WEBRTC_RTP_TRANSCEIVER_DIRECTION_SENDRECV;
-        if (!g_strcmp0(attribute->key, "recvonly"))
+        if (key == "recvonly"_s)
             return GST_WEBRTC_RTP_TRANSCEIVER_DIRECTION_RECVONLY;
-        if (!g_strcmp0(attribute->key, "inactive"))
+        if (key == "inactive"_s)
             return GST_WEBRTC_RTP_TRANSCEIVER_DIRECTION_INACTIVE;
     }
 
@@ -628,16 +629,15 @@ GRefPtr<GstCaps> capsFromSDPMedia(const GstSDPMedia* media)
     unsigned numberOfFormats = gst_sdp_media_formats_len(media);
     auto caps = adoptGRef(gst_caps_new_empty());
     for (unsigned i = 0; i < numberOfFormats; i++) {
-        const char* rtpMapValue = gst_sdp_media_get_attribute_val_n(media, "rtpmap", i);
-        if (!rtpMapValue) {
+        auto rtpMap = CStringView::unsafeFromUTF8(gst_sdp_media_get_attribute_val_n(media, "rtpmap", i));
+        if (!rtpMap) {
             GST_DEBUG("Skipping media format without rtpmap");
             continue;
         }
-        auto rtpMap = StringView::fromLatin1(rtpMapValue);
-        auto components = rtpMap.split(' ');
+        auto components = String(rtpMap.span()).split(' ');
         auto payloadType = parseInteger<int>(*components.begin());
         if (!payloadType) {
-            GST_WARNING("Invalid payload type in rtpmap %s", rtpMap.utf8().data());
+            GST_WARNING("Invalid payload type in rtpmap %s", rtpMap.utf8());
             continue;
         }
 
@@ -682,11 +682,11 @@ void setSsrcAudioLevelVadOn(GstStructure* structure)
 {
     unsigned totalFields = gst_structure_n_fields(structure);
     for (unsigned i = 0; i < totalFields; i++) {
-        String fieldName = WTF::span(gst_structure_nth_field_name(structure, i));
-        if (!fieldName.startsWith("extmap-"_s))
+        auto fieldName = CStringView::unsafeFromUTF8(gst_structure_nth_field_name(structure, i));
+        if (!startsWith(fieldName.span(), "extmap-"_s))
             continue;
 
-        const auto value = gst_structure_get_value(structure, fieldName.ascii().data());
+        const auto value = gst_structure_get_value(structure, fieldName.utf8());
         if (!G_VALUE_HOLDS_STRING(value))
             continue;
 
@@ -709,8 +709,9 @@ void setSsrcAudioLevelVadOn(GstStructure* structure)
         g_value_set_static_string(&stringValue, "vad=on");
         gst_value_array_append_and_take_value(&arrayValue, &stringValue);
 
-        gst_structure_remove_field(structure, fieldName.ascii().data());
-        gst_structure_take_value(structure, fieldName.ascii().data(), &arrayValue);
+        GUniquePtr<char> fieldNamePtr(g_strdup(fieldName.utf8()));
+        gst_structure_remove_field(structure, fieldNamePtr.get());
+        gst_structure_take_value(structure, fieldNamePtr.get(), &arrayValue);
     }
 }
 

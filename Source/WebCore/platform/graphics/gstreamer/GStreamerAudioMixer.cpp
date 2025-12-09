@@ -88,7 +88,8 @@ void GStreamerAudioMixer::ensureState(GstStateChange stateChange)
 
 GRefPtr<GstPad> GStreamerAudioMixer::registerProducer(GstElement* interaudioSink)
 {
-    GstElement* src = makeGStreamerElement("interaudiosrc"_s);
+    GstElement* src = makeGStreamerElement("interaudiosrc"_s, unsafeSpan(GST_ELEMENT_NAME(interaudioSink)));
+
     g_object_set(src, "channel", GST_ELEMENT_NAME(interaudioSink), nullptr);
     g_object_set(interaudioSink, "channel", GST_ELEMENT_NAME(interaudioSink), nullptr);
 

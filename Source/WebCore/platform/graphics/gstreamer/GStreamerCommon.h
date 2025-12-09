@@ -76,7 +76,7 @@ bool getSampleVideoInfo(GstSample*, GstVideoInfo&);
 CStringView capsMediaType(const GstCaps*);
 std::optional<TrackID> getStreamIdFromPad(const GRefPtr<GstPad>&);
 std::optional<TrackID> getStreamIdFromStream(const GRefPtr<GstStream>&);
-std::optional<TrackID> parseStreamId(StringView stringId);
+std::optional<TrackID> parseStreamId(const String& stringId);
 bool doCapsHaveType(const GstCaps*, ASCIILiteral);
 bool areEncryptedCaps(const GstCaps*);
 Vector<String> extractGStreamerOptionsFromCommandLine();
@@ -87,8 +87,8 @@ void registerWebKitGStreamerElements();
 void registerWebKitGStreamerVideoEncoder();
 void deinitializeGStreamer();
 
-unsigned getGstPlayFlag(const char* nick);
-uint64_t toGstUnsigned64Time(const MediaTime&);
+unsigned getGstPlayFlag(ASCIILiteral nick);
+uint64_t toGstUnsigned64Time(const WTF::MediaTime&);
 
 inline GstClockTime toGstClockTime(const MediaTime& mediaTime)
 {
@@ -283,7 +283,7 @@ bool webkitGstSetElementStateSynchronously(GstElement*, GstState, Function<bool(
 GstBuffer* gstBufferNewWrappedFast(void* data, size_t length);
 
 // These functions should be used for elements not provided by WebKit itself and not provided by GStreamer -core.
-GstElement* makeGStreamerElement(ASCIILiteral factoryName, const String& name = emptyString());
+GstElement* makeGStreamerElement(CStringView factoryName, const String& name = emptyString());
 
 template<typename T>
 std::optional<T> gstStructureGet(const GstStructure*, CStringView key);
@@ -346,7 +346,7 @@ using GstId = GQuark;
 bool gstStructureForeach(const GstStructure*, Function<bool(GstId, const GValue*)>&&);
 void gstStructureIdSetValue(GstStructure*, GstId, const GValue*);
 bool gstStructureMapInPlace(GstStructure*, Function<bool(GstId, GValue*)>&&);
-StringView gstIdToString(GstId);
+String gstIdToString(GstId);
 void gstStructureFilterAndMapInPlace(GstStructure*, Function<bool(GstId, GValue*)>&&);
 
 #if USE(GBM)
