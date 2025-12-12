@@ -2565,6 +2565,9 @@ void MediaPlayerPrivateGStreamer::configureParsebin(GstElement* parsebin)
 
             if (decoderFactoryAcceptsCaps)
                 return exposeAutoPlug;
+#else
+            UNUSED_PARAM(factory);
+            UNUSED_PARAM(player);
 #endif
 
             return tryAutoPlug;
@@ -2585,7 +2588,7 @@ void MediaPlayerPrivateGStreamer::configureParsebin(GstElement* parsebin)
     // Otherwise we need to ensure that the webkitthunderparser factory is present
     // and preferred over other parsers
     g_signal_connect(parsebin, "autoplug-factories",
-        G_CALLBACK(+[](GstElement*, GstPad*, GstCaps* caps, MediaPlayerPrivateGStreamer* player) -> GValueArray* {
+        G_CALLBACK(+[](GstElement*, GstPad*, GstCaps* caps, MediaPlayerPrivateGStreamer*) -> GValueArray* {
             ALLOW_DEPRECATED_DECLARATIONS_BEGIN; // GValueArray is deprecated
             GValueArray* result;
             // First, build a list of all decodable factories that can handle the caps,
