@@ -67,6 +67,14 @@ GMallocSpan<T, Malloc> adoptGMallocSpan(std::span<T> span)
     return adoptMallocSpan<T, Malloc>(span);
 }
 
+template<typename T, typename Malloc = GMalloc>
+GMallocSpan<T, Malloc> dupGMallocSpan(std::span<const T> span)
+{
+    auto duplicate = GMallocSpan<T, Malloc>::malloc(span.size_bytes());
+    memcpySpan(duplicate.mutableSpan(), span);
+    return duplicate;
+}
+
 WTF_EXPORT_PRIVATE Expected<GMallocSpan<char>, GUniquePtr<GError>> gFileGetContents(CStringView);
 WTF_EXPORT_PRIVATE Expected<GMallocSpan<char*, GMallocStrv>, GUniquePtr<GError>> gKeyFileGetKeys(GKeyFile*, CStringView groupName);
 WTF_EXPORT_PRIVATE GMallocSpan<GParamSpec*> gObjectClassGetProperties(GObjectClass*);

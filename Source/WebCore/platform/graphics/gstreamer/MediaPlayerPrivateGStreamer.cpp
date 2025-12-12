@@ -99,6 +99,7 @@
 #include <wtf/UniStdExtras.h>
 #include <wtf/WallTime.h>
 #include <wtf/glib/GUniquePtr.h>
+#include <wtf/glib/GMallocString.h>
 #include <wtf/glib/RunLoopSourcePriority.h>
 #include <wtf/text/AtomString.h>
 #include <wtf/text/CString.h>
@@ -1998,7 +1999,6 @@ void MediaPlayerPrivateGStreamer::muteChangedCallback(MediaPlayerPrivateGStreame
 void MediaPlayerPrivateGStreamer::handleMessage(GstMessage* message)
 {
     GUniqueOutPtr<GError> err;
-    GUniqueOutPtr<gchar> debug;
     MediaPlayer::NetworkState error;
     bool issueError = true;
     bool attemptNextLocation = false;
@@ -2032,7 +2032,7 @@ void MediaPlayerPrivateGStreamer::handleMessage(GstMessage* message)
                 m_queuedSyncErrors.exchangeSub(1);
             });
 
-            gst_message_parse_error(message, &err.outPtr(), &debug.outPtr());
+            gst_message_parse_error(message, &err.outPtr(), nullptr);
 
             if (m_shouldResetPipeline || m_didErrorOccur || m_ignoreErrors) {
                 GST_WARNING_OBJECT(pipeline(), "Ignoring error: %s (url=%s) (code=%d)", err->message, m_url.string().utf8().data(), err->code);
@@ -2088,7 +2088,7 @@ void MediaPlayerPrivateGStreamer::handleMessage(GstMessage* message)
             break;
         }
     case GST_MESSAGE_WARNING:
-        gst_message_parse_warning(message, &err.outPtr(), &debug.outPtr());
+        gst_message_parse_warning(message, &err.outPtr(), nullptr);
         GST_WARNING_OBJECT(pipeline(), "%s (url=%s) (code=%d)", err->message, m_url.string().utf8().data(), err->code);
         break;
     case GST_MESSAGE_EOS: {
@@ -2364,8 +2364,8 @@ void MediaPlayerPrivateGStreamer::updateBufferingStatus(GstBufferingMode mode, d
     m_previousBufferingPercentage = m_bufferingPercentage;
 
 #ifndef GST_DISABLE_GST_DEBUG
-    GUniquePtr<char> modeString(g_enum_to_string(GST_TYPE_BUFFERING_MODE, mode));
-    GST_DEBUG_OBJECT(pipeline(), "[Buffering] mode: %s, status: %f%%", modeString.get(), percentage);
+    auto modeString = GMallocString::unsafeAdoptFromUTF8(g_enum_to_string(GST_TYPE_BUFFERING_MODE, mode));
+    GST_DEBUG_OBJECT(pipeline(), "[Buffering] mode: %s, status: %f%%", modeString.utf8(), percentage);
 #endif
 
     double highWatermark = 100.0;
@@ -2557,9 +2557,8 @@ void MediaPlayerPrivateGStreamer::configureParsebin(GstElement* parsebin)
 #if GST_CHECK_VERSION(1, 20, 0)
             static auto exposeAutoPlug = *gstGetAutoplugSelectResult("expose"_s);
             auto& scanner = GStreamerRegistryScanner::singleton();
-            GUniquePtr<char> gstCodecName(gst_codec_utils_caps_get_mime_codec(caps));
-            auto codecName = String(byteCast<Latin1Character>(unsafeSpan(gstCodecName.get())));
-            auto result = scanner.isCodecSupported(GStreamerRegistryScanner::Configuration::Decoding, codecName);
+            auto codecName = GMallocString::unsafeAdoptFromUTF8(gst_codec_utils_caps_get_mime_codec(caps));
+            auto result = scanner.isCodecSupported(GStreamerRegistryScanner::Configuration::Decoding, codecName.span());
             if (!result.isSupported)
                 return tryAutoPlug;
 
@@ -2624,24 +2623,24 @@ void MediaPlayerPrivateGStreamer::configureElement(GstElement* element)
 {
     configureElementPlatformQuirks(element);
 
-    GUniquePtr<char> elementName(gst_element_get_name(element));
-    String elementClass = WTF::unsafeSpan(gst_element_get_metadata(element, GST_ELEMENT_METADATA_KLASS));
+    auto name = GMallocString::unsafeAdoptFromUTF8(gst_element_get_name(element));
+    String elementClass(unsafeSpan(gst_element_get_metadata(element, GST_ELEMENT_METADATA_KLASS)));
     auto classifiers = elementClass.split('/');
 
     // In GStreamer 1.20 and older urisourcebin mishandles source elements with dynamic pads. This
     // is not an issue in 1.22. Streams parsing is not needed for MediaStream cases because we do it
     // upfront for incoming WebRTC MediaStreams. It is however needed for MSE, otherwise decodebin3
     // might not auto-plug hardware decoders.
-    if (webkitGstCheckVersion(1, 22, 0) && g_str_has_prefix(elementName.get(), "urisourcebin") && (isMediaSource() || isMediaStreamPlayer()))
+    if (webkitGstCheckVersion(1, 22, 0) && startsWith(name.span(), "urisourcebin"_s) && (isMediaSource() || isMediaStreamPlayer()))
         g_object_set(element, "use-buffering", FALSE, "parse-streams", !isMediaStreamPlayer(), nullptr);
 
-    if (g_str_has_prefix(elementName.get(), "parsebin"))
+    if (startsWith(name.span(), "parsebin"_s))
         configureParsebin(element);
 
     // In case of playbin3 with <video ... preload="auto">, instantiate
     // downloadbuffer element, otherwise the playbin3 would instantiate
     // a queue element instead .
-    if (g_str_has_prefix(elementName.get(), "urisourcebin") && !m_isLegacyPlaybin && !isMediaSource() && !isMediaStreamPlayer() && m_preload == MediaPlayer::Preload::Auto)
+    if (startsWith(name.span(), "urisourcebin"_s) && !m_isLegacyPlaybin && !isMediaSource() && !isMediaStreamPlayer() && m_preload == MediaPlayer::Preload::Auto)
         g_object_set(element, "download", TRUE, nullptr);
 
     // Collect processing time metrics for video decoders and converters.
@@ -2649,7 +2648,7 @@ void MediaPlayerPrivateGStreamer::configureElement(GstElement* element)
         webkitGstTraceProcessingTimeForElement(element);
 
     // This will set the multiqueue size to the default value.
-    if (g_str_has_prefix(elementName.get(), "uridecodebin"))
+    if (startsWith(name.span(), "uridecodebin"_s))
         g_object_set(element, "buffer-size", 2 * MB, nullptr);
 
     if (classifiers.contains("Decoder"_s)) {
@@ -2663,7 +2662,7 @@ void MediaPlayerPrivateGStreamer::configureElement(GstElement* element)
     if (isMediaStreamPlayer())
         return;
 
-    if (g_str_has_prefix(elementName.get(), "downloadbuffer")) {
+    if (startsWith(name.span(), "downloadbuffer"_s)) {
         configureDownloadBuffer(element);
         return;
     }
@@ -2693,8 +2692,8 @@ void MediaPlayerPrivateGStreamer::configureElementPlatformQuirks(GstElement* ele
 
 void MediaPlayerPrivateGStreamer::configureDownloadBuffer(GstElement* element)
 {
-    GUniquePtr<char> elementName(gst_element_get_name(element));
-    RELEASE_ASSERT(g_str_has_prefix(elementName.get(), "downloadbuffer"));
+    auto name = GMallocString::unsafeAdoptFromUTF8(gst_element_get_name(element));
+    RELEASE_ASSERT(startsWith(name.span(), "downloadbuffer"_s));
 
     m_downloadBuffer = element;
     g_signal_connect_swapped(element, "notify::temp-location", G_CALLBACK(downloadBufferFileCreatedCallback), this);
@@ -2710,20 +2709,18 @@ void MediaPlayerPrivateGStreamer::configureDownloadBuffer(GstElement* element)
     g_object_get(element, "temp-template", &oldDownloadTemplate.outPtr(), nullptr);
 
 #if PLATFORM(WPE)
-    GUniquePtr<char> mediaDiskCachePath(g_strdup(std::getenv("WPE_SHELL_MEDIA_DISK_CACHE_PATH")));
-    if (!mediaDiskCachePath || !*mediaDiskCachePath) {
-        GUniquePtr<char> defaultValue(g_build_filename(G_DIR_SEPARATOR_S, "var", "tmp", nullptr));
-        mediaDiskCachePath.swap(defaultValue);
-    }
+    auto mediaDiskCachePath = GMallocString::unsafeAdoptFromUTF8(g_strdup(std::getenv("WPE_SHELL_MEDIA_DISK_CACHE_PATH")));
+    if (mediaDiskCachePath.isEmpty())
+        mediaDiskCachePath = GMallocString::unsafeAdoptFromUTF8(g_build_filename(G_DIR_SEPARATOR_S, "var", "tmp", nullptr));
 #else
-    GUniquePtr<char> mediaDiskCachePath(g_build_filename(G_DIR_SEPARATOR_S, "var", "tmp", nullptr));
+    auto mediaDiskCachePath = GMallocString::unsafeAdoptFromUTF8(g_build_filename(G_DIR_SEPARATOR_S, "var", "tmp", nullptr));
 #endif
 
-    GUniquePtr<char> newDownloadTemplate(g_build_filename(G_DIR_SEPARATOR_S, mediaDiskCachePath.get(), "WebKit-Media-XXXXXX", nullptr));
-    g_object_set(element, "temp-template", newDownloadTemplate.get(), nullptr);
-    GST_DEBUG_OBJECT(pipeline(), "Reconfigured file download template from '%s' to '%s'", oldDownloadTemplate.get(), newDownloadTemplate.get());
+    auto newDownloadTemplate = GMallocString::unsafeAdoptFromUTF8(g_build_filename(G_DIR_SEPARATOR_S, mediaDiskCachePath.utf8(), "WebKit-Media-XXXXXX", nullptr));
+    g_object_set(element, "temp-template", newDownloadTemplate.utf8(), nullptr);
+    GST_DEBUG_OBJECT(pipeline(), "Reconfigured file download template from '%s' to '%s'", oldDownloadTemplate.get(), newDownloadTemplate.utf8());
 
-    auto newDownloadPrefixPath = makeStringByReplacingAll(byteCast<char8_t>(unsafeSpan(newDownloadTemplate.get())), "XXXXXX"_s, ""_s);
+    auto newDownloadPrefixPath = makeStringByReplacingAll(newDownloadTemplate.span(), "XXXXXX"_s, ""_s);
     purgeOldDownloadFiles(newDownloadPrefixPath);
 }
 
@@ -2733,15 +2730,16 @@ void MediaPlayerPrivateGStreamer::downloadBufferFileCreatedCallback(MediaPlayerP
 
     g_signal_handlers_disconnect_by_func(player->m_downloadBuffer.get(), reinterpret_cast<gpointer>(downloadBufferFileCreatedCallback), player);
 
-    GUniqueOutPtr<char> downloadFile;
-    g_object_get(player->m_downloadBuffer.get(), "temp-location", &downloadFile.outPtr(), nullptr);
+    GUniqueOutPtr<char> downloadFileChars;
+    g_object_get(player->m_downloadBuffer.get(), "temp-location", &downloadFileChars.outPtr(), nullptr);
+    auto downloadFile = GMallocString::unsafeAdoptFromUTF8(WTFMove(downloadFileChars));
 
-    if (UNLIKELY(!FileSystem::deleteFile(String::fromUTF8(downloadFile.get())))) {
-        GST_WARNING("Couldn't unlink media temporary file %s after creation", downloadFile.get());
+    if (!FileSystem::deleteFile(String(downloadFile.span()))) [[unlikely]] {
+        GST_WARNING("Couldn't unlink media temporary file %s after creation", downloadFile.utf8());
         return;
     }
 
-    GST_DEBUG_OBJECT(player->pipeline(), "Unlinked media temporary file %s after creation", downloadFile.get());
+    GST_DEBUG_OBJECT(player->pipeline(), "Unlinked media temporary file %s after creation", downloadFile.utf8());
 }
 
 void MediaPlayerPrivateGStreamer::purgeOldDownloadFiles(const String& downloadFilePrefixPath)
@@ -3463,7 +3461,7 @@ void MediaPlayerPrivateGStreamer::setupCodecProbe(GstElement* element)
 
         GstCaps* caps;
         gst_event_parse_caps(event, &caps);
-        GUniquePtr<char> codec(gst_codec_utils_caps_get_mime_codec(caps));
+        auto codec = GMallocString::unsafeAdoptFromUTF8(gst_codec_utils_caps_get_mime_codec(caps));
         if (!codec)
             return GST_PAD_PROBE_REMOVE;
 
@@ -3474,10 +3472,10 @@ void MediaPlayerPrivateGStreamer::setupCodecProbe(GstElement* element)
             return GST_PAD_PROBE_REMOVE;
         }
 
-        GST_INFO_OBJECT(player->pipeline(), "Setting codec for stream %" PRIu64 " to %s", streamId.value(), codec.get());
+        GST_INFO_OBJECT(player->pipeline(), "Setting codec for stream %" PRIu64 " to %s", streamId.value(), codec.utf8());
         {
             Locker locker { player->m_codecsLock };
-            player->m_codecs.add(streamId.value(), String::fromLatin1(codec.get()));
+            player->m_codecs.add(streamId.value(), String(codec.span()));
         }
         return GST_PAD_PROBE_REMOVE;
     }), this, nullptr);
@@ -3493,14 +3491,14 @@ void MediaPlayerPrivateGStreamer::configureAudioDecoder(GstElement* decoder)
 
 void MediaPlayerPrivateGStreamer::configureVideoDecoder(GstElement* decoder)
 {
-    GUniquePtr<char> name(gst_element_get_name(decoder));
-    if (g_str_has_prefix(name.get(), "v4l2"))
+    auto name = GMallocString::unsafeAdoptFromUTF8(gst_element_get_name(decoder));
+    if (startsWith(name.span(), "v4l2"_s))
         m_videoDecoderPlatform = GstVideoDecoderPlatform::Video4Linux;
-    else if (g_str_has_prefix(name.get(), "imxvpudec"))
+    else if (startsWith(name.span(), "imxvpudec"_s))
         m_videoDecoderPlatform = GstVideoDecoderPlatform::ImxVPU;
-    else if (g_str_has_prefix(name.get(), "omx"))
+    else if (startsWith(name.span(), "omx"_s))
         m_videoDecoderPlatform = GstVideoDecoderPlatform::OpenMAX;
-    else if (g_str_has_prefix(name.get(), "avdec")) {
+    else if (startsWith(name.span(), "avdec"_s)) {
         // Set the decoder maximum number of threads to a low, fixed value, not depending on the
         // platform. This also helps with processing metrics gathering. When using the default value
         // the decoder introduces artificial processing latency reflecting the maximum number of threads.
@@ -3524,7 +3522,7 @@ void MediaPlayerPrivateGStreamer::configureVideoDecoder(GstElement* decoder)
 
     auto pad = adoptGRef(gst_element_get_static_pad(decoder, "src"));
     if (!pad) {
-        GST_INFO_OBJECT(pipeline(), "the decoder %s does not have a src pad, probably because it's a hardware decoder sink, can't get decoder stats", name.get());
+        GST_INFO_OBJECT(pipeline(), "the decoder %s does not have a src pad, probably because it's a hardware decoder sink, can't get decoder stats", name.utf8());
         return;
     }
     gst_pad_add_probe(pad.get(), static_cast<GstPadProbeType>(GST_PAD_PROBE_TYPE_QUERY_DOWNSTREAM | GST_PAD_PROBE_TYPE_BUFFER), [](GstPad*, GstPadProbeInfo* info, gpointer userData) -> GstPadProbeReturn {
@@ -3916,26 +3914,27 @@ void MediaPlayerPrivateGStreamer::repaint()
 static ImageOrientation getVideoOrientation(const GstTagList* tagList)
 {
     ASSERT(tagList);
-    GUniqueOutPtr<gchar> tag;
-    if (!gst_tag_list_get_string(tagList, GST_TAG_IMAGE_ORIENTATION, &tag.outPtr())) {
+    GUniqueOutPtr<gchar> tagChars;
+    if (!gst_tag_list_get_string(tagList, GST_TAG_IMAGE_ORIENTATION, &tagChars.outPtr())) {
         GST_DEBUG("No image_orientation tag, applying no rotation.");
         return ImageOrientation::Orientation::None;
     }
 
-    GST_DEBUG("Found image_orientation tag: %s", tag.get());
-    if (!g_strcmp0(tag.get(), "flip-rotate-0"))
+    auto tag = GMallocString::unsafeAdoptFromUTF8(WTFMove(tagChars));
+    GST_DEBUG("Found image_orientation tag: %s", tag.utf8());
+    if (tag == "flip-rotate-0"_s)
         return ImageOrientation::Orientation::OriginTopRight;
-    if (!g_strcmp0(tag.get(), "rotate-180"))
+    if (tag.span() == "rotate-180"_s)
         return ImageOrientation::Orientation::OriginBottomRight;
-    if (!g_strcmp0(tag.get(), "flip-rotate-180"))
+    if (tag == "flip-rotate-180"_s)
         return ImageOrientation::Orientation::OriginBottomLeft;
-    if (!g_strcmp0(tag.get(), "flip-rotate-270"))
+    if (tag == "flip-rotate-270"_s)
         return ImageOrientation::Orientation::OriginLeftTop;
-    if (!g_strcmp0(tag.get(), "rotate-90"))
+    if (tag == "rotate-90"_s)
         return ImageOrientation::Orientation::OriginRightTop;
-    if (!g_strcmp0(tag.get(), "flip-rotate-90"))
+    if (tag == "flip-rotate-90"_s)
         return ImageOrientation::Orientation::OriginRightBottom;
-    if (!g_strcmp0(tag.get(), "rotate-270"))
+    if (tag == "rotate-270"_s)
         return ImageOrientation::Orientation::OriginLeftBottom;
 
     // Default rotation.

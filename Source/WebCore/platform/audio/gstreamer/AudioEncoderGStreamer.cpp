@@ -29,6 +29,7 @@
 #include <wtf/NeverDestroyed.h>
 #include <wtf/ThreadSafeRefCounted.h>
 #include <wtf/WorkQueue.h>
+#include <wtf/glib/GMallocString.h>
 #include <wtf/text/MakeString.h>
 
 namespace WebCore {
@@ -288,6 +289,9 @@ GStreamerInternalAudioEncoder::~GStreamerInternalAudioEncoder()
 String GStreamerInternalAudioEncoder::initialize(const String& codecName, const AudioEncoder::Config& config)
 {
     GST_DEBUG_OBJECT(m_harness->element(), "Initializing encoder for codec %s", codecName.ascii().data());
+
+    auto name = GMallocString::unsafeAdoptFromUTF8(gst_element_get_name(m_encoder.get()));
+
     if (codecName.startsWith("mp4a"_s)) {
         m_outputCaps = adoptGRef(gst_caps_new_simple("audio/mpeg", "mpegversion", G_TYPE_INT, 4,
             "stream-format", G_TYPE_STRING, config.isAacADTS.value_or(false) ? "adts" : "raw", nullptr));
@@ -297,8 +301,7 @@ String GStreamerInternalAudioEncoder::initialize(const String& codecName, const 
         m_outputCaps = adoptGRef(gst_caps_new_simple("audio/mpeg", "mpegversion", G_TYPE_INT, 1, "layer", G_TYPE_INT, 3, nullptr));
     else if (codecName == "opus"_s) {
         if (auto parameters = config.opusConfig) {
-            GUniquePtr<char> name(gst_element_get_name(m_encoder.get()));
-            if (LIKELY(g_str_has_prefix(name.get(), "opusenc"))) {
+            if (LIKELY(startsWith(name.span(), "opusenc"_s))) {
                 if (config.bitRate && config.bitRate < std::numeric_limits<int>::max()) {
                     if (config.bitRate >= 4000 && config.bitRate <= 650000)
                         g_object_set(m_encoder.get(), "bitrate", static_cast<int>(config.bitRate), nullptr);
@@ -326,8 +329,7 @@ String GStreamerInternalAudioEncoder::initialize(const String& codecName, const 
     else if (codecName == "flac"_s) {
         m_outputCaps = adoptGRef(gst_caps_new_empty_simple("audio/x-flac"));
         if (auto parameters = config.flacConfig) {
-            GUniquePtr<char> name(gst_element_get_name(m_encoder.get()));
-            if (LIKELY(g_str_has_prefix(name.get(), "flacenc")))
+            if (startsWith(name.span(), "flacenc"_s))
                 g_object_set(m_encoder.get(), "blocksize", static_cast<unsigned>(parameters->blockSize), "quality", parameters->compressLevel, nullptr);
         }
     } else if (codecName == "vorbis"_s) {

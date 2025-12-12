@@ -43,6 +43,7 @@
 #include <gst/app/gstappsrc.h>
 #include <gst/base/gstflowcombiner.h>
 #include <wtf/UUID.h>
+#include <wtf/glib/GMallocString.h>
 #include <wtf/glib/WTFGType.h>
 #include <wtf/text/MakeString.h>
 
@@ -1153,8 +1154,8 @@ void webkitMediaStreamSrcAddTrack(WebKitMediaStreamSrc* self, MediaStreamTrackPr
         data, reinterpret_cast<GDestroyNotify>(destroyProbeData));
 
 #ifndef GST_DISABLE_GST_DEBUG
-    GUniquePtr<char> objectPath(gst_object_get_path_string(GST_OBJECT_CAST(self)));
-    GST_DEBUG_OBJECT(self, "%s Ghosting %" GST_PTR_FORMAT, objectPath.get(), pad.get());
+    auto objectPath = GMallocString::unsafeAdoptFromUTF8(gst_object_get_path_string(GST_OBJECT_CAST(self)));
+    GST_DEBUG_OBJECT(self, "%s Ghosting %" GST_PTR_FORMAT, objectPath.utf8(), pad.get());
 #endif
 
     auto* ghostPad = webkitGstGhostPadFromStaticTemplate(padTemplate, CStringView::unsafeFromUTF8(padName.utf8().data()), pad.get());

@@ -897,6 +897,7 @@ using WTF::bitwise_cast;
 using WTF::byteCast;
 using WTF::callStatelessLambda;
 using WTF::checkAndSet;
+using WTF::compareSpans;
 using WTF::constructFixedSizeArrayWithArguments;
 using WTF::equalSpans;
 using WTF::findBitInWord;
