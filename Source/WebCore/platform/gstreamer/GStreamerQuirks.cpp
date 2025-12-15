@@ -38,7 +38,7 @@
 #include "RuntimeApplicationChecks.h"
 #include <wtf/NeverDestroyed.h>
 #include <wtf/OptionSet.h>
-#include <wtf/RuntimeApplicationChecks.h>
+#include "RuntimeApplicationChecks.h"
 #include <wtf/text/StringView.h>
 
 namespace WebCore {
