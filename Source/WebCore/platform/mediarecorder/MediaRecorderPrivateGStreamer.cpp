@@ -242,15 +242,14 @@ GRefPtr<GstEncodingContainerProfile> MediaRecorderPrivateGStreamer::containerPro
 void MediaRecorderPrivateGStreamer::setSource(GstElement* element)
 {
     auto selectedTracks = MediaRecorderPrivate::selectTracks(stream());
-    bool onlyTrack = (selectedTracks.audioTrack && !selectedTracks.videoTrack) || (selectedTracks.videoTrack && !selectedTracks.audioTrack);
     auto* src = WEBKIT_MEDIA_STREAM_SRC(element);
     if (selectedTracks.audioTrack) {
-        webkitMediaStreamSrcAddTrack(src, selectedTracks.audioTrack, onlyTrack);
+        webkitMediaStreamSrcAddTrack(src, selectedTracks.audioTrack);
         setAudioSource(&selectedTracks.audioTrack->source());
         checkTrackState(*selectedTracks.audioTrack);
     }
     if (selectedTracks.videoTrack) {
-        webkitMediaStreamSrcAddTrack(src, selectedTracks.videoTrack, onlyTrack);
+        webkitMediaStreamSrcAddTrack(src, selectedTracks.videoTrack);
         setVideoSource(&selectedTracks.videoTrack->source());
         checkTrackState(*selectedTracks.videoTrack);
     }
