@@ -113,8 +113,11 @@ void GamepadProviderWPE::startMonitoringGamepads(GamepadProviderClient& client)
     m_isMonitoringInput = true;
     gsize deviceCount;
     GUniquePtr<WPEGamepad*> gamepads(wpe_gamepad_manager_list_devices(m_manager.get(), &deviceCount));
-    for (size_t i = 0; i < deviceCount; ++i)
+    for (size_t i = 0; i < deviceCount; ++i) {
+        WTF_ALLOW_UNSAFE_BUFFER_USAGE_BEGIN
         gamepadConnected(gamepads.get()[i], IsInitialDevice::Yes);
+        WTF_ALLOW_UNSAFE_BUFFER_USAGE_END
+    }
 }
 
 void GamepadProviderWPE::stopMonitoringGamepads(GamepadProviderClient& client)
