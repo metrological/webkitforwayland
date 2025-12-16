@@ -237,11 +237,13 @@ void OpenXRLayer::blitTexture() const
     auto exportedTexture = m_exportedTexturesMap.get(openxrTexture);
     ASSERT(exportedTexture);
 
+    WTF_ALLOW_UNSAFE_BUFFER_USAGE_BEGIN
     glBindFramebuffer(GL_READ_FRAMEBUFFER, m_fbosForBlitting[0]);
     glFramebufferTexture2D(GL_READ_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, exportedTexture, 0);
 
     glBindFramebuffer(GL_DRAW_FRAMEBUFFER, m_fbosForBlitting[1]);
     glFramebufferTexture2D(GL_DRAW_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, openxrTexture, 0);
+    WTF_ALLOW_UNSAFE_BUFFER_USAGE_END
 
     auto width = m_swapchain->width();
     auto height = m_swapchain->height();
