@@ -1,4 +1,16 @@
 =================
+WPE WebKit 2.50.4
+=================
+
+What's new in WebKitGTK 2.50.4?
+
+  - Correctly handle the program name passed to the sleep disabler.
+  - Ensure GStreamer is initialized before applying quirks.
+  - Fix usage of the cache API in nested workers.
+  - Fix incorrect rendering of SVG path arc elements.
+  - Fix several crashes and rendering issues.
+
+=================
 WPE WebKit 2.50.3
 =================
 
