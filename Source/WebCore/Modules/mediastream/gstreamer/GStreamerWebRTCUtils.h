@@ -269,7 +269,7 @@ ExceptionOr<GUniquePtr<GstStructure>>fromRTCSendParameters(const RTCRtpSendParam
 
 std::optional<Ref<RTCCertificate>> generateCertificate(Ref<SecurityOrigin>&&, const PeerConnectionBackend::CertificateInformation&);
 
-bool sdpMediaHasAttributeKey(const GstSDPMedia*, const char* key);
+bool sdpMediaHasAttributeKey(const GstSDPMedia*, ASCIILiteral key);
 
 class UniqueSSRCGenerator : public ThreadSafeRefCounted<UniqueSSRCGenerator> {
     WTF_MAKE_FAST_ALLOCATED;
@@ -283,7 +283,7 @@ private:
     Vector<uint32_t> m_knownIds WTF_GUARDED_BY_LOCK(m_lock);
 };
 
-std::optional<int> payloadTypeForEncodingName(StringView encodingName);
+std::optional<int> payloadTypeForEncodingName(const String& encodingName);
 
 WARN_UNUSED_RETURN GRefPtr<GstCaps> capsFromRtpCapabilities(const RTCRtpCapabilities&, Function<void(GstStructure*)> supplementCapsCallback);
 

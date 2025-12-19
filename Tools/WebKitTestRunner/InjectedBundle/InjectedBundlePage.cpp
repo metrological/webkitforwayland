@@ -80,11 +80,11 @@ inline StringTypeAdapter<WKStringRef>::StringTypeAdapter(WKStringRef string)
 {
 }
 
-template<> inline void StringTypeAdapter<WKStringRef>::writeTo<LChar>(LChar*) const
+template<> inline void StringTypeAdapter<WKStringRef>::writeTo<Latin1Character>(std::span<Latin1Character>) const
 {
 }
 
-template<> inline void StringTypeAdapter<WKStringRef>::writeTo<UChar>(UChar* destination) const
+template<> inline void StringTypeAdapter<WKStringRef>::writeTo<char16_t>(char16_t* destination) const
 {
     if (m_string)
         WKStringGetCharacters(m_string, reinterpret_cast<WKChar*>(destination), WKStringGetLength(m_string));

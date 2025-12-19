@@ -20,6 +20,7 @@
 
 #pragma once
 
+#include "StringCommon.h"
 #include <utility>
 #include <wtf/text/AtomStringImpl.h>
 #include <wtf/text/WTFString.h>
@@ -30,10 +31,10 @@ class AtomString final {
     WTF_MAKE_FAST_ALLOCATED;
 public:
     AtomString();
-    AtomString(std::span<const LChar>);
-    AtomString(std::span<const UChar>);
+    AtomString(std::span<const Latin1Character>);
+    AtomString(std::span<const char16_t>);
 
-    ALWAYS_INLINE static AtomString fromLatin1(const char* characters) { return AtomString(characters); }
+    ALWAYS_INLINE static AtomString fromLatin1(const char *characters) { return AtomString(characters); }
 
     AtomString(AtomStringImpl*);
     AtomString(RefPtr<AtomStringImpl>&&);
@@ -66,8 +67,8 @@ public:
     RefPtr<AtomStringImpl> releaseImpl() { return static_pointer_cast<AtomStringImpl>(m_string.releaseImpl()); }
 
     bool is8Bit() const { return m_string.is8Bit(); }
-    std::span<const LChar> span8() const { return m_string.span8(); }
-    std::span<const UChar> span16() const { return m_string.span16(); }
+    std::span<const Latin1Character> span8() const LIFETIME_BOUND { return m_string.span8(); }
+    std::span<const char16_t> span16() const LIFETIME_BOUND { return m_string.span16(); }
     unsigned length() const { return m_string.length(); }
 
     UChar operator[](unsigned int i) const { return m_string[i]; }
@@ -174,7 +175,7 @@ inline AtomString::AtomString(const char* string)
 {
 }
 
-inline AtomString::AtomString(std::span<const LChar> string)
+inline AtomString::AtomString(std::span<const Latin1Character> string)
     : m_string(AtomStringImpl::add(string))
 {
 }
@@ -282,7 +283,7 @@ inline AtomString AtomString::fromUTF8(const char* characters)
         return nullAtom();
     if (!*characters)
         return emptyAtom();
-    return fromUTF8Internal(span(characters));
+    return fromUTF8Internal(unsafeSpan(characters));
 }
 
 inline AtomString String::toExistingAtomString() const
@@ -341,7 +342,7 @@ ALWAYS_INLINE String WARN_UNUSED_RETURN makeStringByReplacingAll(const AtomStrin
 template<> struct IntegerToStringConversionTrait<AtomString> {
     using ReturnType = AtomString;
     using AdditionalArgumentType = void;
-    static AtomString flush(std::span<const LChar> characters, void*) { return characters; }
+    static AtomString flush(std::span<const Latin1Character> characters, void*) { return characters; }
 };
 
 } // namespace WTF

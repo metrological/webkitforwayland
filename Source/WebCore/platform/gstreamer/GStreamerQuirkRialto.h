@@ -42,7 +42,7 @@ public:
     GstElement* createWebAudioSink() final;
     std::optional<bool> isHardwareAccelerated(GstElementFactory*) final;
     bool shouldParseIncomingLibWebRTCBitStream() const final { return false; }
-    unsigned getAdditionalPlaybinFlags() const { return getGstPlayFlag("text") | getGstPlayFlag("native-audio") | getGstPlayFlag("native-video"); }
+    unsigned getAdditionalPlaybinFlags() const { return getGstPlayFlag("text"_s) | getGstPlayFlag("native-audio"_s) | getGstPlayFlag("native-video"_s); }
     bool needsCustomInstantRateChange() const final { return true; }
 
 private:

@@ -33,7 +33,7 @@
 
 namespace PAL {
 
-static const UChar latin1ConversionTable[256] = {
+static const char16_t latin1ConversionTable[256] = {
     0x0000, 0x0001, 0x0002, 0x0003, 0x0004, 0x0005, 0x0006, 0x0007, // 00-07
     0x0008, 0x0009, 0x000A, 0x000B, 0x000C, 0x000D, 0x000E, 0x000F, // 08-0F
     0x0010, 0x0011, 0x0012, 0x0013, 0x0014, 0x0015, 0x0016, 0x0017, // 10-17
@@ -99,7 +99,7 @@ void TextCodecLatin1::registerCodecs(TextCodecRegistrar registrar)
 
 String TextCodecLatin1::decode(std::span<const uint8_t> bytes, bool, bool, bool& sawException)
 {
-    LChar* characters;
+    Latin1Character* characters;
     if (bytes.empty())
         return emptyString();
     if (UNLIKELY(bytes.size() > std::numeric_limits<unsigned>::max())) {
@@ -112,7 +112,7 @@ String TextCodecLatin1::decode(std::span<const uint8_t> bytes, bool, bool, bool&
     const uint8_t* source = bytes.data();
     const uint8_t* end = bytes.data() + bytes.size();
     const uint8_t* alignedEnd = WTF::alignToMachineWord(end);
-    LChar* destination = characters;
+    Latin1Character* destination = characters;
 
     while (source < end) {
         if (isASCII(*source)) {
@@ -121,7 +121,7 @@ String TextCodecLatin1::decode(std::span<const uint8_t> bytes, bool, bool, bool&
                 while (source < alignedEnd) {
                     auto chunk = *reinterpret_cast_ptr<const WTF::MachineWord*>(source);
 
-                    if (!WTF::containsOnlyASCII<LChar>(chunk))
+                    if (!WTF::containsOnlyASCII<Latin1Character>(chunk))
                         goto useLookupTable;
 
                     copyASCIIMachineWord(destination, source);
@@ -152,14 +152,14 @@ useLookupTable:
     return result;
     
 upConvertTo16Bit:
-    UChar* characters16;
+    char16_t* characters16;
     String result16 = String::createUninitialized(bytes.size(), characters16);
 
-    UChar* destination16 = characters16;
+    char16_t* destination16 = characters16;
 
     // Zero extend and copy already processed 8 bit data
-    LChar* ptr8 = characters;
-    LChar* endPtr8 = destination;
+    Latin1Character* ptr8 = characters;
+    Latin1Character* endPtr8 = destination;
 
     while (ptr8 < endPtr8)
         *destination16++ = *ptr8++;
@@ -176,7 +176,7 @@ upConvertTo16Bit:
                 while (source < alignedEnd) {
                     auto chunk = *reinterpret_cast_ptr<const WTF::MachineWord*>(source);
                     
-                    if (!WTF::containsOnlyASCII<LChar>(chunk))
+                    if (!WTF::containsOnlyASCII<Latin1Character>(chunk))
                         goto useLookupTable16;
                     
                     copyASCIIMachineWord(destination16, source);
@@ -237,7 +237,7 @@ Vector<uint8_t> TextCodecLatin1::encode(StringView string, UnencodableHandling h
         auto* bytes = result.data();
 
         // Convert and simultaneously do a check to see if it's all ASCII.
-        UChar ored = 0;
+        char16_t ored = 0;
         for (auto character : string.codeUnits()) {
             *bytes++ = character;
             ored |= character;

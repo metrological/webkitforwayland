@@ -46,19 +46,26 @@ String::String(std::span<const UChar> characters)
 }
 
 // Construct a string with latin1 data.
-String::String(std::span<const LChar> characters)
+String::String(std::span<const Latin1Character> characters)
     : m_impl(characters.data() ? RefPtr { StringImpl::create(characters) } : nullptr)
 {
 }
 
+// Construct a string with UTF-8 data.
+String::String(std::span<const char8_t> characters)
+    : m_impl(StringImpl::create(characters))
+{
+}
+
+// Construct a string with Latin-1 data.
 String::String(std::span<const char> characters)
-    : m_impl(characters.data() ? RefPtr { StringImpl::create(byteCast<uint8_t>(characters)) } : nullptr)
+    : m_impl(characters.data() ? RefPtr { StringImpl::create(byteCast<Latin1Character>(characters)) } : nullptr)
 {
 }
 
 // Construct a string with Latin-1 data, from a null-terminated source.
 String::String(const char* nullTerminatedString)
-    : m_impl(nullTerminatedString ? RefPtr { StringImpl::createFromCString(nullTerminatedString) } : nullptr)
+    : m_impl(nullTerminatedString ? RefPtr { StringImpl::create(byteCast<Latin1Character>(unsafeSpan(nullTerminatedString))) } : nullptr)
 {
 }
 
@@ -392,9 +399,9 @@ CString String::ascii() const
         CString result = CString::newUninitialized(characters.size(), characterBuffer);
 
         for (auto character : characters)
-            *characterBuffer++ = character && (character < 0x20 || character > 0x7f) ? '?' : character;
+            *characterBuffer++ = character && (character < 0x20 || character > 0x7f) ? '?' : byteCast<char>(character);
 
-        return result;        
+        return result;
     }
 
     auto characters = span16();
@@ -447,7 +454,7 @@ CString String::utf8(ConversionMode mode) const
 
 String String::make8Bit(std::span<const UChar> source)
 {
-    LChar* destination;
+    Latin1Character* destination;
     String result = String::createUninitialized(source.size(), destination);
     StringImpl::copyCharacters(destination, source);
     return result;
@@ -463,22 +470,27 @@ void String::convertTo16Bit()
     *this = WTFMove(convertedString);
 }
 
-template<bool replaceInvalidSequences>
-String fromUTF8Impl(std::span<const char8_t> string)
+String String::fromUTF8(std::span<const char8_t> codeUnits)
 {
+    return codeUnits;
+}
+
+String String::fromUTF8ReplacingInvalidSequences(std::span<const char8_t> string)
+{
+    if (!string.data())
+        return { };
+
     RELEASE_ASSERT(string.size() <= String::MaxLength);
 
     if (string.empty())
         return emptyString();
 
     if (charactersAreAllASCII(string))
-        return StringImpl::create(spanReinterpretCast<const LChar>(string));
+        return StringImpl::create(spanReinterpretCast<const Latin1Character>(string));
 
-    Vector<UChar, 1024> buffer(string.size());
- 
-    auto result = replaceInvalidSequences
-        ? Unicode::convertReplacingInvalidSequences(string, buffer.mutableSpan())
-        : Unicode::convert(string, buffer.mutableSpan());
+    Vector<char16_t, 1024> buffer(string.size());
+
+    auto result = Unicode::convertReplacingInvalidSequences(string, buffer.mutableSpan());
     if (result.code != Unicode::ConversionResultCode::Success)
         return { };
 
@@ -486,27 +498,13 @@ String fromUTF8Impl(std::span<const char8_t> string)
     return StringImpl::create(result.buffer);
 }
 
-String String::fromUTF8(std::span<const char8_t> string)
-{
-    if (!string.data())
-        return { };
-    return fromUTF8Impl<false>(string);
-}
-
-String String::fromUTF8ReplacingInvalidSequences(std::span<const char8_t> characters)
-{
-    if (!characters.data())
-        return { };
-    return fromUTF8Impl<true>(characters);
-}
-
 String String::fromUTF8WithLatin1Fallback(std::span<const char8_t> string)
 {
-    String utf8 = fromUTF8(string);
+    String utf8 { string };
     if (!utf8) {
         // Do this assertion before chopping the size_t down to unsigned.
         RELEASE_ASSERT(string.size() <= String::MaxLength);
-        return spanReinterpretCast<const LChar>(string);
+        return spanReinterpretCast<const Latin1Character>(string);
     }
     return utf8;
 }
@@ -542,10 +540,10 @@ static inline double toDoubleType(std::span<const CharacterType> data, bool* ok,
     return number;
 }
 
-double charactersToDouble(std::span<const LChar> data, bool* ok)
+double charactersToDouble(std::span<const Latin1Character> data, bool* ok)
 {
     size_t parsedLength;
-    return toDoubleType<LChar, TrailingJunkPolicy::Disallow>(data, ok, parsedLength);
+    return toDoubleType<Latin1Character, TrailingJunkPolicy::Disallow>(data, ok, parsedLength);
 }
 
 double charactersToDouble(std::span<const UChar> data, bool* ok)
@@ -554,11 +552,11 @@ double charactersToDouble(std::span<const UChar> data, bool* ok)
     return toDoubleType<UChar, TrailingJunkPolicy::Disallow>(data, ok, parsedLength);
 }
 
-float charactersToFloat(std::span<const LChar> data, bool* ok)
+float charactersToFloat(std::span<const Latin1Character> data, bool* ok)
 {
     // FIXME: This will return ok even when the string fits into a double but not a float.
     size_t parsedLength;
-    return static_cast<float>(toDoubleType<LChar, TrailingJunkPolicy::Disallow>(data, ok, parsedLength));
+    return static_cast<float>(toDoubleType<Latin1Character, TrailingJunkPolicy::Disallow>(data, ok, parsedLength));
 }
 
 float charactersToFloat(std::span<const UChar> data, bool* ok)
@@ -568,10 +566,10 @@ float charactersToFloat(std::span<const UChar> data, bool* ok)
     return static_cast<float>(toDoubleType<UChar, TrailingJunkPolicy::Disallow>(data, ok, parsedLength));
 }
 
-float charactersToFloat(std::span<const LChar> data, size_t& parsedLength)
+float charactersToFloat(std::span<const Latin1Character> data, size_t& parsedLength)
 {
     // FIXME: This will return ok even when the string fits into a double but not a float.
-    return static_cast<float>(toDoubleType<LChar, TrailingJunkPolicy::Allow>(data, nullptr, parsedLength));
+    return static_cast<float>(toDoubleType<Latin1Character, TrailingJunkPolicy::Allow>(data, nullptr, parsedLength));
 }
 
 float charactersToFloat(std::span<const UChar> data, size_t& parsedLength)

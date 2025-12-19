@@ -23,6 +23,7 @@
 
 #include "GRefPtrGStreamer.h"
 #include <wtf/Forward.h>
+#include <wtf/text/CStringView.h>
 
 namespace WebCore {
 

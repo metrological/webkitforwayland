@@ -38,6 +38,7 @@
 #include <wtf/MainThreadData.h>
 #include <wtf/RefPtr.h>
 #include <wtf/Scope.h>
+#include <wtf/glib/GMallocString.h>
 #include <wtf/glib/WTFGType.h>
 #include <wtf/text/AtomString.h>
 #include <wtf/text/AtomStringHash.h>
@@ -91,7 +92,7 @@ struct WebKitMediaSrcPrivate {
     double rate { 1.0 };
 
     // Only used by URI Handler API implementation.
-    GUniquePtr<char> uri;
+    GMallocString uri;
 
     ThreadSafeWeakPtr<MediaPlayerPrivateGStreamerMSE> player;
 };
@@ -219,7 +220,7 @@ static void dumpPipeline([[maybe_unused]] ASCIILiteral description, [[maybe_unus
 {
 #ifndef GST_DISABLE_GST_DEBUG
     auto pipeline = findPipeline(GRefPtr<GstElement>(GST_ELEMENT(stream->source)));
-    auto fileName = makeString(span(GST_OBJECT_NAME(pipeline.get())), '-', stream->track->id(), '-', description);
+    auto fileName = makeString(unsafeSpan(GST_OBJECT_NAME(pipeline.get())), '-', stream->track->id(), '-', description);
     GST_DEBUG_BIN_TO_DOT_FILE_WITH_TS(GST_BIN_CAST(pipeline.get()), GST_DEBUG_GRAPH_SHOW_ALL, fileName.utf8().data());
 #endif
 }
@@ -240,18 +241,18 @@ static GstStreamType gstStreamType(TrackPrivateBaseGStreamer::TrackType type)
 }
 
 #ifndef GST_DISABLE_GST_DEBUG
-static const char* streamTypeToString(TrackPrivateBaseGStreamer::TrackType type)
+static ASCIILiteral streamTypeToString(TrackPrivateBaseGStreamer::TrackType type)
 {
     switch (type) {
     case TrackPrivateBaseGStreamer::TrackType::Audio:
-        return "Audio";
+        return "Audio"_s;
     case TrackPrivateBaseGStreamer::TrackType::Video:
-        return "Video";
+        return "Video"_s;
     case TrackPrivateBaseGStreamer::TrackType::Text:
-        return "Text";
+        return "Text"_s;
     default:
     case TrackPrivateBaseGStreamer::TrackType::Unknown:
-        return "Unknown";
+        return "Unknown"_s;
     }
 }
 #endif // GST_DISABLE_GST_DEBUG
@@ -329,7 +330,8 @@ void webKitMediaSrcEmitStreams(WebKitMediaSrc* source, const Vector<RefPtr<Media
     source->priv->collection = adoptGRef(gst_stream_collection_new("WebKitMediaSrc"));
     for (const auto& track : tracks) {
 #ifndef GST_DISABLE_GST_DEBUG
-        GST_DEBUG_OBJECT(source, "Adding stream with trackId '%" PRIu64 "' of type %s with caps %" GST_PTR_FORMAT, track->id(), streamTypeToString(track->type()), track->initialCaps().get());
+        GST_DEBUG_OBJECT(source, "Adding stream with trackId '%" PRIu64 "' of type %s with caps %" GST_PTR_FORMAT,
+            track->id(), streamTypeToString(track->type()).characters(), track->initialCaps().get());
 #endif // GST_DISABLE_GST_DEBUG
         if (source->priv->streams.contains(track->id())) {
             GST_ERROR_OBJECT(source, "stream with trackId '%" PRIu64 "' already exists", track->id());
@@ -514,8 +516,8 @@ static void webKitMediaSrcLoop(void* userData)
     }
 
     if (!streamingMembers->wasStreamStartSent) {
-        GUniquePtr<char> streamId { g_strdup_printf("mse/%" PRIu64 "", stream->track->id()) };
-        GRefPtr<GstEvent> event = adoptGRef(gst_event_new_stream_start(streamId.get()));
+        auto streamId = GMallocString::unsafeAdoptFromUTF8(g_strdup_printf("mse/%" PRIu64 "", stream->track->id()));
+        GRefPtr<GstEvent> event = adoptGRef(gst_event_new_stream_start(streamId.utf8()));
         gst_event_set_group_id(event.get(), stream->source->priv->groupId);
         gst_event_set_stream(event.get(), stream->streamInfo.get());
 
@@ -896,7 +898,7 @@ static gchar* webKitMediaSrcGetUri(GstURIHandler* handler)
     WebKitMediaSrc* source = WEBKIT_MEDIA_SRC(handler);
 
     auto locker = GstObjectLocker(source);
-    return g_strdup(source->priv->uri.get());
+    return g_strdup(source->priv->uri.utf8());
 }
 
 static gboolean webKitMediaSrcSetUri(GstURIHandler* handler, const gchar* uri, GError**)
@@ -909,7 +911,7 @@ static gboolean webKitMediaSrcSetUri(GstURIHandler* handler, const gchar* uri, G
     }
 
     auto locker = GstObjectLocker(source);
-    source->priv->uri = GUniquePtr<char>(g_strdup(uri));
+    source->priv->uri = GMallocString::unsafeAdoptFromUTF8(g_strdup(uri));
     return TRUE;
 }
 

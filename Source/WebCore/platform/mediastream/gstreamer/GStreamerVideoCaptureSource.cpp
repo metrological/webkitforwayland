@@ -85,7 +85,7 @@ CaptureSourceOrError GStreamerVideoCaptureSource::create(String&& deviceID, Medi
 
 CaptureSourceOrError GStreamerVideoCaptureSource::createPipewireSource(String&& deviceID, const NodeAndFD& nodeAndFd, MediaDeviceHashSalts&& hashSalts, const MediaConstraints* constraints, CaptureDevice::DeviceType deviceType)
 {
-    auto source = adoptRef(*new GStreamerVideoCaptureSource(WTFMove(deviceID), { }, WTFMove(hashSalts), "pipewiresrc", deviceType, nodeAndFd));
+    auto source = adoptRef(*new GStreamerVideoCaptureSource(WTFMove(deviceID), { }, WTFMove(hashSalts), "pipewiresrc"_s, deviceType, nodeAndFd));
     if (constraints) {
         if (auto result = source->applyConstraints(*constraints))
             return CaptureSourceOrError(CaptureSourceError { result->invalidConstraint });
@@ -105,7 +105,7 @@ DisplayCaptureFactory& GStreamerVideoCaptureSource::displayFactory()
     return factory.get();
 }
 
-GStreamerVideoCaptureSource::GStreamerVideoCaptureSource(String&& deviceID, AtomString&& name, MediaDeviceHashSalts&& hashSalts, const gchar* sourceFactory, CaptureDevice::DeviceType deviceType, const NodeAndFD& nodeAndFd)
+GStreamerVideoCaptureSource::GStreamerVideoCaptureSource(String&& deviceID, AtomString&& name, MediaDeviceHashSalts&& hashSalts, ASCIILiteral sourceFactory, CaptureDevice::DeviceType deviceType, const NodeAndFD& nodeAndFd)
     : RealtimeVideoCaptureSource(CaptureDevice { WTFMove(deviceID), CaptureDevice::DeviceType::Camera, WTFMove(name) }, WTFMove(hashSalts), { })
     , m_capturer(adoptRef(*new GStreamerVideoCapturer(sourceFactory, deviceType)))
     , m_deviceType(deviceType)

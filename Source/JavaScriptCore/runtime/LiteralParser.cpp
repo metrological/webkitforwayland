@@ -170,12 +170,12 @@ ALWAYS_INLINE JSString* LiteralParser<CharType, reviverMode>::makeJSString(VM& v
     return jsString(vm, Identifier::fromString(vm, token->string16()).string());
 }
 
-[[maybe_unused]] static ALWAYS_INLINE bool cannotBeIdentPartOrEscapeStart(LChar)
+[[maybe_unused]] static ALWAYS_INLINE bool cannotBeIdentPartOrEscapeStart(Latin1Character)
 {
     RELEASE_ASSERT_NOT_REACHED();
 }
 
-[[maybe_unused]] static ALWAYS_INLINE bool cannotBeIdentPartOrEscapeStart(UChar)
+[[maybe_unused]] static ALWAYS_INLINE bool cannotBeIdentPartOrEscapeStart(char16_t)
 {
     RELEASE_ASSERT_NOT_REACHED();
 }
@@ -857,14 +857,14 @@ ALWAYS_INLINE TokenType LiteralParser<CharType, reviverMode>::Lexer::nextMaybeId
 }
 
 template <>
-ALWAYS_INLINE void setParserTokenString<LChar>(LiteralParserToken<LChar>& token, const LChar* string)
+ALWAYS_INLINE void setParserTokenString<Latin1Character>(LiteralParserToken<Latin1Character>& token, const Latin1Character* string)
 {
     token.stringIs8Bit = 1;
     token.stringStart8 = string;
 }
 
 template <>
-ALWAYS_INLINE void setParserTokenString<UChar>(LiteralParserToken<UChar>& token, const UChar* string)
+ALWAYS_INLINE void setParserTokenString<char16_t>(LiteralParserToken<char16_t>& token, const char16_t* string)
 {
     token.stringIs8Bit = 0;
     token.stringStart16 = string;
@@ -873,7 +873,7 @@ ALWAYS_INLINE void setParserTokenString<UChar>(LiteralParserToken<UChar>& token,
 enum class SafeStringCharacterSet { Strict, Sloppy };
 
 template <SafeStringCharacterSet set>
-static ALWAYS_INLINE bool isSafeStringCharacter(LChar c, LChar terminator)
+static ALWAYS_INLINE bool isSafeStringCharacter(Latin1Character c, Latin1Character terminator)
 {
     if constexpr (set == SafeStringCharacterSet::Strict)
         return safeStringLatin1CharactersInStrictJSON[c];
@@ -882,21 +882,21 @@ static ALWAYS_INLINE bool isSafeStringCharacter(LChar c, LChar terminator)
 }
 
 template <SafeStringCharacterSet set>
-static ALWAYS_INLINE bool isSafeStringCharacter(UChar c, UChar terminator)
+static ALWAYS_INLINE bool isSafeStringCharacter(char16_t c, char16_t terminator)
 {
     if constexpr (set == SafeStringCharacterSet::Strict) {
         if (!isLatin1(c))
             return true;
-        return isSafeStringCharacter<set>(static_cast<LChar>(c), static_cast<LChar>(terminator));
+        return isSafeStringCharacter<set>(static_cast<Latin1Character>(c), static_cast<Latin1Character>(terminator));
     } else
         return (c >= ' ' && isLatin1(c) && c != '\\' && c != terminator) || (c == '\t');
 }
 
 template <SafeStringCharacterSet set>
-static ALWAYS_INLINE bool isSafeStringCharacterForIdentifier(UChar c, UChar terminator)
+static ALWAYS_INLINE bool isSafeStringCharacterForIdentifier(char16_t c, char16_t terminator)
 {
     if constexpr (set == SafeStringCharacterSet::Strict)
-        return isSafeStringCharacter<set>(static_cast<LChar>(c), static_cast<LChar>(terminator)) || !isLatin1(c);
+        return isSafeStringCharacter<set>(static_cast<Latin1Character>(c), static_cast<Latin1Character>(terminator)) || !isLatin1(c);
     else
         return (c >= ' ' && isLatin1(c) && c != '\\' && c != terminator) || (c == '\t');
 }
@@ -911,7 +911,7 @@ ALWAYS_INLINE TokenType LiteralParser<CharType, reviverMode>::Lexer::lexString(L
     if (m_mode == StrictJSON) {
         ASSERT(terminator == '"');
         if constexpr (hint == JSONIdentifierHint::MaybeIdentifier) {
-            while (m_ptr < m_end && isSafeStringCharacterForIdentifier<SafeStringCharacterSet::Strict>(*m_ptr, '"'))
+            while (m_ptr < m_end && isSafeStringCharacterForIdentifier<SafeStringCharacterSet::Strict>(*m_ptr, terminator))
                 ++m_ptr;
         } else {
             using UnsignedType = std::make_unsigned_t<CharType>;
@@ -926,8 +926,8 @@ ALWAYS_INLINE TokenType LiteralParser<CharType, reviverMode>::Lexer::lexString(L
                 return SIMD::findFirstNonZeroIndex(mask);
             };
 
-            auto scalarMatch = [&](auto character) ALWAYS_INLINE_LAMBDA {
-                return !isSafeStringCharacter<SafeStringCharacterSet::Strict>(character, '"');
+            auto scalarMatch = [&](CharType character) ALWAYS_INLINE_LAMBDA {
+                return !isSafeStringCharacter<SafeStringCharacterSet::Strict>(character, terminator);
             };
 
             m_ptr = SIMD::find(std::span { m_ptr, m_end }, vectorMatch, scalarMatch);
@@ -1780,10 +1780,10 @@ JSValue LiteralParser<CharType, reviverMode>::parse(VM& vm, ParserState initialS
 }
 
 // Instantiate the two flavors of LiteralParser we need instead of putting most of this file in LiteralParser.h
-template class LiteralParser<LChar, JSONReviverMode::Enabled>;
-template class LiteralParser<UChar, JSONReviverMode::Enabled>;
-template class LiteralParser<LChar, JSONReviverMode::Disabled>;
-template class LiteralParser<UChar, JSONReviverMode::Disabled>;
+template class LiteralParser<Latin1Character, JSONReviverMode::Enabled>;
+template class LiteralParser<char16_t, JSONReviverMode::Enabled>;
+template class LiteralParser<Latin1Character, JSONReviverMode::Disabled>;
+template class LiteralParser<char16_t, JSONReviverMode::Disabled>;
 
 }
 

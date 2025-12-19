@@ -67,9 +67,9 @@ private:
     char m_character;
 };
 
-template<> class StringTypeAdapter<UChar, void> {
+template<> class StringTypeAdapter<char16_t, void> {
 public:
-    StringTypeAdapter(UChar character)
+    StringTypeAdapter(char16_t character)
         : m_character { character }
     {
     }
@@ -77,16 +77,16 @@ public:
     unsigned length() const { return 1; }
     bool is8Bit() const { return isLatin1(m_character); }
 
-    void writeTo(LChar* destination) const
+    void writeTo(Latin1Character* destination) const
     {
         ASSERT(is8Bit());
         *destination = m_character;
     }
 
-    void writeTo(UChar* destination) const { *destination = m_character; }
+    void writeTo(char16_t* destination) const { *destination = m_character; }
 
 private:
-    UChar m_character;
+    char16_t m_character;
 };
 
 template<> class StringTypeAdapter<char32_t, void> {
@@ -99,7 +99,7 @@ public:
     unsigned length() const { return U16_LENGTH(m_character); }
     bool is8Bit() const { return isLatin1(m_character); }
 
-    void writeTo(LChar* destination) const
+    void writeTo(Latin1Character* destination) const
     {
         ASSERT(is8Bit());
         *destination = m_character;
@@ -125,31 +125,9 @@ inline unsigned stringLength(size_t length)
     return static_cast<unsigned>(length);
 }
 
-template<> class StringTypeAdapter<const LChar*, void> {
+template<> class StringTypeAdapter<const char16_t*, void> {
 public:
-    StringTypeAdapter(const LChar* characters)
-        : m_characters { characters }
-        , m_length { computeLength(characters) }
-    {
-    }
-
-    unsigned length() const { return m_length; }
-    bool is8Bit() const { return true; }
-    template<typename CharacterType> void writeTo(CharacterType* destination) const { StringImpl::copyCharacters(destination, { m_characters, m_length }); }
-
-private:
-    static unsigned computeLength(const LChar* characters)
-    {
-        return stringLength(std::strlen(byteCast<char>(characters)));
-    }
-
-    const LChar* m_characters;
-    unsigned m_length;
-};
-
-template<> class StringTypeAdapter<const UChar*, void> {
-public:
-    StringTypeAdapter(const UChar* characters)
+    StringTypeAdapter(const char16_t* characters)
         : m_characters { characters }
         , m_length { computeLength(characters) }
     {
@@ -157,11 +135,11 @@ public:
 
     unsigned length() const { return m_length; }
     bool is8Bit() const { return !m_length; }
-    void writeTo(LChar*) const { ASSERT(!m_length); }
-    void writeTo(UChar* destination) const { StringImpl::copyCharacters(destination, { m_characters, m_length }); }
+    void writeTo(Latin1Character*) const { ASSERT(!m_length); }
+    void writeTo(char16_t* destination) const { StringImpl::copyCharacters(destination, { m_characters, m_length }); }
 
 private:
-    static unsigned computeLength(const UChar* characters)
+    static unsigned computeLength(const char16_t* characters)
     {
         size_t length = 0;
         while (characters[length])
@@ -169,7 +147,7 @@ private:
         return stringLength(length);
     }
 
-    const UChar* m_characters;
+    const char16_t* m_characters;
     unsigned m_length;
 };
 
@@ -186,7 +164,7 @@ public:
 
     template<typename DestinationCharacterType> void writeTo(DestinationCharacterType* destination) const
     {
-        using CharacterTypeForString = std::conditional_t<sizeof(CharacterType) == sizeof(LChar), LChar, UChar>;
+        using CharacterTypeForString = std::conditional_t<sizeof(CharacterType) == sizeof(Latin1Character), Latin1Character, char16_t>;
         static_assert(sizeof(CharacterTypeForString) == sizeof(CharacterType));
         StringImpl::copyCharacters(destination, { reinterpret_cast<const CharacterTypeForString*>(m_characters), m_length });
     }
@@ -204,10 +182,10 @@ public:
     }
 };
 
-template<> class StringTypeAdapter<ASCIILiteral, void> : public StringTypeAdapter<std::span<const LChar>, void> {
+template<> class StringTypeAdapter<ASCIILiteral, void> : public StringTypeAdapter<std::span<const Latin1Character>, void> {
 public:
     StringTypeAdapter(ASCIILiteral characters)
-        : StringTypeAdapter<std::span<const LChar>, void> { characters.span8() }
+        : StringTypeAdapter<std::span<const Latin1Character>, void> { characters.span8() }
     {
     }
 };
@@ -301,8 +279,8 @@ public:
 
     unsigned length() const { return m_characters.lengthUTF16; }
     bool is8Bit() const { return m_characters.isAllASCII; }
-    void writeTo(LChar* destination) const { memcpy(destination, m_characters.characters.data(), m_characters.lengthUTF16); }
-    void writeTo(UChar* destination) const { Unicode::convert(m_characters.characters, std::span { destination, m_characters.lengthUTF16 }); }
+    void writeTo(Latin1Character* destination) const { memcpy(destination, m_characters.characters.data(), m_characters.lengthUTF16); }
+    void writeTo(char16_t* destination) const { Unicode::convert(m_characters.characters, std::span { destination, m_characters.lengthUTF16 }); }
 
 private:
     Unicode::CheckedUTF8 m_characters;
@@ -354,14 +332,14 @@ private:
 };
 
 template<typename UnderlyingElementType> struct PaddingSpecification {
-    LChar character;
+    Latin1Character character;
     unsigned length;
     UnderlyingElementType underlyingElement;
 };
 
 template<typename UnderlyingElementType> PaddingSpecification<UnderlyingElementType> pad(char character, unsigned length, UnderlyingElementType element)
 {
-    return { byteCast<LChar>(character), length, element };
+    return { byteCast<Latin1Character>(character), length, element };
 }
 
 template<typename UnderlyingElementType> class StringTypeAdapter<PaddingSpecification<UnderlyingElementType>> {

@@ -664,7 +664,7 @@ TextStream& operator<<(TextStream& ts, const PlatformCAAnimationRemote::Properti
     ts.dumpProperty("fillMode", animation.fillMode);
     ts.dumpProperty("valueFunction", animation.valueFunction);
     if (animation.timingFunction)
-        ts.dumpProperty<const TimingFunction&>("timing function", *animation.timingFunction);
+        ts.dumpProperty<const TimingFunction&>("timing function"_s, *animation.timingFunction);
 
     if (animation.autoReverses)
         ts.dumpProperty("autoReverses", animation.autoReverses);
@@ -698,7 +698,7 @@ TextStream& operator<<(TextStream& ts, const PlatformCAAnimationRemote::Properti
             ts.dumpProperty("time", animation.keyTimes[i]);
 
         if (i < animation.timingFunctions.size())
-            ts.dumpProperty<const TimingFunction&>("timing function", animation.timingFunctions[i]);
+            ts.dumpProperty<const TimingFunction&>("timing function"_s, animation.timingFunctions[i]);
 
         if (i < animation.keyValues.size()) {
             ts.startGroup();

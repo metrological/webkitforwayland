@@ -137,7 +137,9 @@ protected:
         explicit ElementFactories(OptionSet<Type>);
         ~ElementFactories();
 
-        static const char* elementFactoryTypeToString(Type);
+#ifndef GST_DISABLE_GST_DEBUG
+        static ASCIILiteral elementFactoryTypeToString(Type);
+#endif
         GList* factory(Type) const;
 
         enum class CheckHardwareClassifier : bool { No, Yes };

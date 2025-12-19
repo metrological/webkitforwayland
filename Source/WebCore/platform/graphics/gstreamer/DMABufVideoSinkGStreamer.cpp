@@ -90,7 +90,7 @@ static void webKitDMABufVideoSinkConstructed(GObject* object)
 
     WebKitDMABufVideoSink* sink = WEBKIT_DMABUF_VIDEO_SINK(object);
 
-    sink->priv->appSink = makeGStreamerElement("appsink", "webkit-dmabuf-video-appsink");
+    sink->priv->appSink = makeGStreamerElement("appsink"_s, "webkit-dmabuf-video-appsink"_s);
     ASSERT(sink->priv->appSink);
     g_object_set(sink->priv->appSink.get(), "enable-last-sample", FALSE, "emit-signals", TRUE, "max-buffers", 1, nullptr);
 
@@ -195,7 +195,7 @@ bool webKitDMABufVideoSinkIsEnabled()
 
 bool webKitDMABufVideoSinkProbePlatform()
 {
-    return webkitGstCheckVersion(1, 20, 0) && isGStreamerPluginAvailable("app");
+    return webkitGstCheckVersion(1, 20, 0) && isGStreamerPluginAvailable("app"_s);
 }
 
 void webKitDMABufVideoSinkSetMediaPlayerPrivate(WebKitDMABufVideoSink* sink, MediaPlayerPrivateGStreamer* player)

@@ -1114,8 +1114,8 @@ sub printNodeNameHeaderFile
     print F "} // namespace AttributeNames\n";
     print F "\n";
     print F "NodeName findNodeName(Namespace, const String&);\n";
-    print F "ElementName findHTMLElementName(std::span<const LChar>);\n";
-    print F "ElementName findHTMLElementName(std::span<const UChar>);\n";
+    print F "ElementName findHTMLElementName(std::span<const Latin1Character>);\n";
+    print F "ElementName findHTMLElementName(std::span<const char16_t>);\n";
     print F "ElementName findHTMLElementName(const String&);\n";
     print F "ElementName findSVGElementName(const String&);\n";
     print F "ElementName findMathMLElementName(const String&);\n";
@@ -1252,7 +1252,7 @@ sub printNodeNameCppFile
     print F "    return findNodeNameFromBuffer(ns, name.span16());\n";
     print F "}\n";
     print F "\n";
-    print F "ElementName findHTMLElementName(std::span<const LChar> buffer)\n";
+    print F "ElementName findHTMLElementName(std::span<const Latin1Character> buffer)\n";
     print F "{\n";
     print F "    return findHTMLNodeName(buffer);\n";
     print F "}\n";

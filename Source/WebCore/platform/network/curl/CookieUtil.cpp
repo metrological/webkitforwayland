@@ -81,7 +81,7 @@ bool domainMatch(const String& cookieDomain, const String& host)
     return false;
 }
 
-static std::optional<double> parseExpiresMS(std::span<const LChar> expires)
+static std::optional<double> parseExpiresMS(std::span<const Latin1Character> expires)
 {
     double tmp = parseDate(expires);
     if (isnan(tmp))

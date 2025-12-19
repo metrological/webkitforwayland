@@ -32,7 +32,7 @@ namespace PAL {
 
 template<size_t size> struct UCharByteFiller;
 template<> struct UCharByteFiller<4> {
-    static void copy(LChar* destination, const uint8_t* source)
+    static void copy(Latin1Character* destination, const uint8_t* source)
     {
         memcpy(destination, source, 4);
     }
@@ -46,7 +46,7 @@ template<> struct UCharByteFiller<4> {
     }
 };
 template<> struct UCharByteFiller<8> {
-    static void copy(LChar* destination, const uint8_t* source)
+    static void copy(Latin1Character* destination, const uint8_t* source)
     {
         memcpy(destination, source, 8);
     }
@@ -64,7 +64,7 @@ template<> struct UCharByteFiller<8> {
     }
 };
 
-inline void copyASCIIMachineWord(LChar* destination, const uint8_t* source)
+inline void copyASCIIMachineWord(Latin1Character* destination, const uint8_t* source)
 {
     UCharByteFiller<sizeof(WTF::MachineWord)>::copy(destination, source);
 }

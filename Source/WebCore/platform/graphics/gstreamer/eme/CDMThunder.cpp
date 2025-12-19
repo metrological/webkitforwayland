@@ -77,7 +77,7 @@ static LicenseType thunderLicenseType(WebCore::CDMInstanceSession::LicenseType l
 
 namespace WebCore {
 
-static CDMInstanceSession::SessionLoadFailure sessionLoadFailureFromThunder(const StringView& loadStatus)
+static CDMInstanceSession::SessionLoadFailure sessionLoadFailureFromThunder(const String& loadStatus)
 {
     if (loadStatus == "None"_s)
         return CDMInstanceSession::SessionLoadFailure::None;
@@ -299,7 +299,7 @@ CDMInstanceSessionThunder::CDMInstanceSessionThunder(CDMInstanceThunder& instanc
     };
     m_thunderSessionCallbacks.error_message_callback = [](OpenCDMSession*, void* userData, const char message[]) {
         GST_ERROR("Got 'error' OCDM notification: %s", message);
-        callOnMainThread([session = WeakPtr { static_cast<CDMInstanceSessionThunder*>(userData) }, buffer = WebCore::SharedBuffer::create(span(message))]() mutable {
+        callOnMainThread([session = WeakPtr { static_cast<CDMInstanceSessionThunder*>(userData) }, buffer = WebCore::SharedBuffer::create(unsafeSpan(message))]() mutable {
             if (!session)
                 return;
             session->errorCallback(WTFMove(buffer));
@@ -326,7 +326,7 @@ public:
         unsigned offset = 0u;
         if (buffer->size() >= 7) {
             auto data = buffer->read(0, 7);
-            StringView dataString(data.span());
+            StringView dataString(byteCast<Latin1Character>(data.span()));
             if (dataString.endsWith(":Type:"_s)) {
                 m_type.emplace(static_cast<WebCore::MediaKeyMessageType>(dataString.characterAt(0) - '0'));
                 offset = 7;
@@ -383,26 +383,26 @@ void CDMInstanceSessionThunder::challengeGeneratedCallback(RefPtr<SharedBuffer>&
 }
 
 #if !defined(GST_DISABLE_GST_DEBUG) || !GST_DISABLE_GST_DEBUG
-static const char* toString(CDMInstanceSession::KeyStatus status)
+static ASCIILiteral toString(CDMInstanceSession::KeyStatus status)
 {
     switch (status) {
     case CDMInstanceSession::KeyStatus::Usable:
-        return "Usable";
+        return "Usable"_s;
     case CDMInstanceSession::KeyStatus::Expired:
-        return "Expired";
+        return "Expired"_s;
     case CDMInstanceSession::KeyStatus::Released:
-        return "Released";
+        return "Released"_s;
     case CDMInstanceSession::KeyStatus::OutputRestricted:
-        return "OutputRestricted";
+        return "OutputRestricted"_s;
     case CDMInstanceSession::KeyStatus::OutputDownscaled:
-        return "OutputDownscaled";
+        return "OutputDownscaled"_s;
     case CDMInstanceSession::KeyStatus::StatusPending:
-        return "StatusPending";
+        return "StatusPending"_s;
     case CDMInstanceSession::KeyStatus::InternalError:
-        return "InternalError";
+        return "InternalError"_s;
     default:
         ASSERT_NOT_REACHED();
-        return "unknown";
+        return "unknown"_s;
     }
 }
 #endif
@@ -437,7 +437,7 @@ void CDMInstanceSessionThunder::keyUpdatedCallback(KeyIDType&& keyID)
     GST_MEMDUMP("updated key", keyID.data(), keyID.size());
 
     auto keyStatus = status(keyID);
-    GST_DEBUG("updated with with key status %s", toString(keyStatus));
+    GST_DEBUG("updated with with key status %s", toString(keyStatus).characters());
 
     auto instance = cdmInstanceThunder();
     if (instance && GStreamerEMEUtilities::isPlayReadyKeySystem(instance->keySystem())) {
@@ -627,7 +627,7 @@ void CDMInstanceSessionThunder::loadSession(LicenseType, const String& sessionID
                 callback(std::nullopt, std::nullopt, std::nullopt, SuccessValue::Failed, sessionLoadFailureFromThunder({ }));
             else {
                 auto responseData = responseMessage->extractData();
-                StringView response(responseData.span());
+                auto response = String(byteCast<char8_t>(responseData.span()));
                 GST_DEBUG("Error message: %s", response.utf8().data());
                 callback(std::nullopt, std::nullopt, std::nullopt, SuccessValue::Failed, sessionLoadFailureFromThunder(response));
             }

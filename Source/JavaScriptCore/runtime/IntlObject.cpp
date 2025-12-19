@@ -1145,9 +1145,9 @@ static VariantCode parseVariantCode(StringView string)
     ASSERT(string.length() <= 8);
     ASSERT(string.length() >= 1);
     struct Code {
-        LChar characters[8] { };
+        Latin1Character characters[8] { };
     };
-    static_assert(std::is_unsigned_v<LChar>);
+    static_assert(std::is_unsigned_v<Latin1Character>);
     static_assert(sizeof(VariantCode) == sizeof(Code));
     Code code { };
     for (unsigned index = 0; index < string.length(); ++index)
@@ -1158,7 +1158,7 @@ static VariantCode parseVariantCode(StringView string)
     return result;
 }
 
-static unsigned convertToUnicodeSingletonIndex(UChar singleton)
+static unsigned convertToUnicodeSingletonIndex(char16_t singleton)
 {
     ASSERT(isASCIIAlphanumeric(singleton));
     singleton = toASCIILower(singleton);
@@ -1445,7 +1445,7 @@ bool LanguageTagParser::parseExtensionsAndPUExtensions()
     while (true) {
         if (m_current.length() != 1)
             return true;
-        UChar prefixCode = m_current[0];
+        char16_t prefixCode = m_current[0];
         if (!isASCIIAlphanumeric(prefixCode))
             return true;
 

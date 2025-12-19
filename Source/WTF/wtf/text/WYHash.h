@@ -178,8 +178,8 @@ private:
         }
     };
 
-    // LChar data is interpreted as Latin-1-encoded (zero-extended to 16 bits).
-    // To match the hash value of UChar with same content, extend 16 bits (0xff)
+    // Latin1Character data is interpreted as Latin-1-encoded (zero-extended to 16 bits).
+    // To match the hash value of char16_t with same content, extend 16 bits (0xff)
     // to 32 bits (0x00ff).
     template<typename T, typename Converter = DefaultConverter>
     struct Reader8Bit {

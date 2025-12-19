@@ -62,7 +62,7 @@ size_t StringView::findIgnoringASCIICase(StringView matchString, unsigned startO
     return ::WTF::findIgnoringASCIICase(*this, matchString, startOffset);
 }
 
-bool StringView::startsWith(UChar character) const
+bool StringView::startsWith(char16_t character) const
 {
     return m_length && (*this)[0] == character;
 }
@@ -77,7 +77,7 @@ bool StringView::startsWithIgnoringASCIICase(StringView prefix) const
     return ::WTF::startsWithIgnoringASCIICase(*this, prefix);
 }
 
-bool StringView::endsWith(UChar character) const
+bool StringView::endsWith(char16_t character) const
 {
     return m_length && (*this)[m_length - 1] == character;
 }
@@ -138,7 +138,7 @@ size_t StringView::find(AdaptiveStringSearcherTables& tables, StringView matchSt
     return searchString(tables, span16(), matchString.span16(), start);
 }
 
-size_t StringView::find(std::span<const LChar> match, unsigned start) const
+size_t StringView::find(std::span<const Latin1Character> match, unsigned start) const
 {
     ASSERT(!match.empty());
     auto length = this->length();
@@ -154,7 +154,7 @@ size_t StringView::find(std::span<const LChar> match, unsigned start) const
     return findInner(span16().subspan(start), match, start);
 }
 
-size_t StringView::reverseFind(std::span<const LChar> match, unsigned start) const
+size_t StringView::reverseFind(std::span<const Latin1Character> match, unsigned start) const
 {
     ASSERT(!match.empty());
     if (match.size() > length())
@@ -317,21 +317,21 @@ AtomString StringView::convertToASCIILowercaseAtom() const
 template<typename DestinationCharacterType, typename SourceCharacterType>
 void getCharactersWithASCIICaseInternal(StringView::CaseConvertType type, DestinationCharacterType* destination, std::span<const SourceCharacterType> source)
 {
-    static_assert(std::is_same<SourceCharacterType, LChar>::value || std::is_same<SourceCharacterType, UChar>::value);
-    static_assert(std::is_same<DestinationCharacterType, LChar>::value || std::is_same<DestinationCharacterType, UChar>::value);
+    static_assert(std::is_same<SourceCharacterType, Latin1Character>::value || std::is_same<SourceCharacterType, char16_t>::value);
+    static_assert(std::is_same<DestinationCharacterType, Latin1Character>::value || std::is_same<DestinationCharacterType, char16_t>::value);
     static_assert(sizeof(DestinationCharacterType) >= sizeof(SourceCharacterType));
     auto caseConvert = (type == StringView::CaseConvertType::Lower) ? toASCIILower<SourceCharacterType> : toASCIIUpper<SourceCharacterType>;
     for (auto character : source)
         *destination++ = caseConvert(character);
 }
 
-void StringView::getCharactersWithASCIICase(CaseConvertType type, LChar* destination) const
+void StringView::getCharactersWithASCIICase(CaseConvertType type, Latin1Character* destination) const
 {
     ASSERT(is8Bit());
     getCharactersWithASCIICaseInternal(type, destination, span8());
 }
 
-void StringView::getCharactersWithASCIICase(CaseConvertType type, UChar* destination) const
+void StringView::getCharactersWithASCIICase(CaseConvertType type, char16_t* destination) const
 {
     if (is8Bit()) {
         getCharactersWithASCIICaseInternal(type, destination, span8());
@@ -343,21 +343,21 @@ void StringView::getCharactersWithASCIICase(CaseConvertType type, UChar* destina
 template<typename DestinationCharacterType, typename SourceCharacterType>
 void getCharactersWithASCIICaseInternal(StringView::CaseConvertType type, std::span<DestinationCharacterType> destination, std::span<const SourceCharacterType> source)
 {
-    static_assert(std::is_same<SourceCharacterType, LChar>::value || std::is_same<SourceCharacterType, UChar>::value);
-    static_assert(std::is_same<DestinationCharacterType, LChar>::value || std::is_same<DestinationCharacterType, UChar>::value);
+    static_assert(std::is_same<SourceCharacterType, Latin1Character>::value || std::is_same<SourceCharacterType, char16_t>::value);
+    static_assert(std::is_same<DestinationCharacterType, Latin1Character>::value || std::is_same<DestinationCharacterType, char16_t>::value);
     static_assert(sizeof(DestinationCharacterType) >= sizeof(SourceCharacterType));
     auto caseConvert = (type == StringView::CaseConvertType::Lower) ? toASCIILower<SourceCharacterType> : toASCIIUpper<SourceCharacterType>;
     for (auto [destinationCharacter, character] : zippedRange(destination, source))
         destinationCharacter = caseConvert(character);
 }
 
-void StringView::getCharactersWithASCIICase(CaseConvertType type, std::span<LChar> destination) const
+void StringView::getCharactersWithASCIICase(CaseConvertType type, std::span<Latin1Character> destination) const
 {
     ASSERT(is8Bit());
     getCharactersWithASCIICaseInternal(type, destination, span8());
 }
 
-void StringView::getCharactersWithASCIICase(CaseConvertType type, std::span<UChar> destination) const
+void StringView::getCharactersWithASCIICase(CaseConvertType type, std::span<char16_t> destination) const
 {
     if (is8Bit()) {
         getCharactersWithASCIICaseInternal(type, destination, span8());
@@ -385,7 +385,7 @@ StringViewWithUnderlyingString normalizedNFC(StringView string)
     unsigned normalizedLength = unorm2_normalize(normalizer, span.data(), span.size(), nullptr, 0, &status);
     ASSERT(needsToGrowToProduceBuffer(status));
 
-    UChar* characters;
+    char16_t* characters;
     String result = String::createUninitialized(normalizedLength, characters);
 
     status = U_ZERO_ERROR;
@@ -440,7 +440,7 @@ size_t StringView::reverseFind(StringView matchString, unsigned start) const
     return reverseFindInner(span16(), matchString.span16(), start);
 }
 
-String makeStringByReplacingAll(StringView string, UChar target, UChar replacement)
+String makeStringByReplacingAll(StringView string, char16_t target, char16_t replacement)
 {
     if (string.is8Bit()) {
         if (!isLatin1(target)) {
@@ -511,8 +511,8 @@ template<typename CharacterType> static String makeStringBySimplifyingNewLinesSl
 String makeStringBySimplifyingNewLinesSlowCase(const String& string, unsigned firstCarriageReturn)
 {
     if (string.is8Bit())
-        return makeStringBySimplifyingNewLinesSlowCase<LChar>(string, firstCarriageReturn);
-    return makeStringBySimplifyingNewLinesSlowCase<UChar>(string, firstCarriageReturn);
+        return makeStringBySimplifyingNewLinesSlowCase<Latin1Character>(string, firstCarriageReturn);
+    return makeStringBySimplifyingNewLinesSlowCase<char16_t>(string, firstCarriageReturn);
 }
 
 #if CHECK_STRINGVIEW_LIFETIME

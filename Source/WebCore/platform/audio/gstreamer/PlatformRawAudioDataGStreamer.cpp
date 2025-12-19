@@ -185,17 +185,32 @@ size_t PlatformRawAudioDataGStreamer::memoryCost() const
     return gst_buffer_get_size(gst_sample_get_buffer(m_sample.get()));
 }
 
+#ifndef GST_DISABLE_GST_DEBUG
+static ASCIILiteral layoutToString(GstAudioLayout layout)
+{
+    switch (layout) {
+    case GST_AUDIO_LAYOUT_INTERLEAVED:
+        return "interleaved"_s;
+    case GST_AUDIO_LAYOUT_NON_INTERLEAVED:
+        return "planar"_s;
+    }
+    return "unknown"_s;
+}
+#endif
+
 void PlatformRawAudioData::copyTo(std::span<uint8_t> destination, AudioSampleFormat format, size_t planeIndex, std::optional<size_t> frameOffset, std::optional<size_t>, unsigned long)
 {
     auto& self = *reinterpret_cast<PlatformRawAudioDataGStreamer*>(this);
 
-    [[maybe_unused]] auto [sourceFormat, sourceLayout] = convertAudioSampleFormatToGStreamerFormat(self.format());
-    auto [destinationFormat, destinationLayout] = convertAudioSampleFormatToGStreamerFormat(format);
     auto sourceOffset = frameOffset.value_or(0);
 
 #ifndef GST_DISABLE_GST_DEBUG
-    const char* destinationFormatDescription = gst_audio_format_to_string(destinationFormat);
-    GST_TRACE("Copying %s data at planeIndex %zu, destination format is %s, source offset: %zu", gst_audio_format_to_string(sourceFormat), planeIndex, destinationFormatDescription, sourceOffset);
+    [[maybe_unused]] auto[gstSourceFormat, sourceLayout] = convertAudioSampleFormatToGStreamerFormat(self.format());
+    auto [gstDestinationFormat, destinationLayout] = convertAudioSampleFormatToGStreamerFormat(format);
+    auto destinationFormatDescription = CStringView::unsafeFromUTF8(gst_audio_format_to_string(gstDestinationFormat));
+    GST_TRACE("Copying %s %s data at planeIndex %zu, destination format is %s %s, source offset: %zu",
+        layoutToString(sourceLayout).characters(), gst_audio_format_to_string(gstSourceFormat), planeIndex,
+        layoutToString(destinationLayout).characters(), destinationFormatDescription.utf8(), sourceOffset);
 #endif
 
     GST_TRACE("Input caps: %" GST_PTR_FORMAT, gst_sample_get_caps(self.sample()));
@@ -215,7 +230,7 @@ void PlatformRawAudioData::copyTo(std::span<uint8_t> destination, AudioSampleFor
     }
 
     GstAudioInfo destinationInfo;
-    gst_audio_info_set_format(&destinationInfo, destinationFormat, static_cast<int>(self.sampleRate()), self.numberOfChannels(), nullptr);
+    gst_audio_info_set_format(&destinationInfo, gstDestinationFormat, static_cast<int>(self.sampleRate()), self.numberOfChannels(), nullptr);
     GST_AUDIO_INFO_LAYOUT(&destinationInfo) = destinationLayout;
 
     auto outputCaps = adoptGRef(gst_audio_info_to_caps(&destinationInfo));

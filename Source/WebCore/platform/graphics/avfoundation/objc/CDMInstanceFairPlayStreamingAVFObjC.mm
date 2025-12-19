@@ -340,7 +340,7 @@ static RefPtr<JSON::Value> parseJSONValue(const SharedBuffer& buffer)
         return nullptr;
 
     // Parse the buffer contents as JSON, returning the root object (if any).
-    return JSON::Value::parseJSON(buffer.makeContiguous()->span());
+    return JSON::Value::parseJSON(byteCast<Latin1Character>(buffer.makeContiguous()->span()));
 }
 
 bool CDMInstanceFairPlayStreamingAVFObjC::supportsPersistableState()

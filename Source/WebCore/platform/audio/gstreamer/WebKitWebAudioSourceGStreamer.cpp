@@ -90,7 +90,7 @@ struct _WebKitWebAudioSrcPrivate {
 
     _WebKitWebAudioSrcPrivate()
     {
-        sourcePad = webkitGstGhostPadFromStaticTemplate(&srcTemplate, "src", nullptr);
+        sourcePad = webkitGstGhostPadFromStaticTemplate(&srcTemplate, "src"_s, nullptr);
 
         g_rec_mutex_init(&mutex);
     }
@@ -214,7 +214,7 @@ static void webKitWebAudioSrcConstructed(GObject* object)
     priv->task = adoptGRef(gst_task_new(reinterpret_cast<GstTaskFunction>(webKitWebAudioSrcRenderIteration), src, nullptr));
     gst_task_set_lock(priv->task.get(), &priv->mutex);
 
-    priv->source = makeGStreamerElement("appsrc", "webaudioSrc");
+    priv->source = makeGStreamerElement("appsrc"_s, "webaudioSrc"_s);
 
     // Configure the appsrc for minimal latency.
     g_object_set(priv->source.get(), "block", TRUE, "blocksize", priv->bufferSize, "format", GST_FORMAT_TIME, "is-live", TRUE, nullptr);

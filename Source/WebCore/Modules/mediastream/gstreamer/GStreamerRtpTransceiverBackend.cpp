@@ -26,6 +26,7 @@
 #include "GStreamerRtpSenderBackend.h"
 #include "GStreamerWebRTCUtils.h"
 #include "RTCRtpCodecCapability.h"
+#include <wtf/glib/GMallocString.h>
 #include <wtf/glib/GUniquePtr.h>
 
 GST_DEBUG_CATEGORY(webkit_webrtc_transceiver_debug);
@@ -89,8 +90,8 @@ void GStreamerRtpTransceiverBackend::setDirection(RTCRtpTransceiverDirection dir
 {
     auto gstDirection = fromRTCRtpTransceiverDirection(direction);
 #ifndef GST_DISABLE_GST_DEBUG
-    GUniquePtr<char> directionString(g_enum_to_string(GST_TYPE_WEBRTC_RTP_TRANSCEIVER_DIRECTION, gstDirection));
-    GST_DEBUG_OBJECT(m_rtcTransceiver.get(), "Setting direction to %s", directionString.get());
+    auto directionString = GMallocString::unsafeAdoptFromUTF8(g_enum_to_string(GST_TYPE_WEBRTC_RTP_TRANSCEIVER_DIRECTION, gstDirection));
+    GST_DEBUG_OBJECT(m_rtcTransceiver.get(), "Setting direction to %s", directionString.utf8());
 #endif
     g_object_set(m_rtcTransceiver.get(), "direction", gstDirection, nullptr);
 }
@@ -156,14 +157,14 @@ ExceptionOr<void> GStreamerRtpTransceiverBackend::setCodecPreferences(const Vect
     if (gst_caps_get_size(currentCaps.get()) > 0) {
         auto structure = gst_caps_get_structure(currentCaps.get(), 0);
         if (auto msIdValue = gstStructureGetString(structure, "a-msid"_s))
-            msid = msIdValue.toString();
+            msid = msIdValue.span();
 
         gstStructureForeach(structure, [&](auto id, const auto& value) -> bool {
             auto key = gstIdToString(id);
             if (!key.startsWith("extmap-"_s))
                 return true;
 
-            extensions.add(key.toString(), String::fromLatin1(g_value_get_string(value)));
+            extensions.add(key, byteCast<char8_t>(unsafeSpan(g_value_get_string(value))));
             return true;
         });
     }

@@ -503,7 +503,7 @@ JSCValue* jsc_value_new_array(JSCContext* context, GType firstItemType, ...)
         G_VALUE_COLLECT_INIT(&item, itemType, args, G_VALUE_NOCOPY_CONTENTS, &error.outPtr());
         WTF_ALLOW_UNSAFE_BUFFER_USAGE_END
         if (error) {
-            exception = toRef(JSC::createTypeError(globalObject, makeString("failed to collect array item: "_s, span(error.get()))));
+            exception = toRef(JSC::createTypeError(globalObject, makeString("failed to collect array item: "_s, unsafeSpan(error.get()))));
             jscContextHandleExceptionIfNeeded(context, exception);
             jsArray = nullptr;
             break;
@@ -905,7 +905,7 @@ static GRefPtr<JSCValue> jscValueCallFunction(JSCValue* value, JSObjectRef funct
         G_VALUE_COLLECT_INIT(&parameter, parameterType, args, G_VALUE_NOCOPY_CONTENTS, &error.outPtr());
         WTF_ALLOW_UNSAFE_BUFFER_USAGE_END
         if (error) {
-            exception = toRef(JSC::createTypeError(globalObject, makeString("failed to collect function paramater: "_s, span(error.get()))));
+            exception = toRef(JSC::createTypeError(globalObject, makeString("failed to collect function paramater: "_s, unsafeSpan(error.get()))));
             jscContextHandleExceptionIfNeeded(priv->context.get(), exception);
             return adoptGRef(jsc_value_new_undefined(priv->context.get()));
         }
@@ -2093,12 +2093,12 @@ JSCValue* jsc_value_new_from_json(JSCContext* context, const char* json)
     JSC::JSValue jsValue;
     String jsonString = String::fromUTF8(json);
     if (jsonString.is8Bit()) {
-        JSC::LiteralParser<LChar, JSC::JSONReviverMode::Disabled> jsonParser(globalObject, jsonString.span8(), JSC::StrictJSON);
+        JSC::LiteralParser<Latin1Character, JSC::JSONReviverMode::Disabled> jsonParser(globalObject, jsonString.span8(), JSC::StrictJSON);
         jsValue = jsonParser.tryLiteralParse();
         if (!jsValue)
             exception = toRef(JSC::createSyntaxError(globalObject, jsonParser.getErrorMessage()));
     } else {
-        JSC::LiteralParser<UChar, JSC::JSONReviverMode::Disabled> jsonParser(globalObject, jsonString.span16(), JSC::StrictJSON);
+        JSC::LiteralParser<char16_t, JSC::JSONReviverMode::Disabled> jsonParser(globalObject, jsonString.span16(), JSC::StrictJSON);
         jsValue = jsonParser.tryLiteralParse();
         if (!jsValue)
             exception = toRef(JSC::createSyntaxError(globalObject, jsonParser.getErrorMessage()));

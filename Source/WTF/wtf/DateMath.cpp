@@ -70,6 +70,8 @@
  */
 
 #include "config.h"
+#include "StdLibExtras.h"
+#include "text/StringCommon.h"
 #include <wtf/DateMath.h>
 
 #include <algorithm>
@@ -131,8 +133,8 @@ static void appendTwoDigitNumber(StringBuilder& builder, int number)
 {
     ASSERT(number >= 0);
     ASSERT(number < 100);
-    builder.append(static_cast<LChar>('0' + number / 10));
-    builder.append(static_cast<LChar>('0' + number % 10));
+    builder.append(static_cast<Latin1Character>('0' + number / 10));
+    builder.append(static_cast<Latin1Character>('0' + number % 10));
 }
 
 static inline double msToMilliseconds(double ms)
@@ -416,7 +418,7 @@ static const struct KnownZone {
     { "pdt", -420 }
 };
 
-inline static void skipSpacesAndComments(std::span<const LChar>& s)
+inline static void skipSpacesAndComments(std::span<const Latin1Character>& s)
 {
     int nesting = 0;
     while (!s.empty()) {
@@ -434,7 +436,7 @@ inline static void skipSpacesAndComments(std::span<const LChar>& s)
 }
 
 // returns 0-11 (Jan-Dec); -1 on failure
-static int findMonth(std::span<const LChar> monthStr)
+static int findMonth(std::span<const Latin1Character> monthStr)
 {
     if (monthStr.size() < 3)
         return -1;
@@ -453,7 +455,7 @@ static int findMonth(std::span<const LChar> monthStr)
     return -1;
 }
 
-static bool parseInt(std::span<const LChar>& string, int base, int* result)
+static bool parseInt(std::span<const Latin1Character>& string, int base, int* result)
 {
     char* stopPosition;
     long longResult = strtol(byteCast<char>(string.data()), &stopPosition, base);
@@ -465,7 +467,7 @@ static bool parseInt(std::span<const LChar>& string, int base, int* result)
     return true;
 }
 
-static bool parseLong(std::span<const LChar>& string, int base, long* result)
+static bool parseLong(std::span<const Latin1Character>& string, int base, long* result)
 {
     char* stopPosition;
     *result = strtol(byteCast<char>(string.data()), &stopPosition, base);
@@ -479,7 +481,7 @@ static bool parseLong(std::span<const LChar>& string, int base, long* result)
 // Parses a date with the format YYYY[-MM[-DD]].
 // Year parsing is lenient, allows any number of digits, and +/-.
 // Returns 0 if a parse error occurs, else returns the end of the parsed portion of the string.
-static bool parseES5DatePortion(std::span<const LChar>& currentPosition, int& year, long& month, long& day)
+static bool parseES5DatePortion(std::span<const Latin1Character>& currentPosition, int& year, long& month, long& day)
 {
     // This is a bit more lenient on the year string than ES5 specifies:
     // instead of restricting to 4 digits (or 6 digits with mandatory +/-),
@@ -523,7 +525,7 @@ static bool parseES5DatePortion(std::span<const LChar>& currentPosition, int& ye
 // Parses a time with the format HH:mm[:ss[.sss]][Z|(+|-)(00:00|0000|00)].
 // Fractional seconds parsing is lenient, allows any number of digits.
 // Returns 0 if a parse error occurs, else returns the end of the parsed portion of the string.
-static bool parseES5TimePortion(std::span<const LChar>& currentPosition, long& hours, long& minutes, long& seconds, double& milliseconds, bool& isLocalTime, long& timeZoneSeconds)
+static bool parseES5TimePortion(std::span<const Latin1Character>& currentPosition, long& hours, long& minutes, long& seconds, double& milliseconds, bool& isLocalTime, long& timeZoneSeconds)
 {
     isLocalTime = false;
 
@@ -644,7 +646,7 @@ static bool parseES5TimePortion(std::span<const LChar>& currentPosition, long& h
     return true;
 }
 
-double parseES5Date(std::span<const LChar> dateString, bool& isLocalTime)
+double parseES5Date(std::span<const Latin1Character> dateString, bool& isLocalTime)
 {
     isLocalTime = false;
 
@@ -704,7 +706,7 @@ double parseES5Date(std::span<const LChar> dateString, bool& isLocalTime)
 }
 
 // Odd case where 'exec' is allowed to be 0, to accomodate a caller in WebCore.
-double parseDate(std::span<const LChar> dateString, bool& isLocalTime)
+double parseDate(std::span<const Latin1Character> dateString, bool& isLocalTime)
 {
     isLocalTime = true;
     int offset = 0;
@@ -959,7 +961,7 @@ double parseDate(std::span<const LChar> dateString, bool& isLocalTime)
             for (auto& knownZone : knownZones) {
                 // Since the passed-in length is used for both strings, the following checks that
                 // dateString has the time zone name as a prefix, not that it is equal.
-                auto tzName = span8(knownZone.tzName);
+                auto tzName = byteCast<Latin1Character>(unsafeSpan(knownZone.tzName));
                 if (dateString.size() >= tzName.size() && equalLettersIgnoringASCIICaseWithLength(dateString, tzName, tzName.size())) {
                     offset = knownZone.tzOffset;
                     dateString = dateString.subspan(tzName.size());
@@ -1009,7 +1011,7 @@ double parseDate(std::span<const LChar> dateString, bool& isLocalTime)
     return ymdhmsToMilliseconds(year.value(), month + 1, day, hour, minute, second, 0) - offset * (secondsPerMinute * msPerSecond);
 }
 
-double parseDate(std::span<const LChar> dateString)
+double parseDate(std::span<const Latin1Character> dateString)
 {
     bool isLocalTime;
     double value = parseDate(dateString, isLocalTime);

@@ -26,6 +26,8 @@
 
 #include "GStreamerCommon.h"
 #include "GStreamerMockDeviceProvider.h"
+#include <wtf/StdLibExtras.h>
+#include <wtf/glib/GMallocString.h>
 #include <wtf/text/MakeString.h>
 
 namespace WebCore {
@@ -45,10 +47,10 @@ static gint sortDevices(gconstpointer a, gconstpointer b)
     auto bIsDefault = gstStructureGet<bool>(bprops.get(), "is-default"_s).value_or(false);
 
     if (aIsDefault == bIsDefault) {
-        GUniquePtr<char> aName(gst_device_get_display_name(adev));
-        GUniquePtr<char> bName(gst_device_get_display_name(bdev));
+        auto aName = GMallocString::unsafeAdoptFromUTF8(gst_device_get_display_name(adev));
+        auto bName = GMallocString::unsafeAdoptFromUTF8(gst_device_get_display_name(bdev));
 
-        return g_strcmp0(aName.get(), bName.get());
+        return compareSpans(aName.span(), bName.span());
     }
 
     return aIsDefault > bIsDefault ? -1 : 1;
@@ -192,24 +194,23 @@ void GStreamerCaptureDeviceManager::addDevice(GRefPtr<GstDevice>&& device)
         return;
 
     CaptureDevice::DeviceType type = deviceType();
-    GUniquePtr<char> deviceClassChar(gst_device_get_device_class(device.get()));
-    auto deviceClass = String::fromLatin1(deviceClassChar.get());
-    if (type == CaptureDevice::DeviceType::Microphone && !deviceClass.startsWith("Audio"_s))
+    auto deviceClass = GMallocString::unsafeAdoptFromUTF8(gst_device_get_device_class(device.get()));
+    if (type == CaptureDevice::DeviceType::Microphone && !startsWith(deviceClass.span(), "Audio"_s))
         return;
-    if (type == CaptureDevice::DeviceType::Camera && !deviceClass.startsWith("Video"_s))
+    if (type == CaptureDevice::DeviceType::Camera && !startsWith(deviceClass.span(), "Video"_s))
         return;
 
     // This isn't really a UID but should be good enough (libwebrtc
     // itself does that at least for pulseaudio devices).
-    GUniquePtr<char> deviceName(gst_device_get_display_name(device.get()));
-    GST_INFO("Registering device %s", deviceName.get());
+    auto deviceName = GMallocString::unsafeAdoptFromUTF8(gst_device_get_display_name(device.get()));
+    GST_INFO("Registering device %s", deviceName.utf8());
     auto isDefault = gstStructureGet<bool>(properties.get(), "is-default"_s).value_or(false);
-    auto label = makeString(isDefault ? "default: "_s : ""_s, span(deviceName.get()));
+    auto label = makeString(isDefault ? "default: "_s : ""_s, deviceName.span());
 
     auto identifier = label;
     bool isMock = false;
     if (auto persistentId = gstStructureGetString(properties.get(), "persistent-id"_s)) {
-        identifier = makeString(persistentId);
+        identifier = persistentId.span();
         isMock = true;
     }
 
@@ -294,22 +295,22 @@ void GStreamerCaptureDeviceManager::refreshCaptureDevices()
     gst_bus_add_watch(bus.get(), reinterpret_cast<GstBusFunc>(+[](GstBus*, GstMessage* message, GStreamerCaptureDeviceManager* manager) -> gboolean {
         GRefPtr<GstDevice> device;
 #ifndef GST_DISABLE_GST_DEBUG
-        GUniquePtr<char> name;
+        GMallocString name;
 #endif
         switch (GST_MESSAGE_TYPE(message)) {
         case GST_MESSAGE_DEVICE_ADDED:
             gst_message_parse_device_added(message, &device.outPtr());
 #ifndef GST_DISABLE_GST_DEBUG
-            name.reset(gst_device_get_display_name(device.get()));
-            GST_INFO("Device added: %s", name.get());
+            name = GMallocString::unsafeAdoptFromUTF8(gst_device_get_display_name(device.get()));
+            GST_INFO_OBJECT(GST_MESSAGE_SRC(message), "Device added: %s", name.utf8());
 #endif
             manager->addDevice(WTFMove(device));
             break;
         case GST_MESSAGE_DEVICE_REMOVED:
             gst_message_parse_device_removed(message, &device.outPtr());
 #ifndef GST_DISABLE_GST_DEBUG
-            name.reset(gst_device_get_display_name(device.get()));
-            GST_INFO("Device removed: %s", name.get());
+            name = GMallocString::unsafeAdoptFromUTF8(gst_device_get_display_name(device.get()));
+            GST_INFO_OBJECT(GST_MESSAGE_SRC(message), "Device removed: %s", name.utf8());
 #endif
             manager->removeDevice(WTFMove(device));
             break;

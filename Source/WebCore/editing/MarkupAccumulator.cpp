@@ -189,7 +189,7 @@ void MarkupAccumulator::appendCharactersReplacingEntities(StringBuilder& result,
         return;
 
     if (source.is8Bit())
-        appendCharactersReplacingEntitiesInternal<LChar>(result, source, offset, length, entityMask);
+        appendCharactersReplacingEntitiesInternal<Latin1Character>(result, source, offset, length, entityMask);
     else
         appendCharactersReplacingEntitiesInternal<UChar>(result, source, offset, length, entityMask);
 }

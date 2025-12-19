@@ -34,6 +34,7 @@
 #include <wtf/StdLibExtras.h>
 #include <wtf/text/CString.h>
 #include <wtf/text/StringBuilder.h>
+#include <wtf/text/StringCommon.h>
 
 #if !OS(WINDOWS)
 #include <sys/mman.h>
@@ -64,9 +65,10 @@ ALLOW_DEPRECATED_DECLARATIONS_END
 static String fromStdFileSystemPath(const std::filesystem::path& path)
 {
 #if HAVE(MISSING_U8STRING)
-    return String::fromUTF8(span8(path.u8string().c_str()));
+    // FIXME: This uses u8string so how can it be correct inside HAVE(MISSING_U8STRING)?
+    return String::fromUTF8(unsafeSpan(path.u8string().c_str()));
 #else
-    return String::fromUTF8(span(path.u8string()));
+    return span(path.u8string());
 #endif
 }
 

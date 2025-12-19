@@ -88,7 +88,7 @@ bool isCustomPropertyName(StringView propertyName)
     return propertyName.length() > 2 && propertyName.characterAt(0) == '-' && propertyName.characterAt(1) == '-';
 }
 
-static bool hasPrefix(std::span<const char> string, std::span<const LChar> prefix)
+static bool hasPrefix(std::span<const char> string, std::span<const Latin1Character> prefix)
 {
     if (string.size() < prefix.size())
         return false;

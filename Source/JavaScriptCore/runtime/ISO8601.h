@@ -178,7 +178,7 @@ private:
     {
         if (value > 9)
             asStringImpl(builder, value / 10);
-        builder.append(static_cast<LChar>(static_cast<unsigned>(value % 10) + '0'));
+        builder.append(static_cast<Latin1Character>(static_cast<unsigned>(value % 10) + '0'));
     }
 
     static Int128 round(Int128 quantity, unsigned increment, TemporalUnit, RoundingMode);
@@ -261,13 +261,13 @@ using TimeZone = std::variant<TimeZoneID, int64_t>;
 struct TimeZoneRecord {
     bool m_z { false };
     std::optional<int64_t> m_offset;
-    std::variant<Vector<LChar>, int64_t> m_nameOrOffset;
+    std::variant<Vector<Latin1Character>, int64_t> m_nameOrOffset;
 };
 
 static constexpr unsigned minCalendarLength = 3;
 static constexpr unsigned maxCalendarLength = 8;
 struct CalendarRecord {
-    Vector<LChar, maxCalendarLength> m_name;
+    Vector<Latin1Character, maxCalendarLength> m_name;
 };
 
 // https://tc39.es/proposal-temporal/#sup-isvalidtimezonename

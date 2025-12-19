@@ -35,7 +35,7 @@ class GStreamerVideoCapturer final : public GStreamerCapturer {
     friend class MockRealtimeVideoSourceGStreamer;
 public:
     GStreamerVideoCapturer(GStreamerCaptureDevice&&);
-    GStreamerVideoCapturer(const char* sourceFactory, CaptureDevice::DeviceType);
+    GStreamerVideoCapturer(ASCIILiteral sourceFactory, CaptureDevice::DeviceType);
     ~GStreamerVideoCapturer() = default;
 
 
@@ -44,7 +44,7 @@ public:
     void tearDown(bool disconnectSignals) final;
 
     GstElement* createConverter() final;
-    const char* name() final { return "Video"; }
+    ASCIILiteral name() final { return "Video"_s; }
 
     using NodeAndFD = std::pair<uint32_t, int>;
 

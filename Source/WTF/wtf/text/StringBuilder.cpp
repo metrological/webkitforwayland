@@ -93,9 +93,9 @@ void StringBuilder::shrink(unsigned newLength)
         }
         // Allocate a fresh buffer, with a copy of the characters we are keeping.
         if (m_buffer->is8Bit())
-            allocateBuffer<LChar>(m_buffer->span8().data(), newLength);
+            allocateBuffer<Latin1Character>(m_buffer->span8().data(), newLength);
         else
-            allocateBuffer<UChar>(m_buffer->span16().data(), newLength);
+            allocateBuffer<char16_t>(m_buffer->span16().data(), newLength);
         return;
     }
 
@@ -106,9 +106,9 @@ void StringBuilder::shrink(unsigned newLength)
 void StringBuilder::reallocateBuffer(unsigned requiredCapacity)
 {
     if (is8Bit())
-        reallocateBuffer<LChar>(requiredCapacity);
+        reallocateBuffer<Latin1Character>(requiredCapacity);
     else
-        reallocateBuffer<UChar>(requiredCapacity);
+        reallocateBuffer<char16_t>(requiredCapacity);
 }
 
 void StringBuilder::reserveCapacity(unsigned newCapacity)
@@ -122,39 +122,39 @@ void StringBuilder::reserveCapacity(unsigned newCapacity)
     } else {
         if (newCapacity > m_length) {
             if (!m_length)
-                allocateBuffer<LChar>(static_cast<LChar*>(nullptr), newCapacity);
+                allocateBuffer<Latin1Character>(static_cast<Latin1Character*>(nullptr), newCapacity);
             else if (m_string.is8Bit())
-                allocateBuffer<LChar>(m_string.span8().data(), newCapacity);
+                allocateBuffer<Latin1Character>(m_string.span8().data(), newCapacity);
             else
-                allocateBuffer<UChar>(m_string.span16().data(), newCapacity);
+                allocateBuffer<char16_t>(m_string.span16().data(), newCapacity);
         }
     }
     ASSERT(hasOverflowed() || !newCapacity || m_buffer->length() >= newCapacity);
 }
 
 // Alterative extendBufferForAppending that can be called from the header without inlining.
-LChar* StringBuilder::extendBufferForAppendingLChar(unsigned requiredLength)
+Latin1Character* StringBuilder::extendBufferForAppendingLatin1Character(unsigned requiredLength)
 {
-    return extendBufferForAppending<LChar>(requiredLength);
+    return extendBufferForAppending<Latin1Character>(requiredLength);
 }
 
-UChar* StringBuilder::extendBufferForAppendingWithUpconvert(unsigned requiredLength)
+char16_t* StringBuilder::extendBufferForAppendingWithUpconvert(unsigned requiredLength)
 {
     if (is8Bit()) {
-        allocateBuffer<UChar>(characters<LChar>(), expandedCapacity(capacity(), requiredLength));
+        allocateBuffer<char16_t>(characters<Latin1Character>(), expandedCapacity(capacity(), requiredLength));
         if (UNLIKELY(hasOverflowed()))
             return nullptr;
-        return const_cast<UChar*>(m_buffer->span16().data()) + std::exchange(m_length, requiredLength);
+        return const_cast<char16_t*>(m_buffer->span16().data()) + std::exchange(m_length, requiredLength);
     }
-    return extendBufferForAppending<UChar>(requiredLength);
+    return extendBufferForAppending<char16_t>(requiredLength);
 }
 
-void StringBuilder::append(std::span<const UChar> characters)
+void StringBuilder::append(std::span<const char16_t> characters)
 {
     if (characters.empty() || hasOverflowed())
         return;
     if (characters.size() == 1 && isLatin1(characters[0]) && is8Bit()) {
-        append(static_cast<LChar>(characters[0]));
+        append(static_cast<Latin1Character>(characters[0]));
         return;
     }
     RELEASE_ASSERT(characters.size() < std::numeric_limits<uint32_t>::max());
@@ -162,16 +162,16 @@ void StringBuilder::append(std::span<const UChar> characters)
         StringImpl::copyCharacters(destination, characters);
 }
 
-void StringBuilder::append(std::span<const LChar> characters)
+void StringBuilder::append(std::span<const Latin1Character> characters)
 {
     if (characters.empty() || hasOverflowed())
         return;
     RELEASE_ASSERT(characters.size() < std::numeric_limits<uint32_t>::max());
     if (is8Bit()) {
-        if (auto destination = extendBufferForAppending<LChar>(saturatedSum<uint32_t>(m_length, static_cast<uint32_t>(characters.size()))))
+        if (auto destination = extendBufferForAppending<Latin1Character>(saturatedSum<uint32_t>(m_length, static_cast<uint32_t>(characters.size()))))
             StringImpl::copyCharacters(destination, characters);
     } else {
-        if (auto destination = extendBufferForAppending<UChar>(saturatedSum<uint32_t>(m_length, static_cast<uint32_t>(characters.size()))))
+        if (auto destination = extendBufferForAppending<char16_t>(saturatedSum<uint32_t>(m_length, static_cast<uint32_t>(characters.size()))))
             StringImpl::copyCharacters(destination, characters);
     }
 }

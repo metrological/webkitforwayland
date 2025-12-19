@@ -30,7 +30,7 @@
 #include <span>
 #include <unicode/umachine.h>
 #include <wtf/Forward.h>
-#include <wtf/text/LChar.h>
+#include <wtf/text/Latin1Character.h>
 
 namespace WebCore {
 
@@ -41,8 +41,8 @@ class SegmentedString;
 DecodedHTMLEntity consumeHTMLEntity(SegmentedString&, UChar additionalAllowedCharacter = 0);
 
 // This function assumes the source is complete, and does not expect a null character.
-DecodedHTMLEntity consumeHTMLEntity(StringParsingBuffer<LChar>&);
-DecodedHTMLEntity consumeHTMLEntity(StringParsingBuffer<UChar>&);
+DecodedHTMLEntity consumeHTMLEntity(StringParsingBuffer<Latin1Character>&);
+DecodedHTMLEntity consumeHTMLEntity(StringParsingBuffer<char16_t>&);
 
 // This function does not check for "not enough characters" at all.
 DecodedHTMLEntity decodeNamedHTMLEntityForXMLParser(const char*);

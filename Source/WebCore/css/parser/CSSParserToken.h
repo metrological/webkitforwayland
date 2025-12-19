@@ -174,7 +174,7 @@ private:
     bool m_valueIs8Bit : 1 { false };
     bool m_isBackedByStringLiteral : 1 { false };
     unsigned m_valueLength { 0 };
-    const void* m_valueDataCharRaw { nullptr }; // Either LChar* or UChar*.
+    const void* m_valueDataCharRaw { nullptr }; // Either Latin1Character* or char16_t*.
 
     union {
         UChar m_delimiter;

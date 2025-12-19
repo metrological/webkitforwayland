@@ -36,28 +36,45 @@
 #include <wtf/UnalignedAccess.h>
 #include <wtf/text/ASCIIFastPath.h>
 #include <wtf/text/ASCIILiteral.h>
+#include <wtf/unicode/UTF8Conversion.h>
 
 namespace WTF {
 
-inline std::span<const LChar> span(const LChar& character)
+inline std::span<const Latin1Character> span(const Latin1Character& character)
 {
     return { &character, 1 };
 }
 
-inline std::span<const UChar> span(const UChar& character)
+inline std::span<const char16_t> span(const char16_t& character)
 {
     return { &character, 1 };
 }
 
-inline std::span<const LChar> span8(const char* string)
+inline std::span<const char> unsafeSpan(const char* string)
 {
-    return { byteCast<LChar>(string), string ? strlen(string) : 0 };
+WTF_ALLOW_UNSAFE_BUFFER_USAGE_BEGIN
+    return unsafeMakeSpan(string, string ? strlen(string) : 0);
+WTF_ALLOW_UNSAFE_BUFFER_USAGE_END
 }
 
-inline std::span<const char> span(const char* string)
+inline std::span<const char> unsafeSpanIncludingNullTerminator(const char* string)
 {
-    return { string, string ? strlen(string) : 0 };
+WTF_ALLOW_UNSAFE_BUFFER_USAGE_BEGIN
+    return unsafeMakeSpan(string, string ? strlen(string) + 1 : 0);
+WTF_ALLOW_UNSAFE_BUFFER_USAGE_END
 }
+
+WTF_ALLOW_UNSAFE_BUFFER_USAGE_BEGIN
+inline std::span<const char16_t> unsafeSpan(const char16_t* string)
+{
+    if (!string)
+        return { };
+    size_t length = 0;
+    while (string[length])
+        ++length;
+    return unsafeMakeSpan(string, length);
+}
+WTF_ALLOW_UNSAFE_BUFFER_USAGE_END
 
 #if !HAVE(MISSING_U8STRING)
 inline std::span<const char8_t> span(const std::u8string& string)
@@ -72,27 +89,33 @@ template<typename CharacterType> inline constexpr bool isLatin1(CharacterType ch
     return static_cast<UnsignedCharacterType>(character) <= static_cast<UnsignedCharacterType>(0xFF);
 }
 
-template<> ALWAYS_INLINE constexpr bool isLatin1(LChar)
+template<> ALWAYS_INLINE constexpr bool isLatin1(Latin1Character)
 {
     return true;
 }
 
 using CodeUnitMatchFunction = bool (*)(UChar);
 
-template<typename CharacterTypeA, typename CharacterTypeB> bool equalIgnoringASCIICase(std::span<const CharacterTypeA>, std::span<const CharacterTypeB>);
+template<typename CharacterTypeA, typename CharacterTypeB>
+    requires(TriviallyComparableCodeUnits<CharacterTypeA, CharacterTypeB>)
+bool equalIgnoringASCIICase(std::span<const CharacterTypeA>, std::span<const CharacterTypeB>);
 
 template<typename StringClassA, typename StringClassB> bool equalIgnoringASCIICaseCommon(const StringClassA&, const StringClassB&);
 
-template<typename CharacterType> bool equalLettersIgnoringASCIICase(std::span<const CharacterType>, std::span<const LChar> lowercaseLetters);
+template<typename CharacterType> bool equalLettersIgnoringASCIICase(std::span<const CharacterType>, std::span<const Latin1Character> lowercaseLetters);
 template<typename CharacterType> bool equalLettersIgnoringASCIICase(std::span<const CharacterType>, ASCIILiteral);
 
 template<typename StringClass> bool equalLettersIgnoringASCIICaseCommon(const StringClass&, ASCIILiteral);
 
 bool equalIgnoringASCIICase(const char*, const char*);
 
+template<typename T>
+concept OneByteCharacterType = std::is_same_v<std::remove_const_t<T>, Latin1Character> || std::is_same_v<std::remove_const_t<T>, char8_t> || std::is_same_v<std::remove_const_t<T>, char>;
+
 // Do comparisons 8 or 4 bytes-at-a-time on architectures where it's safe.
 #if (CPU(X86_64) || CPU(ARM64)) && !ASAN_ENABLED
-ALWAYS_INLINE bool equal(const LChar* aLChar, std::span<const LChar> bLChar)
+template<OneByteCharacterType CharacterType>
+ALWAYS_INLINE bool equal(const CharacterType* a, std::span<const CharacterType> b)
 {
     ASSERT(bLChar.size() <= std::numeric_limits<unsigned>::max());
     unsigned length = bLChar.size();
@@ -193,7 +216,8 @@ ALWAYS_INLINE bool equal(const UChar* aUChar, std::span<const UChar> bUChar)
     }
 }
 #elif CPU(X86) && !ASAN_ENABLED
-ALWAYS_INLINE bool equal(const LChar* aLChar, std::span<const LChar> bLChar)
+template<OneByteCharacterType CharacterType>
+ALWAYS_INLINE bool equal(const CharacterType* a, std::span<const CharacterType> b)
 {
     ASSERT(bLChar.size() <= std::numeric_limits<unsigned>::max());
     unsigned length = bLChar.size();
@@ -212,8 +236,8 @@ ALWAYS_INLINE bool equal(const LChar* aLChar, std::span<const LChar> bLChar)
     length &= 3;
 
     if (length) {
-        const LChar* aRemainder = byteCast<LChar>(a);
-        const LChar* bRemainder = byteCast<LChar>(b);
+        auto* aRemainder = byteCast<CharacterType>(aString);
+        auto* bRemainder = byteCast<CharacterType>(bString);
 
         for (unsigned i = 0; i <  length; ++i) {
             if (aRemainder[i] != bRemainder[i])
@@ -245,125 +269,16 @@ ALWAYS_INLINE bool equal(const UChar* aUChar, std::span<const UChar> bUChar)
 
     return true;
 }
-#elif OS(DARWIN) && WTF_ARM_ARCH_AT_LEAST(7) && !ASAN_ENABLED
-ALWAYS_INLINE bool equal(const LChar* a, std::span<const LChar> bSpan)
-{
-    ASSERT(b.size() <= std::numeric_limits<unsigned>::max());
-    auto* b = bSpan.data();
-    unsigned length = bSpan.size();
-
-    bool isEqual = false;
-    uint32_t aValue;
-    uint32_t bValue;
-    asm("subs   %[length], #4\n"
-        "blo    2f\n"
-
-        "0:\n" // Label 0 = Start of loop over 32 bits.
-        "ldr    %[aValue], [%[a]], #4\n"
-        "ldr    %[bValue], [%[b]], #4\n"
-        "cmp    %[aValue], %[bValue]\n"
-        "bne    66f\n"
-        "subs   %[length], #4\n"
-        "bhs    0b\n"
-
-        // At this point, length can be:
-        // -0: 00000000000000000000000000000000 (0 bytes left)
-        // -1: 11111111111111111111111111111111 (3 bytes left)
-        // -2: 11111111111111111111111111111110 (2 bytes left)
-        // -3: 11111111111111111111111111111101 (1 byte left)
-        // -4: 11111111111111111111111111111100 (length was 0)
-        // The pointers are at the correct position.
-        "2:\n" // Label 2 = End of loop over 32 bits, check for pair of characters.
-        "tst    %[length], #2\n"
-        "beq    1f\n"
-        "ldrh   %[aValue], [%[a]], #2\n"
-        "ldrh   %[bValue], [%[b]], #2\n"
-        "cmp    %[aValue], %[bValue]\n"
-        "bne    66f\n"
-
-        "1:\n" // Label 1 = Check for a single character left.
-        "tst    %[length], #1\n"
-        "beq    42f\n"
-        "ldrb   %[aValue], [%[a]]\n"
-        "ldrb   %[bValue], [%[b]]\n"
-        "cmp    %[aValue], %[bValue]\n"
-        "bne    66f\n"
-
-        "42:\n" // Label 42 = Success.
-        "mov    %[isEqual], #1\n"
-        "66:\n" // Label 66 = End without changing isEqual to 1.
-        : [length]"+r"(length), [isEqual]"+r"(isEqual), [a]"+r"(a), [b]"+r"(b), [aValue]"+r"(aValue), [bValue]"+r"(bValue)
-        :
-        :
-        );
-    return isEqual;
-}
-
-ALWAYS_INLINE bool equal(const UChar* a, std::span<const UChar> bSpan)
-{
-    ASSERT(b.size() <= std::numeric_limits<unsigned>::max());
-    auto* b = bSpan.data();
-    unsigned length = bSpan.size();
-
-    bool isEqual = false;
-    uint32_t aValue;
-    uint32_t bValue;
-    asm("subs   %[length], #2\n"
-        "blo    1f\n"
-
-        "0:\n" // Label 0 = Start of loop over 32 bits.
-        "ldr    %[aValue], [%[a]], #4\n"
-        "ldr    %[bValue], [%[b]], #4\n"
-        "cmp    %[aValue], %[bValue]\n"
-        "bne    66f\n"
-        "subs   %[length], #2\n"
-        "bhs    0b\n"
-
-        // At this point, length can be:
-        // -0: 00000000000000000000000000000000 (0 bytes left)
-        // -1: 11111111111111111111111111111111 (1 character left, 2 bytes)
-        // -2: 11111111111111111111111111111110 (length was zero)
-        // The pointers are at the correct position.
-        "1:\n" // Label 1 = Check for a single character left.
-        "tst    %[length], #1\n"
-        "beq    42f\n"
-        "ldrh   %[aValue], [%[a]]\n"
-        "ldrh   %[bValue], [%[b]]\n"
-        "cmp    %[aValue], %[bValue]\n"
-        "bne    66f\n"
-
-        "42:\n" // Label 42 = Success.
-        "mov    %[isEqual], #1\n"
-        "66:\n" // Label 66 = End without changing isEqual to 1.
-        : [length]"+r"(length), [isEqual]"+r"(isEqual), [a]"+r"(a), [b]"+r"(b), [aValue]"+r"(aValue), [bValue]"+r"(bValue)
-        :
-        :
-        );
-    return isEqual;
-}
-#elif !ASAN_ENABLED
-ALWAYS_INLINE bool equal(const LChar* a, std::span<const LChar> b) { return !memcmp(a, b.data(), b.size()); }
-ALWAYS_INLINE bool equal(const UChar* a, std::span<const UChar> b) { return !memcmp(a, b.data(), b.size_bytes()); }
 #else
-ALWAYS_INLINE bool equal(const LChar* a, std::span<const LChar> b)
+template<OneByteCharacterType CharacterType>
+ALWAYS_INLINE bool equal(const CharacterType* a, std::span<const CharacterType> b)
 {
-    for (size_t i = 0; i < b.size(); ++i) {
-        if (a[i] != b[i])
-            return false;
-    }
-    return true;
+    return !memcmp(a, b.data(), b.size());
 }
-ALWAYS_INLINE bool equal(const UChar* a, std::span<const UChar> b)
-{
-    for (size_t i = 0; i < b.size(); ++i) {
-        if (a[i] != b[i])
-            return false;
-    }
-    return true;
-}
+ALWAYS_INLINE bool equal(const char16_t* a, std::span<const char16_t> b) { return !memcmp(a, b.data(), b.size_bytes()); }
 #endif
 
-ALWAYS_INLINE bool equal(const LChar* a, std::span<const UChar> b)
+ALWAYS_INLINE bool equal(const Latin1Character* a, std::span<const char16_t> b)
 {
 #if CPU(ARM64)
     ASSERT(b.size() <= std::numeric_limits<unsigned>::max());
@@ -383,7 +298,7 @@ ALWAYS_INLINE bool equal(const LChar* a, std::span<const UChar> b)
         return true;
     }
     if (length >= 4) {
-        auto read4 = [](const LChar* p) ALWAYS_INLINE_LAMBDA {
+        auto read4 = [](const Latin1Character* p) ALWAYS_INLINE_LAMBDA {
             // Copy 32 bits and expand to 64 bits.
             uint32_t v32 = unalignedLoad<uint32_t>(p);
             uint64_t v64 = static_cast<uint64_t>(v32);
@@ -394,7 +309,7 @@ ALWAYS_INLINE bool equal(const LChar* a, std::span<const UChar> b)
         return static_cast<unsigned>(read4(a) == unalignedLoad<uint64_t>(b.data())) & static_cast<unsigned>(read4(a + (length % 4)) == unalignedLoad<uint64_t>(b.data() + (length % 4)));
     }
     if (length >= 2) {
-        auto read2 = [](const LChar* p) ALWAYS_INLINE_LAMBDA {
+        auto read2 = [](const Latin1Character* p) ALWAYS_INLINE_LAMBDA {
             // Copy 16 bits and expand to 32 bits.
             uint16_t v16 = unalignedLoad<uint16_t>(p);
             uint32_t v32 = static_cast<uint32_t>(v16);
@@ -414,9 +329,23 @@ ALWAYS_INLINE bool equal(const LChar* a, std::span<const UChar> b)
 #endif
 }
 
-ALWAYS_INLINE bool equal(const UChar* a, std::span<const LChar> b)
+ALWAYS_INLINE bool equal(const char16_t* a, std::span<const Latin1Character> b)
 {
     return equal(b.data(), { a, b.size() });
+}
+
+template<OneByteCharacterType CharacterType>
+ALWAYS_INLINE bool equal(std::span<const CharacterType> a, std::span<const CharacterType> b)
+{
+    if (a.size() != b.size())
+        return false;
+    return equal(a.data(), b);
+}
+
+template<OneByteCharacterType CharacterType>
+ALWAYS_INLINE bool equal(std::span<const CharacterType> a, ASCIILiteral b)
+{
+    return equal(a, byteCast<CharacterType>(b.span()));
 }
 
 template<typename StringClassA, typename StringClassB>
@@ -475,6 +404,23 @@ template<typename StringClass, unsigned length> bool equal(const StringClass& a,
     return equal(a.span16().data(), { codeUnits, length });
 }
 
+template<typename T>
+concept ContainsEncodingAwareSpans = requires(T t)
+{
+    { t.is8Bit() } -> std::convertible_to<bool>;
+    { t.span8() } -> std::convertible_to<std::span<const Latin1Character>>;
+    { t.span16() } -> std::convertible_to<std::span<const char16_t>>;
+};
+
+template<ContainsEncodingAwareSpans StringClass>
+bool equal(const StringClass& string, std::span<const char8_t> span)
+{
+    if (string.is8Bit())
+        return Unicode::equal(string.span8(), span);
+
+    return Unicode::equal(string.span16(), span);
+}
+
 template<typename CharacterTypeA, typename CharacterTypeB> inline bool equalIgnoringASCIICaseWithLength(std::span<const CharacterTypeA> a, std::span<const CharacterTypeB> b, size_t lengthToCheck)
 {
     ASSERT(a.size() >= lengthToCheck);
@@ -486,9 +432,24 @@ template<typename CharacterTypeA, typename CharacterTypeB> inline bool equalIgno
     return true;
 }
 
-template<typename CharacterTypeA, typename CharacterTypeB> inline bool equalIgnoringASCIICase(std::span<const CharacterTypeA> a, std::span<const CharacterTypeB> b)
+template<typename CharacterTypeA, typename CharacterTypeB> inline bool spanHasPrefixIgnoringASCIICase(std::span<const CharacterTypeA> span, std::span<const CharacterTypeB> prefix)
+{
+    if (span.size() < prefix.size())
+        return false;
+    return equalIgnoringASCIICaseWithLength(span, prefix, prefix.size());
+}
+
+template<typename CharacterTypeA, typename CharacterTypeB>
+    requires(TriviallyComparableCodeUnits<CharacterTypeA, CharacterTypeB>)
+inline bool equalIgnoringASCIICase(std::span<const CharacterTypeA> a, std::span<const CharacterTypeB> b)
 {
     return a.size() == b.size() && equalIgnoringASCIICaseWithLength(a, b, a.size());
+}
+
+template<OneByteCharacterType CharacterType>
+inline bool equalIgnoringASCIICase(std::span<const CharacterType> a, ASCIILiteral b)
+{
+    return equalIgnoringASCIICase(a, byteCast<CharacterType>(b.span()));
 }
 
 template<typename StringClassA, typename StringClassB>
@@ -509,7 +470,7 @@ bool equalIgnoringASCIICaseCommon(const StringClassA& a, const StringClassB& b)
 
 template<typename StringClassA> bool equalIgnoringASCIICaseCommon(const StringClassA& a, const char* b)
 {
-    auto bSpan = span8(b);
+    auto bSpan = unsafeSpan(b);
     if (a.length() != bSpan.size())
         return false;
     if (a.is8Bit())
@@ -517,27 +478,39 @@ template<typename StringClassA> bool equalIgnoringASCIICaseCommon(const StringCl
     return equalIgnoringASCIICaseWithLength(a.span16(), bSpan, bSpan.size());
 }
 
-template <typename SearchCharacterType, typename MatchCharacterType>
-size_t findIgnoringASCIICase(std::span<const SearchCharacterType> source, std::span<const MatchCharacterType> matchCharacters, size_t startOffset)
+template<typename SearchCharacterType, typename MatchCharacterType>
+    requires(TriviallyComparableCodeUnits<SearchCharacterType, MatchCharacterType>)
+size_t findIgnoringASCIICase(std::span<const SearchCharacterType> source, std::span<const MatchCharacterType> matchCharacters, size_t startOffset = 0)
 {
-    ASSERT(source.size() >= matchCharacters.size());
-
-    auto startSearchedCharacters = source.subspan(startOffset);
-
-    // delta is the number of additional times to test; delta == 0 means test only once.
-    size_t delta = startSearchedCharacters.size() - matchCharacters.size();
-
-    for (size_t i = 0; i <= delta; ++i) {
-        if (equalIgnoringASCIICaseWithLength(startSearchedCharacters.subspan(i), matchCharacters, matchCharacters.size()))
-            return startOffset + i;
+    for (size_t offset = startOffset; offset <= source.size() && source.size() - offset >= matchCharacters.size(); ++offset) {
+        if (equalIgnoringASCIICaseWithLength(source.subspan(offset), matchCharacters, matchCharacters.size()))
+            return offset;
     }
     return notFound;
 }
 
+template<OneByteCharacterType CharacterType>
+size_t findIgnoringASCIICase(std::span<const CharacterType> source, ASCIILiteral matchCharacters)
+{
+    return findIgnoringASCIICase(source, byteCast<CharacterType>(matchCharacters.span()));
+}
+
+template<typename SearchCharacterType, typename MatchCharacterType>
+bool containsIgnoringASCIICase(std::span<const SearchCharacterType> source, std::span<const MatchCharacterType> matchCharacters)
+{
+    return findIgnoringASCIICase(source, matchCharacters) != notFound;
+}
+
+template<typename CharacterType>
+bool containsIgnoringASCIICase(std::span<const CharacterType> source, ASCIILiteral matchCharacters)
+{
+    return containsIgnoringASCIICase(source, byteCast<CharacterType>(matchCharacters.span()));
+}
+
 inline size_t findIgnoringASCIICaseWithoutLength(const char* source, const char* matchCharacters)
 {
-    auto searchSpan = span(source);
-    auto matchSpan = span(matchCharacters);
+    auto searchSpan = unsafeSpan(source);
+    auto matchSpan = unsafeSpan(matchCharacters);
 
     return matchSpan.size() <= searchSpan.size() ? findIgnoringASCIICase(searchSpan, matchSpan, 0) : notFound;
 }
@@ -700,20 +673,20 @@ ALWAYS_INLINE const double* findDouble(const double* pointer, double target, siz
 }
 #endif
 
-WTF_EXPORT_PRIVATE const LChar* find8NonASCIIAlignedImpl(std::span<const LChar>);
-WTF_EXPORT_PRIVATE const UChar* find16NonASCIIAlignedImpl(std::span<const UChar>);
+WTF_EXPORT_PRIVATE const Latin1Character* find8NonASCIIAlignedImpl(std::span<const Latin1Character>);
+WTF_EXPORT_PRIVATE const char16_t* find16NonASCIIAlignedImpl(std::span<const char16_t>);
 
 #if CPU(ARM64)
-ALWAYS_INLINE const LChar* find8NonASCII(std::span<const LChar> data)
+ALWAYS_INLINE const Latin1Character* find8NonASCII(std::span<const Latin1Character> data)
 {
     constexpr size_t thresholdLength = 16;
-    static_assert(!(thresholdLength % (16 / sizeof(LChar))), "length threshold should be 16-byte aligned to make find8NonASCIIAlignedImpl simpler");
+    static_assert(!(thresholdLength % (16 / sizeof(Latin1Character))), "length threshold should be 16-byte aligned to make find8NonASCIIAlignedImpl simpler");
     auto* pointer = data.data();
     auto length = data.size();
     uintptr_t unaligned = reinterpret_cast<uintptr_t>(pointer) & 0xf;
 
     size_t index = 0;
-    size_t runway = std::min(thresholdLength - (unaligned / sizeof(LChar)), length);
+    size_t runway = std::min(thresholdLength - (unaligned / sizeof(Latin1Character)), length);
     for (; index < runway; ++index) {
         if (!isASCII(pointer[index]))
             return pointer + index;
@@ -778,21 +751,42 @@ inline size_t find(std::span<const CharacterType> characters, CharacterType matc
     return notFound;
 }
 
-ALWAYS_INLINE size_t find(std::span<const UChar> characters, LChar matchCharacter, size_t index = 0)
+ALWAYS_INLINE size_t find(std::span<const char16_t> characters, Latin1Character matchCharacter, size_t index = 0)
 {
     return find(characters, static_cast<UChar>(matchCharacter), index);
 }
 
-inline size_t find(std::span<const LChar> characters, UChar matchCharacter, size_t index = 0)
+inline size_t find(std::span<const Latin1Character> characters, char16_t matchCharacter, size_t index = 0)
 {
     if (!isLatin1(matchCharacter))
         return notFound;
-    return find(characters, static_cast<LChar>(matchCharacter), index);
+    return find(characters, static_cast<Latin1Character>(matchCharacter), index);
+}
+
+template<OneByteCharacterType CharacterType>
+inline size_t find(std::span<const CharacterType> characters, ASCIILiteral matchCharacters)
+{
+    return find(characters, byteCast<CharacterType>(matchCharacters.span()));
+}
+
+template<std::integral CharacterType1, std::integral CharacterType2>
+inline bool contains(std::span<const CharacterType1> characters, CharacterType2 matchCharacter, size_t index = 0)
+{
+    return find(characters, matchCharacter, index) != notFound;
+}
+
+template<OneByteCharacterType CharacterType>
+inline bool contains(std::span<const CharacterType> characters, ASCIILiteral matchCharacters)
+{
+    return contains(characters, byteCast<CharacterType>(matchCharacters.span()));
 }
 
 template <typename SearchCharacterType, typename MatchCharacterType>
 ALWAYS_INLINE static size_t reverseFindInner(std::span<const SearchCharacterType> searchCharacters, std::span<const MatchCharacterType> matchCharacters, size_t start)
 {
+    if (searchCharacters.size() < matchCharacters.size())
+        return notFound;
+
     // Optimization: keep a running hash of the strings,
     // only call equal if the hashes match.
 
@@ -817,7 +811,28 @@ ALWAYS_INLINE static size_t reverseFindInner(std::span<const SearchCharacterType
     return delta;
 }
 
-template<typename CharacterType> inline bool equalLettersIgnoringASCIICaseWithLength(std::span<const CharacterType> characters, std::span<const LChar> lowercaseLetters, size_t length)
+template<typename SearchCharacterType, typename MatchCharacterType>
+    requires(TriviallyComparableCodeUnits<SearchCharacterType, MatchCharacterType>)
+ALWAYS_INLINE static size_t reverseFind(std::span<const SearchCharacterType> searchCharacters, std::span<const MatchCharacterType> matchCharacters)
+{
+    return reverseFindInner(searchCharacters, matchCharacters, std::numeric_limits<size_t>::max());
+}
+
+template<OneByteCharacterType CharacterType>
+ALWAYS_INLINE static size_t reverseFind(std::span<const CharacterType> searchCharacters, ASCIILiteral matchCharacters)
+{
+    return reverseFind(searchCharacters, byteCast<CharacterType>(matchCharacters.span()));
+}
+
+template<typename CharT, typename OneByteCharT>
+concept SearchableStringByOneByteCharacter =
+    sizeof(OneByteCharT) == 1
+    && (std::is_same_v<std::remove_const_t<CharT>, std::remove_const_t<OneByteCharT>>
+    || std::is_same_v<std::remove_const_t<OneByteCharT>, Latin1Character>);
+
+template<typename CharacterType, typename OneByteCharacterType>
+    requires SearchableStringByOneByteCharacter<CharacterType, OneByteCharacterType>
+inline bool equalLettersIgnoringASCIICaseWithLength(std::span<const CharacterType> characters, std::span<const OneByteCharacterType> lowercaseLetters, size_t length)
 {
     ASSERT(characters.size() >= length);
     ASSERT(lowercaseLetters.size() >= length);
@@ -828,14 +843,14 @@ template<typename CharacterType> inline bool equalLettersIgnoringASCIICaseWithLe
     return true;
 }
 
-template<typename CharacterType> inline bool equalLettersIgnoringASCIICase(std::span<const CharacterType> characters, std::span<const LChar> lowercaseLetters)
+template<typename CharacterType> inline bool equalLettersIgnoringASCIICase(std::span<const CharacterType> characters, std::span<const Latin1Character> lowercaseLetters)
 {
     return characters.size() == lowercaseLetters.size() && equalLettersIgnoringASCIICaseWithLength(characters, lowercaseLetters, lowercaseLetters.size());
 }
 
 template<typename CharacterType> inline bool equalLettersIgnoringASCIICase(std::span<const CharacterType> characters, std::span<const char> lowercaseLetters)
 {
-    return equalLettersIgnoringASCIICase(characters, byteCast<LChar>(lowercaseLetters));
+    return equalLettersIgnoringASCIICase(characters, byteCast<Latin1Character>(lowercaseLetters));
 }
 
 template<typename CharacterType> inline bool equalLettersIgnoringASCIICase(std::span<const CharacterType> characters, ASCIILiteral lowercaseLetters)
@@ -843,7 +858,7 @@ template<typename CharacterType> inline bool equalLettersIgnoringASCIICase(std::
     return equalLettersIgnoringASCIICase(characters, lowercaseLetters.span8());
 }
 
-template<typename StringClass> bool inline hasPrefixWithLettersIgnoringASCIICaseCommon(const StringClass& string, std::span<const LChar> lowercaseLetters)
+template<typename StringClass> bool inline hasPrefixWithLettersIgnoringASCIICaseCommon(const StringClass& string, std::span<const Latin1Character> lowercaseLetters)
 {
 #if ASSERT_ENABLED
     ASSERT(lowercaseLetters.front());
@@ -858,14 +873,101 @@ template<typename StringClass> bool inline hasPrefixWithLettersIgnoringASCIICase
 }
 
 // This is intentionally not marked inline because it's used often and is not speed-critical enough to want it inlined everywhere.
-template<typename StringClass> bool equalLettersIgnoringASCIICaseCommon(const StringClass& string, std::span<const LChar> literal)
+template<typename StringClass> bool equalLettersIgnoringASCIICaseCommon(const StringClass& string, std::span<const Latin1Character> literal)
 {
     if (string.length() != literal.size())
         return false;
     return hasPrefixWithLettersIgnoringASCIICaseCommon(string, literal);
 }
 
-template<typename StringClass> bool startsWithLettersIgnoringASCIICaseCommon(const StringClass& string, std::span<const LChar> prefix)
+template<typename SearchCharacterType, typename MatchCharacterType>
+    requires(TriviallyComparableCodeUnits<SearchCharacterType, MatchCharacterType>)
+bool startsWith(std::span<const SearchCharacterType> string, std::span<const MatchCharacterType> prefix)
+{
+    if (prefix.size() > string.size())
+        return false;
+
+    return equal(string.data(), prefix);
+}
+
+template<OneByteCharacterType CharacterType>
+bool startsWith(std::span<const CharacterType> string, ASCIILiteral prefix)
+{
+    return startsWith(string, byteCast<CharacterType>(prefix.span()));
+}
+
+template<typename SearchCharacterType, typename MatchCharacterType>
+    requires(TriviallyComparableCodeUnits<SearchCharacterType, MatchCharacterType>)
+bool endsWith(std::span<const SearchCharacterType> string, std::span<const MatchCharacterType> suffix)
+{
+    unsigned suffixSize = suffix.size();
+    unsigned referenceSize = string.size();
+    if (suffixSize > referenceSize)
+        return false;
+
+    unsigned startOffset = referenceSize - suffixSize;
+
+    return equal(string.subspan(startOffset).data(), suffix);
+}
+
+template<OneByteCharacterType CharacterType>
+bool endsWith(std::span<const CharacterType> string, ASCIILiteral suffix)
+{
+    return endsWith(string, byteCast<CharacterType>(suffix.span()));
+}
+
+template<typename SearchCharacterType, typename MatchCharacterType>
+    requires(TriviallyComparableCodeUnits<SearchCharacterType, MatchCharacterType>)
+bool endsWithLettersIgnoringASCIICaseCommon(std::span<const SearchCharacterType> string, std::span<const MatchCharacterType> suffix)
+{
+    unsigned suffixLength = suffix.size();
+    unsigned referenceLength = string.size();
+    if (suffixLength > referenceLength)
+        return false;
+
+    unsigned startOffset = referenceLength - suffixLength;
+
+    return equalIgnoringASCIICaseWithLength(string.subspan(startOffset), suffix, suffixLength);
+}
+
+template<typename SearchCharacterType, typename MatchCharacterType>
+    requires(TriviallyComparableCodeUnits<SearchCharacterType, MatchCharacterType>)
+bool endsWithLettersIgnoringASCIICase(std::span<const SearchCharacterType> string, std::span<const MatchCharacterType> suffix)
+{
+    return endsWithLettersIgnoringASCIICaseCommon(string, suffix);
+}
+
+template<OneByteCharacterType CharacterType>
+bool endsWithLettersIgnoringASCIICase(std::span<const CharacterType> string, ASCIILiteral suffix)
+{
+    return endsWithLettersIgnoringASCIICase(string, byteCast<CharacterType>(suffix.span()));
+}
+
+template<typename SearchCharacterType, typename MatchCharacterType>
+    requires(TriviallyComparableCodeUnits<SearchCharacterType, MatchCharacterType>)
+bool startsWithLettersIgnoringASCIICaseCommon(std::span<const SearchCharacterType> string, std::span<const MatchCharacterType> prefix)
+{
+    if (prefix.empty())
+        return true;
+    if (string.size() < prefix.size())
+        return false;
+    return equalLettersIgnoringASCIICaseWithLength(string, prefix, prefix.size());
+}
+
+template<typename SearchCharacterType, typename MatchCharacterType>
+    requires(TriviallyComparableCodeUnits<SearchCharacterType, MatchCharacterType>)
+bool startsWithLettersIgnoringASCIICase(std::span<const SearchCharacterType> string, std::span<const MatchCharacterType> prefix)
+{
+    return startsWithLettersIgnoringASCIICaseCommon(string, prefix);
+}
+
+template<OneByteCharacterType CharacterType>
+bool startsWithLettersIgnoringASCIICase(std::span<const CharacterType> string, ASCIILiteral prefix)
+{
+    return startsWithLettersIgnoringASCIICase(string, byteCast<CharacterType>(prefix.span()));
+}
+
+template<typename StringClass> bool startsWithLettersIgnoringASCIICaseCommon(const StringClass& string, std::span<const Latin1Character> prefix)
 {
     if (prefix.empty())
         return true;
@@ -886,7 +988,7 @@ template<typename StringClass> inline bool startsWithLettersIgnoringASCIICaseCom
 
 inline bool equalIgnoringASCIICase(const char* a, const char* b)
 {
-    return equalIgnoringASCIICase(span8(a), span8(b));
+    return equalIgnoringASCIICase(unsafeSpan(a), unsafeSpan(b));
 }
 
 inline bool equalLettersIgnoringASCIICase(ASCIILiteral a, ASCIILiteral b)
@@ -896,7 +998,7 @@ inline bool equalLettersIgnoringASCIICase(ASCIILiteral a, ASCIILiteral b)
 
 inline bool equalIgnoringASCIICase(const char* string, ASCIILiteral literal)
 {
-    return equalIgnoringASCIICase(span8(string), literal.span8());
+    return equalIgnoringASCIICase(unsafeSpan(string), literal.span());
 }
 
 inline bool equalIgnoringASCIICase(ASCIILiteral a, ASCIILiteral b)
@@ -1116,12 +1218,12 @@ inline void copyElements(uint8_t* __restrict destination, const uint64_t* __rest
         *destination++ = *source++;
 }
 
-inline void copyElements(UChar* __restrict destination, const LChar* __restrict source, size_t length)
+inline void copyElements(char16_t* __restrict destination, const Latin1Character* __restrict source, size_t length)
 {
     copyElements(std::bit_cast<uint16_t*>(destination), std::bit_cast<const uint8_t*>(source), length);
 }
 
-inline void copyElements(LChar* __restrict destination, const UChar* __restrict source, size_t length)
+inline void copyElements(Latin1Character* __restrict destination, const char16_t* __restrict source, size_t length)
 {
     copyElements(std::bit_cast<uint8_t*>(destination), std::bit_cast<const uint16_t*>(source), length);
 }
@@ -1181,11 +1283,22 @@ inline size_t countMatchedCharacters(std::span<const CharacterType> span, Charac
 
 }
 
+using WTF::charactersContain;
+using WTF::contains;
+using WTF::containsIgnoringASCIICase;
+using WTF::endsWith;
+using WTF::endsWithLettersIgnoringASCIICase;
 using WTF::equalIgnoringASCIICase;
 using WTF::equalIgnoringASCIICaseWithLength;
 using WTF::equalLettersIgnoringASCIICase;
 using WTF::equalLettersIgnoringASCIICaseWithLength;
+using WTF::findIgnoringASCIICase;
 using WTF::isLatin1;
+using WTF::reverseFind;
 using WTF::span;
-using WTF::span8;
-using WTF::charactersContain;
+using WTF::spanHasPrefixIgnoringASCIICase;
+using WTF::startsWith;
+using WTF::startsWithLettersIgnoringASCIICase;
+using WTF::unsafeSpan;
+using WTF::unsafeSpanIncludingNullTerminator;
+

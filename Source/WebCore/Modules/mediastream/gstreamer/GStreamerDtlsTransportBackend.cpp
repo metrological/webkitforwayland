@@ -25,6 +25,7 @@
 #include "GStreamerIceTransportBackend.h"
 #include "GStreamerWebRTCUtils.h"
 #include <JavaScriptCore/ArrayBuffer.h>
+#include <wtf/glib/GMallocString.h>
 #include <wtf/glib/GUniquePtr.h>
 
 namespace WebCore {
@@ -68,8 +69,8 @@ void GStreamerDtlsTransportBackendObserver::stateChanged()
         g_object_get(m_backend.get(), "state", &state, nullptr);
 
 #ifndef GST_DISABLE_GST_DEBUG
-        GUniquePtr<char> desc(g_enum_to_string(GST_TYPE_WEBRTC_DTLS_TRANSPORT_STATE, state));
-        GST_DEBUG_OBJECT(m_backend.get(), "DTLS transport state changed to %s", desc.get());
+        auto desc = GMallocString::unsafeAdoptFromUTF8(g_enum_to_string(GST_TYPE_WEBRTC_DTLS_TRANSPORT_STATE, state));
+        GST_DEBUG_OBJECT(m_backend.get(), "DTLS transport state changed to %s", desc.utf8());
 #endif
 
         Vector<Ref<JSC::ArrayBuffer>> certificates;
@@ -80,12 +81,11 @@ void GStreamerDtlsTransportBackendObserver::stateChanged()
             GUniqueOutPtr<char> remoteCertificate;
             GUniqueOutPtr<char> certificate;
             g_object_get(m_backend.get(), "remote-certificate", &remoteCertificate.outPtr(), "certificate", &certificate.outPtr(), nullptr);
-
             if (remoteCertificate)
-                certificates.append(JSC::ArrayBuffer::create(span8(remoteCertificate.get())));
+                certificates.append(JSC::ArrayBuffer::create(byteCast<uint8_t>(span8(remoteCertificate.get()))));
 
             if (certificate)
-                certificates.append(JSC::ArrayBuffer::create(span8(certificate.get())));
+                certificates.append(JSC::ArrayBuffer::create(byteCast<uint8_t>(span8(certificate.get()))));
         }
         m_client->onStateChanged(toRTCDtlsTransportState(state), WTFMove(certificates));
     });

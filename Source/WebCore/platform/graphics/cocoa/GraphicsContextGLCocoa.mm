@@ -104,8 +104,8 @@ static EGLDisplay initializeEGLDisplay(const GraphicsContextGLAttributes& attrs)
     }
 
 #if ASSERT_ENABLED
-    const char* clientExtensions = EGL_QueryString(EGL_NO_DISPLAY, EGL_EXTENSIONS);
-    ASSERT(clientExtensions);
+    auto clientExtensions = unsafeSpan(EGL_QueryString(EGL_NO_DISPLAY, EGL_EXTENSIONS));
+    ASSERT(clientExtensions.data());
 #endif
 
     Vector<EGLAttrib> displayAttributes;
@@ -149,9 +149,9 @@ static EGLDisplay initializeEGLDisplay(const GraphicsContextGLAttributes& attrs)
     }
     LOG(WebGL, "ANGLE initialised Major: %d Minor: %d", majorVersion, minorVersion);
 
-#if ASSERT_ENABLED && ENABLE(WEBXR)
-    const char* displayExtensions = EGL_QueryString(display, EGL_EXTENSIONS);
-    ASSERT(strstr(displayExtensions, "EGL_ANGLE_metal_shared_event_sync"));
+#if ASSERT_ENABLED
+    auto displayExtensions = unsafeSpan(EGL_QueryString(display, EGL_EXTENSIONS));
+    ASSERT(WTF::contains(displayExtensions, "EGL_ANGLE_metal_shared_event_sync"_span));
 #endif
 
     return display;

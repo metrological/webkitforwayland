@@ -97,10 +97,10 @@ public:
     bool selfClosing() const;
     const AttributeList& attributes() const;
 
-    void beginStartTag(LChar);
+    void beginStartTag(Latin1Character);
 
-    void beginEndTag(LChar);
-    void beginEndTag(const Vector<LChar, 32>&);
+    void beginEndTag(Latin1Character);
+    void beginEndTag(const Vector<Latin1Character, 32>&);
 
     void beginAttribute();
     void appendToAttributeName(UChar);
@@ -120,9 +120,9 @@ public:
     const DataVector& characters() const;
     bool charactersIsAll8BitData() const;
 
-    void appendToCharacter(LChar);
-    void appendToCharacter(UChar);
-    void appendToCharacter(const Vector<LChar, 32>&);
+    void appendToCharacter(Latin1Character);
+    void appendToCharacter(char16_t);
+    void appendToCharacter(const Vector<Latin1Character, 32>&);
     template<typename CharacterType> void appendToCharacter(std::span<const CharacterType>);
 
     // Comment.
@@ -251,7 +251,7 @@ inline void HTMLToken::setSelfClosing()
     m_selfClosing = true;
 }
 
-inline void HTMLToken::beginStartTag(LChar character)
+inline void HTMLToken::beginStartTag(Latin1Character character)
 {
     ASSERT(character);
     ASSERT(m_type == Type::Uninitialized);
@@ -266,7 +266,7 @@ inline void HTMLToken::beginStartTag(LChar character)
     m_data.append(character);
 }
 
-inline void HTMLToken::beginEndTag(LChar character)
+inline void HTMLToken::beginEndTag(Latin1Character character)
 {
     ASSERT(m_type == Type::Uninitialized);
     m_type = Type::EndTag;
@@ -280,7 +280,7 @@ inline void HTMLToken::beginEndTag(LChar character)
     m_data.append(character);
 }
 
-inline void HTMLToken::beginEndTag(const Vector<LChar, 32>& characters)
+inline void HTMLToken::beginEndTag(const Vector<Latin1Character, 32>& characters)
 {
     ASSERT(m_type == Type::Uninitialized);
     m_type = Type::EndTag;
@@ -358,7 +358,7 @@ inline bool HTMLToken::charactersIsAll8BitData() const
     return m_data8BitCheck <= 0xFF;
 }
 
-inline void HTMLToken::appendToCharacter(LChar character)
+inline void HTMLToken::appendToCharacter(Latin1Character character)
 {
     ASSERT(m_type == Type::Uninitialized || m_type == Type::Character);
     m_type = Type::Character;
@@ -373,7 +373,7 @@ inline void HTMLToken::appendToCharacter(UChar character)
     m_data8BitCheck |= character;
 }
 
-inline void HTMLToken::appendToCharacter(const Vector<LChar, 32>& characters)
+inline void HTMLToken::appendToCharacter(const Vector<Latin1Character, 32>& characters)
 {
     ASSERT(m_type == Type::Uninitialized || m_type == Type::Character);
     m_type = Type::Character;

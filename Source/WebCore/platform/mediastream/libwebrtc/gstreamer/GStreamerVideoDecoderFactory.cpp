@@ -68,11 +68,11 @@ public:
         return m_pipeline.get();
     }
 
-    GstElement* makeElement(const gchar* factoryName)
+    GstElement* makeElement(ASCIILiteral factoryName)
     {
-        GUniquePtr<char> name(g_strdup_printf("%s_dec_%s_%p", Name(), factoryName, this));
-
-        return makeGStreamerElement(factoryName, name.get());
+        static Atomic<uint32_t> elementId;
+        auto name = makeString(unsafeSpan(Name()), "-dec-"_s, factoryName, "-"_s, elementId.exchangeAdd(1));
+        return makeGStreamerElement(factoryName, name);
     }
 
     void handleError(GError* error)
@@ -85,16 +85,16 @@ public:
 
     bool Configure(const webrtc::VideoDecoder::Settings& codecSettings) override
     {
-        m_src = makeElement("appsrc");
+        m_src = makeElement("appsrc"_s);
         g_object_set(m_src, "is-live", TRUE, "do-timestamp", TRUE, "max-buffers", 2, "max-bytes", 0, nullptr);
 
         GRefPtr<GstCaps> caps = nullptr;
         auto capsfilter = CreateFilter();
-        auto decoder = makeElement("decodebin");
+        auto decoder = makeElement("decodebin"_s);
 
         updateCapsFromImageSize(codecSettings.max_render_resolution().Width(), codecSettings.max_render_resolution().Height());
 
-        m_pipeline = makeElement("pipeline");
+        m_pipeline = makeElement("pipeline"_s);
         connectSimpleBusMessageCallback(m_pipeline.get());
 
         auto sinkpad = adoptGRef(gst_element_get_static_pad(capsfilter, "sink"));
@@ -140,7 +140,7 @@ public:
         }
         g_object_set(decoder, "caps", caps.get(), nullptr);
 
-        m_sink = makeElement("appsink");
+        m_sink = makeElement("appsink"_s);
         gst_app_sink_set_emit_signals(GST_APP_SINK(m_sink), true);
         // This is a decoder, everything should happen as fast as possible and not be synced on the clock.
         g_object_set(m_sink, "sync", false, nullptr);
@@ -173,7 +173,7 @@ public:
 
     virtual GstElement* CreateFilter()
     {
-        return makeElement("identity");
+        return makeElement("identity"_s);
     }
 
     int32_t Release() final
@@ -273,9 +273,9 @@ public:
         return { sdpVideoFormat() };
     }
 
-    static GRefPtr<GstElementFactory> GstDecoderFactory(const char* capsStr)
+    static GRefPtr<GstElementFactory> GstDecoderFactory(ASCIILiteral capsStr)
     {
-        return GStreamerRegistryScanner::singleton().isCodecSupported(GStreamerRegistryScanner::Configuration::Decoding, String::fromUTF8(capsStr), false).factory;
+        return GStreamerRegistryScanner::singleton().isCodecSupported(GStreamerRegistryScanner::Configuration::Decoding, capsStr, false).factory;
     }
 
     bool HasGstDecoder()
@@ -283,10 +283,10 @@ public:
         return GstDecoderFactory(Caps());
     }
 
-    virtual const gchar* Caps() = 0;
+    virtual ASCIILiteral Caps() = 0;
     virtual webrtc::VideoCodecType CodecType() = 0;
     const char* ImplementationName() const override { return "GStreamer"; }
-    virtual const gchar* Name() = 0;
+    virtual ASCIILiteral Name() = 0;
     virtual webrtc::SdpVideoFormat sdpVideoFormat() = 0;
 
 protected:
@@ -335,8 +335,8 @@ public:
         m_caps = adoptGRef(gst_caps_new_simple(Caps(), "width", G_TYPE_INT, width, "height", G_TYPE_INT, height,
             "alignment", G_TYPE_STRING, "au", nullptr));
     }
-    const gchar* Caps() final { return "video/x-h264"; }
-    const gchar* Name() final { return "h264"; }
+    ASCIILiteral Caps() final { return "video/x-h264"_s; }
+    ASCIILiteral Name() final { return "h264"_s; }
     webrtc::SdpVideoFormat sdpVideoFormat() final { return webrtc::SdpVideoFormat::H264(); }
     webrtc::VideoCodecType CodecType() final { return webrtc::kVideoCodecH264; }
 
@@ -349,14 +349,14 @@ public:
 class VP8Decoder : public GStreamerWebRTCVideoDecoder {
 public:
     VP8Decoder() { }
-    const gchar* Caps() final { return "video/x-vp8"; }
-    const gchar* Name() final { return "vp8"; }
+    ASCIILiteral Caps() final { return "video/x-vp8"_s; }
+    ASCIILiteral Name() final { return "vp8"_s; }
     webrtc::SdpVideoFormat sdpVideoFormat() final { return webrtc::SdpVideoFormat::VP8(); }
 
     webrtc::VideoCodecType CodecType() final { return webrtc::kVideoCodecVP8; }
     static std::unique_ptr<webrtc::VideoDecoder> Create(const webrtc::Environment& environment)
     {
-        auto factory = GstDecoderFactory("video/x-vp8");
+        auto factory = GstDecoderFactory("video/x-vp8"_s);
         if (factory) {
             const auto* factoryName = GST_OBJECT_NAME(GST_OBJECT(factory.get()));
             if (!g_strcmp0(factoryName, "vp8dec") || !g_strcmp0(factoryName, "vp8alphadecodebin")) {
@@ -375,8 +375,8 @@ public:
         : m_isSupportingVP9Profile0(isSupportingVP9Profile0)
         , m_isSupportingVP9Profile2(isSupportingVP9Profile2) { };
 
-    const gchar* Caps() final { return "video/x-vp9"; }
-    const gchar* Name() final { return "vp9"; }
+    ASCIILiteral Caps() final { return "video/x-vp9"_s; }
+    ASCIILiteral Name() final { return "vp9"_s; }
     webrtc::SdpVideoFormat sdpVideoFormat() final { return webrtc::SdpVideoFormat::VP9Profile0(); }
 
     webrtc::VideoCodecType CodecType() final { return webrtc::kVideoCodecVP9; }

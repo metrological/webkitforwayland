@@ -39,7 +39,7 @@ namespace TestWebKitAPI {
 #if CPU(ARM64)
 TEST(WTF_StringCommon, Find8NonASCII)
 {
-    Vector<LChar> vector(4096);
+    Vector<Latin1Character> vector(4096);
     vector.fill('a');
 
     EXPECT_FALSE(WTF::find8NonASCII(vector.subspan(0, 4096)));
@@ -105,6 +105,223 @@ TEST(WTF_StringCommon, FindIgnoringASCIICaseWithoutLengthIdentical)
     EXPECT_EQ(WTF::findIgnoringASCIICaseWithoutLength("needle", "needle"), 0UL);
     EXPECT_EQ(WTF::findIgnoringASCIICaseWithoutLength("needle", "needley"), WTF::notFound);
     EXPECT_EQ(WTF::findIgnoringASCIICaseWithoutLength("needley", "needle"), 0UL);
+}
+
+TEST(WTF_StringCommon, Equal)
+{
+    EXPECT_TRUE(WTF::equal(u8"Water🍉Melon"_span, u8"Water🍉Melon"_span));
+    EXPECT_FALSE(WTF::equal(u8"Water🍉Melon"_span, u8"🍉WaterMelon🍉"_span));
+    EXPECT_TRUE(WTF::equal(std::span<const char8_t>(), std::span<const char8_t>()));
+    EXPECT_TRUE(WTF::equal(std::span<const char8_t>(), u8""_span));
+    EXPECT_FALSE(WTF::equal(std::span<const char8_t>(), u8"🍉WaterMelon🍉"_span));
+    EXPECT_TRUE(WTF::equal(u8""_span, std::span<const char8_t>()));
+    EXPECT_FALSE(WTF::equal(u8""_span, u8"🍉WaterMelon🍉"_span));
+    EXPECT_FALSE(WTF::equal(u8"🍉"_span, std::span<const char8_t>()));
+    EXPECT_FALSE(WTF::equal(u8"Water🍉Melon"_span, std::span<const char8_t>()));
+    EXPECT_FALSE(WTF::equal(u8"Water🍉Melon"_span, u8""_span));
+    // EXPECT_TRUE(WTF::equal("test"_span, "test"_span8)); // This should not compile.
+    String string(u8"Water🍉Melon"_span);
+    EXPECT_FALSE(string.is8Bit());
+    EXPECT_TRUE(WTF::equal(string, u8"Water🍉Melon"_span));
+    EXPECT_FALSE(WTF::equal(string, u8"🍉WaterMelon🍉"_span));
+}
+
+TEST(WTF_StringCommon, EqualIgnoringASCIICase)
+{
+    EXPECT_TRUE(WTF::equalIgnoringASCIICase(u8"Test"_span, u8"test"_span));
+    EXPECT_FALSE(WTF::equalIgnoringASCIICase(u8"another test"_span, u8"test"_span));
+    EXPECT_TRUE(WTF::equalIgnoringASCIICase(std::span<const char8_t>(), std::span<const char8_t>()));
+    EXPECT_TRUE(WTF::equalIgnoringASCIICase(std::span<const char8_t>(), u8""_span));
+    EXPECT_TRUE(WTF::equalIgnoringASCIICase(u8""_span, std::span<const char8_t>()));
+    EXPECT_FALSE(WTF::equalIgnoringASCIICase(std::span<const char8_t>(), u8"🍉WaterMelon🍉"_span));
+    EXPECT_FALSE(WTF::equalIgnoringASCIICase(u8""_span, u8"🍉WaterMelon🍉"_span));
+    EXPECT_FALSE(WTF::equalIgnoringASCIICase(u8"🍉"_span, std::span<const char8_t>()));
+    EXPECT_TRUE(WTF::equalIgnoringASCIICase(u8"🍉Watermelon🍉"_span, u8"🍉WaterMelon🍉"_span));
+    EXPECT_FALSE(WTF::equalIgnoringASCIICase(u8"🍉Watermelon🍉"_span, std::span<const char8_t>()));
+    EXPECT_FALSE(WTF::equalIgnoringASCIICase(u8"🍉Watermelon🍉"_span, u8""_span));
+    // EXPECT_TRUE(WTF::equalIgnoringASCIICase(u8"test"_span, "test"_span8)); // This should not compile.
+}
+
+TEST(WTF_StringCommon, StartsWith)
+{
+    EXPECT_TRUE(WTF::startsWith(u8"Water🍉Melon"_span, "Water"_s));
+    EXPECT_FALSE(WTF::startsWith(u8"Water🍉Melon"_span, "water"_s));
+    EXPECT_FALSE(WTF::startsWith(u8"🍉WaterMelon🍉"_span, "Water"_s));
+    EXPECT_TRUE(WTF::startsWith(u8"🍉WaterMelon🍉"_span, u8"🍉"_span));
+    EXPECT_FALSE(WTF::startsWith(u8"Water🍉Melon"_span, u8"🍉"_span));
+    EXPECT_TRUE(WTF::startsWith(std::span<const char8_t>(), std::span<const char8_t>()));
+    EXPECT_TRUE(WTF::startsWith(std::span<const char8_t>(), u8""_span));
+    EXPECT_FALSE(WTF::startsWith(std::span<const char8_t>(), u8"🍉WaterMelon🍉"_span));
+    EXPECT_TRUE(WTF::startsWith(u8""_span, std::span<const char8_t>()));
+    EXPECT_FALSE(WTF::startsWith(u8""_span, u8"🍉WaterMelon🍉"_span));
+    EXPECT_TRUE(WTF::startsWith(u8"🍉"_span, std::span<const char8_t>()));
+    EXPECT_FALSE(WTF::startsWith(u8"🍉"_span, u8"🍉WaterMelon🍉"_span));
+    EXPECT_TRUE(WTF::startsWith(u8"🍉WaterMelon🍉"_span, u8"🍉WaterMelon🍉"_span));
+    EXPECT_TRUE(WTF::startsWith(u8"🍉WaterMelon🍉"_span, std::span<const char8_t>()));
+    EXPECT_TRUE(WTF::startsWith(u8"🍉WaterMelon🍉"_span, u8""_span));
+    // EXPECT_TRUE(WTF::startsWith(u8"test"_span, "test"_span8)); // This should not compile.
+}
+
+TEST(WTF_StringCommon, EndsWith)
+{
+    EXPECT_TRUE(WTF::endsWith(u8"Water🍉Melon"_span, "Melon"_s));
+    EXPECT_FALSE(WTF::endsWith(u8"Water🍉Melon"_span, "melon"_s));
+    EXPECT_FALSE(WTF::endsWith(u8"🍉WaterMelon🍉"_span, "Melon"_s));
+    EXPECT_TRUE(WTF::endsWith(u8"🍉WaterMelon🍉"_span, u8"🍉"_span));
+    EXPECT_FALSE(WTF::endsWith(u8"Water🍉Melon"_span, u8"🍉"_span));
+    EXPECT_TRUE(WTF::endsWith(std::span<const char8_t>(), std::span<const char8_t>()));
+    EXPECT_TRUE(WTF::endsWith(std::span<const char8_t>(), u8""_span));
+    EXPECT_FALSE(WTF::endsWith(std::span<const char8_t>(), u8"🍉WaterMelon🍉"_span));
+    EXPECT_TRUE(WTF::endsWith(u8""_span, std::span<const char8_t>()));
+    EXPECT_FALSE(WTF::endsWith(u8""_span, u8"🍉WaterMelon🍉"_span));
+    EXPECT_TRUE(WTF::endsWith(u8"🍉"_span, std::span<const char8_t>()));
+    EXPECT_FALSE(WTF::endsWith(u8"🍉"_span, u8"🍉WaterMelon🍉"_span));
+    EXPECT_TRUE(WTF::endsWith(u8"🍉WaterMelon🍉"_span, u8"🍉WaterMelon🍉"_span));
+    EXPECT_TRUE(WTF::endsWith(u8"🍉WaterMelon🍉"_span, std::span<const char8_t>()));
+    EXPECT_TRUE(WTF::endsWith(u8"🍉WaterMelon🍉"_span, u8""_span));
+    // EXPECT_TRUE(WTF::endsWith(u8"test"_span, "test"_span8)); // This should not compile.
+}
+
+TEST(WTF_StringCommon, Find)
+{
+    EXPECT_EQ(WTF::find(u8"Water🍉Melon"_span, "ter"_s), 2UZ);
+    EXPECT_EQ(WTF::find(u8"🍉WaterMelon🍉"_span, "ter"_s), 6UZ);
+    EXPECT_EQ(WTF::find(u8"Water🍉Melon"_span, u8"🍉"_span), 5UZ);
+    EXPECT_EQ(WTF::find(u8"🍉WaterMelon🍉"_span, u8"🍉"_span), 0UZ);
+    EXPECT_EQ(WTF::find(std::span<const char8_t>(), std::span<const char8_t>()), 0UZ);
+    EXPECT_EQ(WTF::find(std::span<const char8_t>(), u8""_span), 0UZ);
+    EXPECT_EQ(WTF::find(std::span<const char8_t>(), u8"🍉WaterMelon🍉"_span), notFound);
+    EXPECT_EQ(WTF::find(u8""_span, std::span<const char8_t>()), 0UZ);
+    EXPECT_EQ(WTF::find(u8""_span, u8"🍉WaterMelon🍉"_span), notFound);
+    EXPECT_EQ(WTF::find(u8"🍉"_span, std::span<const char8_t>()), 0UZ);
+    EXPECT_EQ(WTF::find(u8"🍉"_span, u8"🍉WaterMelon🍉"_span), notFound);
+    EXPECT_EQ(WTF::find(u8"🍉WaterMelon🍉"_span, u8"🍉WaterMelon🍉"_span), 0UZ);
+    EXPECT_EQ(WTF::find(u8"🍉WaterMelon🍉"_span, std::span<const char8_t>()), 0UZ);
+    EXPECT_EQ(WTF::find(u8"🍉WaterMelon🍉"_span, u8""_span), 0UZ);
+    // EXPECT_NE(WTF::find(u8"test"_span, "test"_span8), notFound); // This should not compile.
+}
+
+TEST(WTF_StringCommon, ReverseFind)
+{
+    EXPECT_EQ(WTF::reverseFind(u8"Water🍉Melon"_span, "ter"_s), 2UZ);
+    EXPECT_EQ(WTF::reverseFind(u8"🍉WaterMelon🍉"_span, "ter"_s), 6UZ);
+    EXPECT_EQ(WTF::reverseFind(u8"Water🍉Melon"_span, u8"🍉"_span), 5UZ);
+    EXPECT_EQ(WTF::reverseFind(u8"🍉WaterMelon🍉"_span, u8"🍉"_span), 14UZ);
+    EXPECT_EQ(WTF::reverseFind(std::span<const char8_t>(), std::span<const char8_t>()), 0UZ);
+    EXPECT_EQ(WTF::reverseFind(std::span<const char8_t>(), u8""_span), 0UZ);
+    EXPECT_EQ(WTF::reverseFind(std::span<const char8_t>(), u8"🍉WaterMelon🍉"_span), notFound);
+    EXPECT_EQ(WTF::reverseFind(u8""_span, std::span<const char8_t>()), 0UZ);
+    EXPECT_EQ(WTF::reverseFind(u8""_span, u8"🍉WaterMelon🍉"_span), notFound);
+    EXPECT_EQ(WTF::reverseFind(u8"🍉"_span, std::span<const char8_t>()), 4UZ);
+    EXPECT_EQ(WTF::reverseFind(u8"🍉"_span, u8"🍉WaterMelon🍉"_span), notFound);
+    EXPECT_EQ(WTF::reverseFind(u8"🍉WaterMelon🍉"_span, u8"🍉WaterMelon🍉"_span), 0UZ);
+    EXPECT_EQ(WTF::reverseFind(u8"🍉WaterMelon🍉"_span, std::span<const char8_t>()), 18UZ);
+    EXPECT_EQ(WTF::reverseFind(u8"🍉WaterMelon🍉"_span, u8""_span), 18UZ);
+    // EXPECT_NE(WTF::reverseFind(u8"test"_span, "test"_span8), notFound); // This should not compile.
+}
+
+TEST(WTF_StringCommon, Contains)
+{
+    EXPECT_TRUE(WTF::contains(u8"Water🍉Melon"_span, "Water"_s));
+    EXPECT_TRUE(WTF::contains(u8"🍉WaterMelon🍉"_span, "Water"_s));
+    EXPECT_TRUE(WTF::contains(u8"Water🍉Melon"_span, u8"🍉"_span));
+    EXPECT_TRUE(WTF::contains(u8"🍉WaterMelon🍉"_span, u8"🍉"_span));
+    EXPECT_FALSE(WTF::contains(u8"Water🍉Melon"_span, "pear"_s));
+    EXPECT_FALSE(WTF::contains(u8"🍉WaterMelon🍉"_span, "pear"_s));
+    EXPECT_FALSE(WTF::contains(u8"Water🍉Melon"_span, u8"🍈"_span));
+    EXPECT_FALSE(WTF::contains(u8"🍉WaterMelon🍉"_span, u8"🍈"_span));
+    EXPECT_TRUE(WTF::contains(std::span<const char8_t>(), std::span<const char8_t>()));
+    EXPECT_TRUE(WTF::contains(std::span<const char8_t>(), u8""_span));
+    EXPECT_FALSE(WTF::contains(std::span<const char8_t>(), u8"🍉WaterMelon🍉"_span));
+    EXPECT_TRUE(WTF::contains(u8""_span, std::span<const char8_t>()));
+    EXPECT_FALSE(WTF::contains(u8""_span, u8"🍉WaterMelon🍉"_span));
+    EXPECT_TRUE(WTF::contains(u8"🍉"_span, std::span<const char8_t>()));
+    EXPECT_FALSE(WTF::contains(u8"🍉"_span, u8"🍉WaterMelon🍉"_span));
+    EXPECT_TRUE(WTF::contains(u8"🍉WaterMelon🍉"_span, u8"🍉WaterMelon🍉"_span));
+    EXPECT_TRUE(WTF::contains(u8"🍉WaterMelon🍉"_span, std::span<const char8_t>()));
+    EXPECT_TRUE(WTF::contains(u8"🍉WaterMelon🍉"_span, u8""_span));
+    // EXPECT_TRUE(WTF::contains(u8"test"_span, "test"_span8)); // This should not compile.
+}
+
+TEST(WTF_StringCommon, StartsWithLettersIgnoringASCIICase)
+{
+    EXPECT_TRUE(WTF::startsWithLettersIgnoringASCIICase(u8"Water🍉Melon"_span, "water"_s));
+    EXPECT_FALSE(WTF::startsWithLettersIgnoringASCIICase(u8"🍉WaterMelon🍉"_span, "water"_s));
+    EXPECT_TRUE(WTF::startsWithLettersIgnoringASCIICase(std::span<const char8_t>(), std::span<const char8_t>()));
+    EXPECT_TRUE(WTF::startsWithLettersIgnoringASCIICase(std::span<const char8_t>(), u8""_span));
+    EXPECT_FALSE(WTF::startsWithLettersIgnoringASCIICase(std::span<const char8_t>(), u8"watermelon"_span));
+    EXPECT_TRUE(WTF::startsWithLettersIgnoringASCIICase(u8""_span, std::span<const char8_t>()));
+    EXPECT_FALSE(WTF::startsWithLettersIgnoringASCIICase(u8""_span, u8"watermelon"_span));
+    EXPECT_TRUE(WTF::startsWithLettersIgnoringASCIICase(u8"Water"_span, std::span<const char8_t>()));
+    EXPECT_FALSE(WTF::startsWithLettersIgnoringASCIICase(u8"Water"_span, u8"watermelon"_span));
+    EXPECT_TRUE(WTF::startsWithLettersIgnoringASCIICase(u8"WaterMelon"_span, u8"watermelon"_span));
+    EXPECT_TRUE(WTF::startsWithLettersIgnoringASCIICase(u8"🍉WaterMelon🍉"_span, std::span<const char8_t>()));
+    EXPECT_TRUE(WTF::startsWithLettersIgnoringASCIICase(u8"🍉WaterMelon🍉"_span, u8""_span));
+    // EXPECT_TRUE(WTF::startsWithLettersIgnoringASCIICase(u8"test"_span, "test"_span8)); // This should not compile.
+}
+
+TEST(WTF_StringCommon, EndsWithLettersIgnoringASCIICase)
+{
+    EXPECT_TRUE(WTF::endsWithLettersIgnoringASCIICase(u8"Water🍉Melon"_span, "melon"_s));
+    EXPECT_FALSE(WTF::endsWithLettersIgnoringASCIICase(u8"🍉WaterMelon🍉"_span, "melon"_s));
+    EXPECT_TRUE(WTF::endsWithLettersIgnoringASCIICase(std::span<const char8_t>(), std::span<const char8_t>()));
+    EXPECT_TRUE(WTF::endsWithLettersIgnoringASCIICase(std::span<const char8_t>(), u8""_span));
+    EXPECT_FALSE(WTF::endsWithLettersIgnoringASCIICase(std::span<const char8_t>(), u8"watermelon"_span));
+    EXPECT_TRUE(WTF::endsWithLettersIgnoringASCIICase(u8""_span, std::span<const char8_t>()));
+    EXPECT_FALSE(WTF::endsWithLettersIgnoringASCIICase(u8""_span, u8"watermelon"_span));
+    EXPECT_TRUE(WTF::endsWithLettersIgnoringASCIICase(u8"Water"_span, std::span<const char8_t>()));
+    EXPECT_FALSE(WTF::endsWithLettersIgnoringASCIICase(u8"Water"_span, u8"watermelon"_span));
+    EXPECT_TRUE(WTF::endsWithLettersIgnoringASCIICase(u8"WaterMelon"_span, u8"watermelon"_span));
+    EXPECT_TRUE(WTF::endsWithLettersIgnoringASCIICase(u8"🍉WaterMelon🍉"_span, std::span<const char8_t>()));
+    EXPECT_TRUE(WTF::endsWithLettersIgnoringASCIICase(u8"🍉WaterMelon🍉"_span, u8""_span));
+    // EXPECT_TRUE(WTF::endsWithLettersIgnoringASCIICase(u8"test"_span, "test"_span8)); // This should not compile.
+}
+
+TEST(WTF_StringCommon, FindIgnoringASCIICase)
+{
+    EXPECT_EQ(WTF::findIgnoringASCIICase(u8"Water🍉Melon"_span, "water"_s), 0UZ);
+    EXPECT_EQ(WTF::findIgnoringASCIICase(u8"🍉WaterMelon🍉"_span, "water"_s), 4UZ);
+    EXPECT_EQ(WTF::findIgnoringASCIICase(u8"Water🍉Melon"_span, u8"🍉"_span), 5UZ);
+    EXPECT_EQ(WTF::findIgnoringASCIICase(u8"🍉WaterMelon🍉"_span, u8"🍉"_span), 0UZ);
+    EXPECT_EQ(WTF::findIgnoringASCIICase(std::span<const char8_t>(), std::span<const char8_t>()), 0UZ);
+    EXPECT_EQ(WTF::findIgnoringASCIICase(std::span<const char8_t>(), u8""_span), 0UZ);
+    EXPECT_EQ(WTF::findIgnoringASCIICase(std::span<const char8_t>(), u8"🍉WaterMelon🍉"_span), notFound);
+    EXPECT_EQ(WTF::findIgnoringASCIICase(u8""_span, std::span<const char8_t>()), 0UZ);
+    EXPECT_EQ(WTF::findIgnoringASCIICase(u8""_span, u8"🍉WaterMelon🍉"_span), notFound);
+    EXPECT_EQ(WTF::findIgnoringASCIICase(u8"🍉"_span, std::span<const char8_t>()), 0UZ);
+    EXPECT_EQ(WTF::findIgnoringASCIICase(u8"🍉"_span, u8"🍉WaterMelon🍉"_span), notFound);
+    EXPECT_EQ(WTF::findIgnoringASCIICase(u8"🍉Watermelon🍉"_span, u8"🍉WaterMelon🍉"_span), 0UZ);
+    EXPECT_EQ(WTF::findIgnoringASCIICase(u8"🍉Watermelon🍉"_span, u8"🍉WaterMelon🍉"_span, 5UZ), notFound);
+    EXPECT_EQ(WTF::findIgnoringASCIICase(u8"🍉Watermelon🍉"_span, std::span<const char8_t>()), 0UZ);
+    EXPECT_EQ(WTF::findIgnoringASCIICase(u8"🍉Watermelon🍉"_span, u8""_span), 0UZ);
+    // EXPECT_NE(WTF::findIgnoringASCIICase(u8"test"_span, "test"_span8), notFound); // This should not compile.
+}
+
+TEST(WTF_StringCommon, ContainsIgnoringASCIICase)
+{
+    EXPECT_TRUE(WTF::containsIgnoringASCIICase(u8"Water🍉Melon"_span, "melon"_s));
+    EXPECT_TRUE(WTF::containsIgnoringASCIICase(u8"🍉WaterMelon🍉"_span, "melon"_s));
+    EXPECT_TRUE(WTF::containsIgnoringASCIICase(u8"Water🍉Melon"_span, u8"🍉"_span));
+    EXPECT_TRUE(WTF::containsIgnoringASCIICase(u8"🍉WaterMelon🍉"_span, u8"🍉"_span));
+    EXPECT_TRUE(WTF::containsIgnoringASCIICase(std::span<const char8_t>(), std::span<const char8_t>()));
+    EXPECT_TRUE(WTF::containsIgnoringASCIICase(std::span<const char8_t>(), u8""_span));
+    EXPECT_FALSE(WTF::containsIgnoringASCIICase(std::span<const char8_t>(), u8"🍉WaterMelon🍉"_span));
+    EXPECT_TRUE(WTF::containsIgnoringASCIICase(u8""_span, std::span<const char8_t>()));
+    EXPECT_FALSE(WTF::containsIgnoringASCIICase(u8""_span, u8"🍉WaterMelon🍉"_span));
+    EXPECT_TRUE(WTF::containsIgnoringASCIICase(u8"🍉"_span, std::span<const char8_t>()));
+    EXPECT_FALSE(WTF::containsIgnoringASCIICase(u8"🍉"_span, u8"🍉WaterMelon🍉"_span));
+    EXPECT_TRUE(WTF::containsIgnoringASCIICase(u8"🍉Watermelon🍉"_span, u8"🍉WaterMelon🍉"_span));
+    EXPECT_TRUE(WTF::containsIgnoringASCIICase(u8"🍉Watermelon🍉"_span, std::span<const char8_t>()));
+    EXPECT_TRUE(WTF::containsIgnoringASCIICase(u8"🍉Watermelon🍉"_span, u8""_span));
+    // EXPECT_TRUE(WTF::containsIgnoringASCIICase(u8"test"_span, "test"_span8)); // This should not compile.
+}
+
+TEST(WTF_StringCommon, CharactersAreAllASCII)
+{
+    EXPECT_TRUE(WTF::charactersAreAllASCII(u8"Test"_span));
+    EXPECT_FALSE(WTF::charactersAreAllASCII(u8"🍉"_span));
+    EXPECT_TRUE(WTF::charactersAreAllASCII(std::span<const char8_t>()));
+    EXPECT_TRUE(WTF::charactersAreAllASCII(u8""_span));
 }
 
 TEST(WTF_StringCommon, CopyElements64To8)
@@ -206,41 +423,41 @@ TEST(WTF_StringCommon, CopyElements32To16)
 TEST(WTF_StringCommon, CharactersContain8)
 {
     {
-        Vector<LChar> source;
-        EXPECT_FALSE((charactersContain<LChar, 0>(source.span())));
-        EXPECT_FALSE((charactersContain<LChar, 0, 1>(source.span())));
-        EXPECT_FALSE((charactersContain<LChar, 0, 1, 2>(source.span())));
+        Vector<Latin1Character> source;
+        EXPECT_FALSE((charactersContain<Latin1Character, 0>(source.span())));
+        EXPECT_FALSE((charactersContain<Latin1Character, 0, 1>(source.span())));
+        EXPECT_FALSE((charactersContain<Latin1Character, 0, 1, 2>(source.span())));
     }
 
     {
-        Vector<LChar> source;
+        Vector<Latin1Character> source;
         for (unsigned i = 0; i < 15; ++i)
             source.append(i);
-        EXPECT_TRUE((charactersContain<LChar, 0>(source.span())));
-        EXPECT_TRUE((charactersContain<LChar, 1>(source.span())));
-        EXPECT_TRUE((charactersContain<LChar, 2>(source.span())));
-        EXPECT_TRUE((charactersContain<LChar, 2, 3>(source.span())));
-        EXPECT_TRUE((charactersContain<LChar, 16, 14>(source.span())));
-        EXPECT_FALSE((charactersContain<LChar, 16>(source.span())));
-        EXPECT_FALSE((charactersContain<LChar, 16, 15>(source.span())));
-        EXPECT_FALSE((charactersContain<LChar, 16, 15, 17>(source.span())));
-        EXPECT_FALSE((charactersContain<LChar, 16, 15, 17, 18>(source.span())));
-        EXPECT_FALSE((charactersContain<LChar, 0x81>(source.span())));
-        EXPECT_FALSE((charactersContain<LChar, 0x81, 0x82>(source.span())));
+        EXPECT_TRUE((charactersContain<Latin1Character, 0>(source.span())));
+        EXPECT_TRUE((charactersContain<Latin1Character, 1>(source.span())));
+        EXPECT_TRUE((charactersContain<Latin1Character, 2>(source.span())));
+        EXPECT_TRUE((charactersContain<Latin1Character, 2, 3>(source.span())));
+        EXPECT_TRUE((charactersContain<Latin1Character, 16, 14>(source.span())));
+        EXPECT_FALSE((charactersContain<Latin1Character, 16>(source.span())));
+        EXPECT_FALSE((charactersContain<Latin1Character, 16, 15>(source.span())));
+        EXPECT_FALSE((charactersContain<Latin1Character, 16, 15, 17>(source.span())));
+        EXPECT_FALSE((charactersContain<Latin1Character, 16, 15, 17, 18>(source.span())));
+        EXPECT_FALSE((charactersContain<Latin1Character, 0x81>(source.span())));
+        EXPECT_FALSE((charactersContain<Latin1Character, 0x81, 0x82>(source.span())));
     }
 
     {
-        Vector<LChar> source;
+        Vector<Latin1Character> source;
         for (unsigned i = 0; i < 250; ++i) {
             if (i & 0x1)
                 source.append(i);
         }
-        EXPECT_FALSE((charactersContain<LChar, 0>(source.span())));
-        EXPECT_FALSE((charactersContain<LChar, 0>(source.span())));
-        EXPECT_FALSE((charactersContain<LChar, 0xff>(source.span())));
-        EXPECT_TRUE((charactersContain<LChar, 0x81>(source.span())));
-        EXPECT_FALSE((charactersContain<LChar, 250>(source.span())));
-        EXPECT_TRUE((charactersContain<LChar, 249>(source.span())));
+        EXPECT_FALSE((charactersContain<Latin1Character, 0>(source.span())));
+        EXPECT_FALSE((charactersContain<Latin1Character, 0>(source.span())));
+        EXPECT_FALSE((charactersContain<Latin1Character, 0xff>(source.span())));
+        EXPECT_TRUE((charactersContain<Latin1Character, 0x81>(source.span())));
+        EXPECT_FALSE((charactersContain<Latin1Character, 250>(source.span())));
+        EXPECT_TRUE((charactersContain<Latin1Character, 249>(source.span())));
     }
 }
 
@@ -293,21 +510,21 @@ TEST(WTF_StringCommon, CharactersContain16)
             if (i & 0x1)
                 source.append(i + 0x1000);
         }
-        EXPECT_FALSE((charactersContain<UChar, 0>(source.span())));
-        EXPECT_FALSE((charactersContain<UChar, 0>(source.span())));
-        EXPECT_FALSE((charactersContain<UChar, 0xff>(source.span())));
-        EXPECT_FALSE((charactersContain<UChar, 0x81>(source.span())));
-        EXPECT_FALSE((charactersContain<UChar, 250>(source.span())));
-        EXPECT_FALSE((charactersContain<UChar, 249>(source.span())));
-        EXPECT_FALSE((charactersContain<UChar, 0x101>(source.span())));
-        EXPECT_TRUE((charactersContain<UChar, 0x1001>(source.span())));
-        EXPECT_FALSE((charactersContain<UChar, 0x1000>(source.span())));
-        EXPECT_FALSE((charactersContain<UChar, 0x1100>(source.span())));
-        EXPECT_FALSE((charactersContain<UChar, 0x1000 + 256>(source.span())));
-        EXPECT_FALSE((charactersContain<UChar, 0x1000 + 250>(source.span())));
-        EXPECT_TRUE((charactersContain<UChar, 0x1000 + 249>(source.span())));
-        EXPECT_TRUE((charactersContain<UChar, 0x1000 + 249, 0>(source.span())));
-        EXPECT_FALSE((charactersContain<UChar, 0x1000 + 250, 0>(source.span())));
+        EXPECT_FALSE((charactersContain<char16_t, 0>(source.span())));
+        EXPECT_FALSE((charactersContain<char16_t, 0>(source.span())));
+        EXPECT_FALSE((charactersContain<char16_t, 0xff>(source.span())));
+        EXPECT_FALSE((charactersContain<char16_t, 0x81>(source.span())));
+        EXPECT_FALSE((charactersContain<char16_t, 250>(source.span())));
+        EXPECT_FALSE((charactersContain<char16_t, 249>(source.span())));
+        EXPECT_FALSE((charactersContain<char16_t, 0x101>(source.span())));
+        EXPECT_TRUE((charactersContain<char16_t, 0x1001>(source.span())));
+        EXPECT_FALSE((charactersContain<char16_t, 0x1000>(source.span())));
+        EXPECT_FALSE((charactersContain<char16_t, 0x1100>(source.span())));
+        EXPECT_FALSE((charactersContain<char16_t, 0x1000 + 256>(source.span())));
+        EXPECT_FALSE((charactersContain<char16_t, 0x1000 + 250>(source.span())));
+        EXPECT_TRUE((charactersContain<char16_t, 0x1000 + 249>(source.span())));
+        EXPECT_TRUE((charactersContain<char16_t, 0x1000 + 249, 0>(source.span())));
+        EXPECT_FALSE((charactersContain<char16_t, 0x1000 + 250, 0>(source.span())));
     }
 }
 

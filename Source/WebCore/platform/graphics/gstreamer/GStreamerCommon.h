@@ -30,6 +30,7 @@
 #include <wtf/Logger.h>
 #include <wtf/MediaTime.h>
 #include <wtf/ThreadSafeRefCounted.h>
+#include <wtf/text/CStringView.h>
 
 namespace WebCore {
 
@@ -62,21 +63,21 @@ inline bool webkitGstCheckVersion(guint major, guint minor, guint micro)
     return true;
 }
 
-#define GST_VIDEO_CAPS_TYPE_PREFIX  "video/"
-#define GST_AUDIO_CAPS_TYPE_PREFIX  "audio/"
-#define GST_TEXT_CAPS_TYPE_PREFIX   "text/"
+#define GST_VIDEO_CAPS_TYPE_PREFIX  "video/"_s
+#define GST_AUDIO_CAPS_TYPE_PREFIX  "audio/"_s
+#define GST_TEXT_CAPS_TYPE_PREFIX   "text/"_s
 
-GstPad* webkitGstGhostPadFromStaticTemplate(GstStaticPadTemplate*, const gchar* name, GstPad* target);
+WARN_UNUSED_RETURN GstPad* webkitGstGhostPadFromStaticTemplate(GstStaticPadTemplate*, CStringView name, GstPad* target);
 #if ENABLE(VIDEO)
 bool getVideoSizeAndFormatFromCaps(const GstCaps*, WebCore::IntSize&, GstVideoFormat&, int& pixelAspectRatioNumerator, int& pixelAspectRatioDenominator, int& stride);
 std::optional<FloatSize> getVideoResolutionFromCaps(const GstCaps*);
 bool getSampleVideoInfo(GstSample*, GstVideoInfo&);
 #endif
-StringView capsMediaType(const GstCaps*);
+CStringView capsMediaType(const GstCaps*);
 std::optional<TrackID> getStreamIdFromPad(const GRefPtr<GstPad>&);
 std::optional<TrackID> getStreamIdFromStream(const GRefPtr<GstStream>&);
-std::optional<TrackID> parseStreamId(StringView stringId);
-bool doCapsHaveType(const GstCaps*, const char*);
+std::optional<TrackID> parseStreamId(const String& stringId);
+bool doCapsHaveType(const GstCaps*, ASCIILiteral);
 bool areEncryptedCaps(const GstCaps*);
 Vector<String> extractGStreamerOptionsFromCommandLine();
 void setGStreamerOptionsFromUIProcess(Vector<String>&&);
@@ -86,8 +87,8 @@ void registerWebKitGStreamerElements();
 void registerWebKitGStreamerVideoEncoder();
 void deinitializeGStreamer();
 
-unsigned getGstPlayFlag(const char* nick);
-uint64_t toGstUnsigned64Time(const MediaTime&);
+unsigned getGstPlayFlag(ASCIILiteral nick);
+uint64_t toGstUnsigned64Time(const WTF::MediaTime&);
 
 inline GstClockTime toGstClockTime(const MediaTime& mediaTime)
 {
@@ -269,7 +270,7 @@ void disconnectSimpleBusMessageCallback(GstElement*);
 
 enum class GstVideoDecoderPlatform { ImxVPU, Video4Linux, OpenMAX };
 
-bool isGStreamerPluginAvailable(const char* name);
+bool isGStreamerPluginAvailable(ASCIILiteral name);
 bool gstElementFactoryEquals(GstElement*, ASCIILiteral name);
 
 GstElement* createAutoAudioSink(const String& role);
@@ -282,21 +283,17 @@ bool webkitGstSetElementStateSynchronously(GstElement*, GstState, Function<bool(
 GstBuffer* gstBufferNewWrappedFast(void* data, size_t length);
 
 // These functions should be used for elements not provided by WebKit itself and not provided by GStreamer -core.
-GstElement* makeGStreamerElement(const char* factoryName, const char* name);
-GstElement* makeGStreamerBin(const char* description, bool ghostUnlinkedPads);
+GstElement* makeGStreamerElement(CStringView factoryName, const String& name = emptyString());
 
 template<typename T>
-std::optional<T> gstStructureGet(const GstStructure*, ASCIILiteral key);
-template<typename T>
-std::optional<T> gstStructureGet(const GstStructure*, StringView key);
+std::optional<T> gstStructureGet(const GstStructure*, CStringView key);
 
-StringView gstStructureGetString(const GstStructure*, ASCIILiteral key);
-StringView gstStructureGetString(const GstStructure*, StringView key);
+CStringView gstStructureGetString(const GstStructure*, CStringView key);
 
-StringView gstStructureGetName(const GstStructure*);
+CStringView gstStructureGetName(const GstStructure*);
 
 template<typename T>
-Vector<T> gstStructureGetArray(const GstStructure*, ASCIILiteral key);
+Vector<T> gstStructureGetArray(const GstStructure*, CStringView key);
 
 String gstStructureToJSONString(const GstStructure*);
 
@@ -312,8 +309,8 @@ void configureVideoDecoderForHarnessing(const GRefPtr<GstElement>&);
 void configureMediaStreamVideoDecoder(GstElement*);
 void configureVideoRTPDepayloader(GstElement*);
 
-bool gstObjectHasProperty(GstElement*, const char* name);
-bool gstObjectHasProperty(GstPad*, const char* name);
+bool gstObjectHasProperty(GstElement*, ASCIILiteral name);
+bool gstObjectHasProperty(GstPad*, ASCIILiteral name);
 
 GRefPtr<GstBuffer> wrapSpanData(const std::span<const uint8_t>&);
 
@@ -349,7 +346,7 @@ using GstId = GQuark;
 bool gstStructureForeach(const GstStructure*, Function<bool(GstId, const GValue*)>&&);
 void gstStructureIdSetValue(GstStructure*, GstId, const GValue*);
 bool gstStructureMapInPlace(GstStructure*, Function<bool(GstId, GValue*)>&&);
-StringView gstIdToString(GstId);
+String gstIdToString(GstId);
 void gstStructureFilterAndMapInPlace(GstStructure*, Function<bool(GstId, GValue*)>&&);
 
 #if USE(GBM)
@@ -357,7 +354,7 @@ WARN_UNUSED_RETURN GRefPtr<GstCaps> buildDMABufCaps();
 #endif
 
 #if USE(GSTREAMER_GL)
-bool setGstElementGLContext(GstElement*, const char* contextType);
+bool setGstElementGLContext(GstElement*, ASCIILiteral contextType);
 #endif
 
 } // namespace WebCore

@@ -1669,7 +1669,7 @@ enum class CustomElementNameCharacterKind : uint8_t {
     Upper,
 };
 
-static ALWAYS_INLINE CustomElementNameCharacterKind customElementNameCharacterKind(LChar character)
+static ALWAYS_INLINE CustomElementNameCharacterKind customElementNameCharacterKind(Latin1Character character)
 {
     using Kind = CustomElementNameCharacterKind;
     static const Kind table[] = {
@@ -6574,7 +6574,7 @@ void Document::updateCachedCookiesEnabled()
     });
 }
 
-static bool isValidNameNonASCII(std::span<const LChar> characters)
+static bool isValidNameNonASCII(std::span<const Latin1Character> characters)
 {
     if (!isValidNameStart(characters[0]))
         return false;
@@ -6616,7 +6616,7 @@ static inline bool isValidNameASCII(std::span<const CharType> characters)
     return true;
 }
 
-static bool isValidNameASCIIWithoutColon(std::span<const LChar> characters)
+static bool isValidNameASCIIWithoutColon(std::span<const Latin1Character> characters)
 {
     auto c = characters.front();
     if (!(isASCIIAlpha(c) || c == '_'))
@@ -10153,7 +10153,7 @@ RefPtr<HTMLAttachmentElement> Document::attachmentForIdentifier(const String& id
 
 static MessageSource messageSourceForWTFLogChannel(const WTFLogChannel& channel)
 {
-    auto channelName = span(channel.name);
+    auto channelName = unsafeSpan(channel.name);
     if (equalLettersIgnoringASCIICase(channelName, "media"_s))
         return MessageSource::Media;
 

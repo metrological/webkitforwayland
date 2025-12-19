@@ -43,6 +43,7 @@
 #include <cmath>
 #include <glib/gi18n-lib.h>
 #include <pal/text/TextEncodingRegistry.h>
+#include <wtf/glib/GSpanExtras.h>
 #include <wtf/glib/GUniquePtr.h>
 #include <wtf/glib/WTFGType.h>
 #include <wtf/text/CString.h>
@@ -4558,16 +4559,14 @@ gboolean webkit_settings_apply_from_key_file(WebKitSettings* settings, GKeyFile*
         }
     }
 
-    size_t length;
     GUniqueOutPtr<GError> getKeysError;
-    GUniquePtr<char*> allKeys(g_key_file_get_keys(keyFile, groupName, &length, &getKeysError.outPtr()));
-    if (UNLIKELY(getKeysError)) {
-        g_propagate_error(error, getKeysError.release());
+    auto allKeys = gKeyFileGetKeys(keyFile, CStringView::unsafeFromUTF8(groupName));
+    if (!allKeys) [[unlikely]] {
+        g_propagate_error(error, allKeys.error().release());
         return FALSE;
     }
 
-    for (unsigned i = 0; i < length; i++) {
-        auto key = allKeys.get()[i];
+    for (const char* key : allKeys->span()) {
         if (!g_ptr_array_find_with_equal_func(propertyNames.get(), static_cast<gconstpointer>(key), g_str_equal, nullptr)) {
             g_set_error(error, G_KEY_FILE_ERROR, G_KEY_FILE_ERROR_INVALID_VALUE, "The %s group contains an invalid setting: %s", groupName, key);
             return FALSE;

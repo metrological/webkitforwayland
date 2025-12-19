@@ -2284,7 +2284,7 @@ std::unique_ptr<ParsedNode> parse(
 
     std::unique_ptr<ParsedNode> result;
     if (source.provider()->source().is8Bit()) {
-        Parser<Lexer<LChar>> parser(vm, source, implementationVisibility, builtinMode, lexicallyScopedFeatures, scriptMode, parseMode, functionMode, superBinding, constructorKind, derivedContextType, isEvalNode<ParsedNode>(), evalContextType, nullptr, isInsideOrdinaryFunction);
+        Parser<Lexer<Latin1Character>> parser(vm, source, implementationVisibility, builtinMode, lexicallyScopedFeatures, scriptMode, parseMode, functionMode, superBinding, constructorKind, derivedContextType, isEvalNode<ParsedNode>(), evalContextType, nullptr, isInsideOrdinaryFunction);
         result = parser.parse<ParsedNode>(error, name, ParsingContext::Normal, std::nullopt, parentScopePrivateNames, classElementDefinitions);
         if (builtinMode == JSParserBuiltinMode::Builtin) {
             if (!result) {
@@ -2294,7 +2294,7 @@ std::unique_ptr<ParsedNode> parse(
             }
         }
     } else {
-        Parser<Lexer<UChar>> parser(vm, source, implementationVisibility, builtinMode, lexicallyScopedFeatures, scriptMode, parseMode, functionMode, superBinding, constructorKind, derivedContextType, isEvalNode<ParsedNode>(), evalContextType, nullptr, isInsideOrdinaryFunction);
+        Parser<Lexer<char16_t>> parser(vm, source, implementationVisibility, builtinMode, lexicallyScopedFeatures, scriptMode, parseMode, functionMode, superBinding, constructorKind, derivedContextType, isEvalNode<ParsedNode>(), evalContextType, nullptr, isInsideOrdinaryFunction);
         result = parser.parse<ParsedNode>(error, name, ParsingContext::Normal, std::nullopt, parentScopePrivateNames, classElementDefinitions);
     }
 
@@ -2332,7 +2332,7 @@ std::unique_ptr<ParsedNode> parseRootNode(
     bool isInsideOrdinaryFunction = false;
     std::unique_ptr<ParsedNode> result;
     if (source.provider()->source().is8Bit()) {
-        Parser<Lexer<LChar>> parser(vm, source, implementationVisibility, builtinMode, lexicallyScopedFeatures, scriptMode, parseMode, FunctionMode::None, SuperBinding::NotNeeded, ConstructorKind::None, DerivedContextType::None, isEvalNode, EvalContextType::None, debuggerParseData, isInsideOrdinaryFunction);
+        Parser<Lexer<Latin1Character>> parser(vm, source, implementationVisibility, builtinMode, lexicallyScopedFeatures, scriptMode, parseMode, FunctionMode::None, SuperBinding::NotNeeded, ConstructorKind::None, DerivedContextType::None, isEvalNode, EvalContextType::None, debuggerParseData, isInsideOrdinaryFunction);
         parser.overrideConstructorKindForTopLevelFunctionExpressions(constructorKindForTopLevelFunctionExpressions);
         result = parser.parse<ParsedNode>(error, name, ParsingContext::Normal);
         if (positionBeforeLastNewline)
@@ -2340,7 +2340,7 @@ std::unique_ptr<ParsedNode> parseRootNode(
     } else {
         ASSERT_WITH_MESSAGE(!positionBeforeLastNewline, "BuiltinExecutables should always use a 8-bit string");
         ASSERT_WITH_MESSAGE(constructorKindForTopLevelFunctionExpressions == ConstructorKind::None, "BuiltinExecutables' special constructors should always use a 8-bit string");
-        Parser<Lexer<UChar>> parser(vm, source, implementationVisibility, builtinMode, lexicallyScopedFeatures, scriptMode, parseMode, FunctionMode::None, SuperBinding::NotNeeded, ConstructorKind::None, DerivedContextType::None, isEvalNode, EvalContextType::None, debuggerParseData, isInsideOrdinaryFunction);
+        Parser<Lexer<char16_t>> parser(vm, source, implementationVisibility, builtinMode, lexicallyScopedFeatures, scriptMode, parseMode, FunctionMode::None, SuperBinding::NotNeeded, ConstructorKind::None, DerivedContextType::None, isEvalNode, EvalContextType::None, debuggerParseData, isInsideOrdinaryFunction);
         result = parser.parse<ParsedNode>(error, name, ParsingContext::Normal);
     }
 
@@ -2368,12 +2368,12 @@ inline std::unique_ptr<ProgramNode> parseFunctionForFunctionConstructor(VM& vm, 
     bool isEvalNode = false;
     std::unique_ptr<ProgramNode> result;
     if (source.provider()->source().is8Bit()) {
-        Parser<Lexer<LChar>> parser(vm, source, ImplementationVisibility::Public, JSParserBuiltinMode::NotBuiltin, lexicallyScopedFeatures, JSParserScriptMode::Classic, SourceParseMode::ProgramMode, FunctionMode::None, SuperBinding::NotNeeded, ConstructorKind::None, DerivedContextType::None, isEvalNode, EvalContextType::None, nullptr);
+        Parser<Lexer<Latin1Character>> parser(vm, source, ImplementationVisibility::Public, JSParserBuiltinMode::NotBuiltin, lexicallyScopedFeatures, JSParserScriptMode::Classic, SourceParseMode::ProgramMode, FunctionMode::None, SuperBinding::NotNeeded, ConstructorKind::None, DerivedContextType::None, isEvalNode, EvalContextType::None, nullptr);
         result = parser.parse<ProgramNode>(error, name, ParsingContext::FunctionConstructor, functionConstructorParametersEndPosition);
         if (positionBeforeLastNewline)
             *positionBeforeLastNewline = parser.positionBeforeLastNewline();
     } else {
-        Parser<Lexer<UChar>> parser(vm, source, ImplementationVisibility::Public, JSParserBuiltinMode::NotBuiltin, lexicallyScopedFeatures, JSParserScriptMode::Classic, SourceParseMode::ProgramMode, FunctionMode::None, SuperBinding::NotNeeded, ConstructorKind::None, DerivedContextType::None, isEvalNode, EvalContextType::None, nullptr);
+        Parser<Lexer<char16_t>> parser(vm, source, ImplementationVisibility::Public, JSParserBuiltinMode::NotBuiltin, lexicallyScopedFeatures, JSParserScriptMode::Classic, SourceParseMode::ProgramMode, FunctionMode::None, SuperBinding::NotNeeded, ConstructorKind::None, DerivedContextType::None, isEvalNode, EvalContextType::None, nullptr);
         result = parser.parse<ProgramNode>(error, name, ParsingContext::FunctionConstructor, functionConstructorParametersEndPosition);
         if (positionBeforeLastNewline)
             *positionBeforeLastNewline = parser.positionBeforeLastNewline();

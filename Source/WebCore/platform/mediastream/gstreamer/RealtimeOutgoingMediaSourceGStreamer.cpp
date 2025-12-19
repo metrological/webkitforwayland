@@ -31,8 +31,8 @@
 #undef GST_USE_UNSTABLE_API
 
 #include <wtf/UUID.h>
+#include <wtf/glib/GMallocString.h>
 #include <wtf/glib/WTFGType.h>
-#include <wtf/text/MakeString.h>
 #include <wtf/text/StringToIntegerConversion.h>
 
 GST_DEBUG_CATEGORY(webkit_webrtc_outgoing_media_debug);
@@ -86,7 +86,7 @@ void RealtimeOutgoingMediaSourceGStreamer::initialize()
     m_tee = gst_element_factory_make("tee", nullptr);
 
     m_rtpFunnel = gst_element_factory_make("rtpfunnel", nullptr);
-    if (gstObjectHasProperty(m_rtpFunnel.get(), "forward-unknown-ssrc"))
+    if (gstObjectHasProperty(m_rtpFunnel.get(), "forward-unknown-ssrc"_s))
         g_object_set(m_rtpFunnel.get(), "forward-unknown-ssrc", TRUE, nullptr);
 
     m_rtpCapsfilter = gst_element_factory_make("capsfilter", nullptr);
@@ -240,16 +240,16 @@ void RealtimeOutgoingMediaSourceGStreamer::setSinkPad(GRefPtr<GstPad>&& pad)
 
 void RealtimeOutgoingMediaSourceGStreamer::checkMid()
 {
-    GUniqueOutPtr<char> mid;
-    g_object_get(m_transceiver.get(), "mid", &mid.outPtr(), nullptr);
+    GUniqueOutPtr<char> midChars;
+    g_object_get(m_transceiver.get(), "mid", &midChars.outPtr(), nullptr);
+    auto mid = GMallocString::unsafeAdoptFromUTF8(WTFMove(midChars));
     if (!mid)
         return;
 
-    auto newMid = makeString(span(mid.get()));
-    if (newMid == m_mid)
+    if (equal(m_mid, mid.span()))
         return;
 
-    m_mid = WTFMove(newMid);
+    m_mid = mid.span();
     for (auto& packetizer : m_packetizers)
         packetizer->ensureMidExtension(m_mid);
 
@@ -378,7 +378,7 @@ void RealtimeOutgoingMediaSourceGStreamer::setParameters(GUniquePtr<GstStructure
         if (!rid)
             continue;
 
-        auto packetizer = getPacketizerForRid(rid);
+        auto packetizer = getPacketizerForRid(rid.span());
         if (!packetizer)
             continue;
 
@@ -387,7 +387,7 @@ void RealtimeOutgoingMediaSourceGStreamer::setParameters(GUniquePtr<GstStructure
     m_parameters = WTFMove(parameters);
 }
 
-RefPtr<GStreamerRTPPacketizer> RealtimeOutgoingMediaSourceGStreamer::getPacketizerForRid(StringView rid)
+RefPtr<GStreamerRTPPacketizer> RealtimeOutgoingMediaSourceGStreamer::getPacketizerForRid(const String& rid)
 {
     for (auto& packetizer : m_packetizers) {
         if (packetizer->rtpStreamId() == rid)

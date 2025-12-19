@@ -50,7 +50,7 @@ CString::CString(const char* string)
     if (!string)
         return;
 
-    init(WTF::span(string));
+    init(WTF::unsafeSpan(string));
 }
 
 CString::CString(std::span<const char> string)
@@ -175,6 +175,32 @@ bool CStringHash::equal(const CString& a, const CString& b)
     if (b.isHashTableDeletedValue())
         return false;
     return a == b;
+}
+
+enum class ASCIICase { Lower, Upper };
+
+template<ASCIICase type>
+CString convertASCIICase(std::span<const char8_t> input)
+{
+    if (input.empty())
+        return CString(""_s);
+
+    std::span<char> characters;
+    auto result = CString::newUninitialized(input.size(), characters);
+    size_t i = 0;
+    for (auto character : input)
+        characters[i++] = type == ASCIICase::Lower ? toASCIILower(character) : toASCIIUpper(character);
+    return result;
+}
+
+CString convertToASCIILowercase(std::span<const char8_t> string)
+{
+    return convertASCIICase<ASCIICase::Lower>(string);
+}
+
+CString convertToASCIIUppercase(std::span<const char8_t> string)
+{
+    return convertASCIICase<ASCIICase::Upper>(string);
 }
 
 } // namespace WTF

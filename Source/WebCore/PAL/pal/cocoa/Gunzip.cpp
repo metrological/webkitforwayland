@@ -30,9 +30,9 @@
 
 namespace PAL {
 
-Vector<LChar> gunzip(const unsigned char* data, size_t length)
+Vector<Latin1Character> gunzip(const unsigned char* data, size_t length)
 {
-    Vector<LChar> result;
+    Vector<Latin1Character> result;
 
     // Parse the gzip header.
     auto checks = [&]() {

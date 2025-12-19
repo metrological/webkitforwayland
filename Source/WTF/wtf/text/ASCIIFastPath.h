@@ -24,7 +24,7 @@
 #include <stdint.h>
 #include <unicode/utypes.h>
 #include <wtf/StdLibExtras.h>
-#include <wtf/text/LChar.h>
+#include <wtf/text/Latin1Character.h>
 
 #if CPU(X86_SSE2)
 #include <emmintrin.h>
@@ -57,7 +57,7 @@ template<size_t size, typename CharacterType> struct NonASCIIMask;
 template<> struct NonASCIIMask<4, UChar> {
     static inline uint32_t value() { return 0xFF80FF80U; }
 };
-template<> struct NonASCIIMask<4, LChar> {
+template<> struct NonASCIIMask<4, Latin1Character> {
     static inline uint32_t value() { return 0x80808080U; }
 };
 template<> struct NonASCIIMask<4, char8_t> {
@@ -66,7 +66,7 @@ template<> struct NonASCIIMask<4, char8_t> {
 template<> struct NonASCIIMask<8, UChar> {
     static inline uint64_t value() { return 0xFF80FF80FF80FF80ULL; }
 };
-template<> struct NonASCIIMask<8, LChar> {
+template<> struct NonASCIIMask<8, Latin1Character> {
     static inline uint64_t value() { return 0x8080808080808080ULL; }
 };
 template<> struct NonASCIIMask<8, char8_t> {

@@ -27,6 +27,7 @@
 #include <wtf/FileSystem.h>
 #include <wtf/PrintStream.h>
 #include <wtf/StdLibExtras.h>
+#include <wtf/glib/GMallocString.h>
 #include <wtf/text/MakeString.h>
 #include <wtf/text/StringBuilder.h>
 
@@ -190,7 +191,7 @@ void GStreamerElementHarness::start(GRefPtr<GstCaps>&& inputCaps, std::optional<
     gst_element_get_state(m_element.get(), nullptr, nullptr, GST_CLOCK_TIME_NONE);
 
     static Atomic<uint64_t> uniqueStreamId;
-    auto streamId = makeString(WTF::span(GST_OBJECT_NAME(m_element.get())), '-', uniqueStreamId.exchangeAdd(1));
+    auto streamId = makeString(WTF::unsafeSpan(GST_OBJECT_NAME(m_element.get())), '-', uniqueStreamId.exchangeAdd(1));
     pushEvent(adoptGRef(gst_event_new_stream_start(streamId.ascii().data())));
 
     pushStickyEvents(WTFMove(inputCaps), WTFMove(segment));
@@ -510,8 +511,8 @@ String MermaidBuilder::generatePadId(GStreamerElementHarness& harness, GstPad* p
 {
     auto parent = adoptGRef(gst_pad_get_parent(GST_OBJECT_CAST(pad)));
     if (!parent)
-        return makeString(WTF::span(GST_ELEMENT_NAME(harness.element())), "-harness-"_s, WTF::span(GST_PAD_NAME(pad)));
-    return makeString(WTF::span(GST_OBJECT_NAME(parent.get())), '_', WTF::span(GST_PAD_NAME(pad)));
+        return makeString(WTF::unsafeSpan(GST_ELEMENT_NAME(harness.element())), "-harness-"_s, WTF::unsafeSpan(GST_PAD_NAME(pad)));
+    return makeString(WTF::unsafeSpan(GST_OBJECT_NAME(parent.get())), '_', WTF::unsafeSpan(GST_PAD_NAME(pad)));
 }
 
 String MermaidBuilder::getPadClass(const GRefPtr<GstPad>& pad)
@@ -531,7 +532,7 @@ void MermaidBuilder::process(GStreamerElementHarness& harness, bool generateFoot
     for (auto& outputStream : harness.outputStreams()) {
         auto pad = outputStream->targetPad();
         auto padId = generatePadId(harness, pad.get());
-        m_stringBuilder.append("subgraph "_s, padId, " ["_s, WTF::span(GST_PAD_NAME(pad.get())), "]\n"_s);
+        m_stringBuilder.append("subgraph "_s, padId, " ["_s, WTF::unsafeSpan(GST_PAD_NAME(pad.get())), "]\n"_s);
         m_stringBuilder.append("end\n"_s);
 
         auto downstreamHarness = outputStream->downstreamHarness();
@@ -567,7 +568,7 @@ void MermaidBuilder::dumpPad(GStreamerElementHarness& harness, GstPad* pad)
 {
     if (!pad)
         pad = harness.inputPad();
-    m_stringBuilder.append("subgraph "_s, generatePadId(harness, pad), " ["_s, WTF::span(GST_PAD_NAME(pad)), "]\n"_s);
+    m_stringBuilder.append("subgraph "_s, generatePadId(harness, pad), " ["_s, WTF::unsafeSpan(GST_PAD_NAME(pad)), "]\n"_s);
 
     if (gst_pad_is_linked(pad)) {
         auto peerPad = adoptGRef(gst_pad_get_peer(pad));
@@ -598,9 +599,10 @@ void MermaidBuilder::dumpElement(GStreamerElementHarness& harness, GstElement* e
 {
     if (!element)
         element= harness.element();
-    auto elementId = makeString(WTF::span(GST_ELEMENT_NAME(element)), '_', m_elementCounter);
+    auto elementId = makeString(WTF::unsafeSpan(GST_ELEMENT_NAME(element)), '_', m_elementCounter);
     m_elementCounter++;
-    m_stringBuilder.append("subgraph "_s, elementId, " [<center>"_s, WTF::span(G_OBJECT_TYPE_NAME(element)), "\\n<small>"_s, WTF::span(GST_ELEMENT_NAME(element)), "]\n"_s);
+    m_stringBuilder.append("subgraph "_s, elementId, " [<center>"_s, unsafeSpan(G_OBJECT_TYPE_NAME(element)),
+        "\\n<small>"_s, unsafeSpan(GST_ELEMENT_NAME(element)), "]\n"_s);
 
     if (GST_IS_BIN(element)) {
         for (auto element : GstIteratorAdaptor<GstElement>(GUniquePtr<GstIterator>(gst_bin_iterate_recurse(GST_BIN_CAST(element)))))
@@ -637,8 +639,8 @@ void MermaidBuilder::dumpElement(GStreamerElementHarness& harness, GstElement* e
 String MermaidBuilder::describeCaps(const GRefPtr<GstCaps>& caps)
 {
     if (gst_caps_is_any(caps.get()) || gst_caps_is_empty(caps.get())) {
-        GUniquePtr<char> capsString(gst_caps_to_string(caps.get()));
-        return WTF::span(capsString.get());
+        auto capsString = GMallocString::unsafeAdoptFromUTF8(gst_caps_to_string(caps.get()));
+        return capsString.span();
     }
 
     StringBuilder builder;
@@ -646,21 +648,20 @@ String MermaidBuilder::describeCaps(const GRefPtr<GstCaps>& caps)
     for (unsigned i = 0; i < capsSize; i++) {
         auto* features = gst_caps_get_features(caps.get(), i);
         const auto* structure = gst_caps_get_structure(caps.get(), i);
-        builder.append(gstStructureGetName(structure), "<br/>"_s);
+        builder.append(gstStructureGetName(structure).span(), "<br/>"_s);
         if (features && (gst_caps_features_is_any(features) || !gst_caps_features_is_equal(features, GST_CAPS_FEATURES_MEMORY_SYSTEM_MEMORY))) {
-            GUniquePtr<char> serializedFeature(gst_caps_features_to_string(features));
-            builder.append('(', WTF::span(serializedFeature.get()), ')');
+            auto serializedFeature = GMallocString::unsafeAdoptFromUTF8(gst_caps_features_to_string(features));
+            builder.append('(', serializedFeature.span(), ')');
         }
 
         gstStructureForeach(structure, [&](auto id, const auto value) -> bool {
             builder.append(gstIdToString(id), ": "_s);
 
-            GUniquePtr<char> serializedValue(gst_value_serialize(value));
-            String valueString = WTF::span(serializedValue.get());
-            if (valueString.length() > 25)
-                builder.append(valueString.substring(0, 25), WTF::span("…"));
+            auto serializedValue = GMallocString::unsafeAdoptFromUTF8(gst_value_serialize(value));
+            if (serializedValue.lengthInBytes() > 25)
+                builder.append(serializedValue.span().subspan(0, 25), "…"_s);
             else
-                builder.append(valueString);
+                builder.append(serializedValue.span());
             builder.append("<br/>"_s);
             return TRUE;
         });
@@ -670,24 +671,24 @@ String MermaidBuilder::describeCaps(const GRefPtr<GstCaps>& caps)
 
 std::span<const uint8_t> MermaidBuilder::span() const
 {
-    return m_stringBuilder.span<uint8_t>();
+    return byteCast<uint8_t>(m_stringBuilder.span8());
 }
 #endif
 
 void GStreamerElementHarness::dumpGraph(ASCIILiteral filenamePrefix)
 {
 #ifndef GST_DISABLE_GST_DEBUG
-    const char* dumpPath = g_getenv("WEBKIT_GST_HARNESS_DUMP_DIR");
+    auto dumpPath = CStringView::unsafeFromUTF8(g_getenv("WEBKIT_GST_HARNESS_DUMP_DIR"));
     if (!dumpPath)
         return;
 
     auto elapsed = gst_util_get_timestamp() - webkitGstInitTime();
-    GUniquePtr<char> elapsedTimeStamp(gst_info_strdup_printf("%" GST_TIME_FORMAT, GST_TIME_ARGS(elapsed)));
-    auto filename = makeString(WTF::span(elapsedTimeStamp.get()), '-', filenamePrefix, "-harness-"_s, WTF::span(GST_ELEMENT_NAME(m_element.get())), ".mmd"_s);
+    auto elapsedTimeStamp = GMallocString::unsafeAdoptFromUTF8(gst_info_strdup_printf("%" GST_TIME_FORMAT, GST_TIME_ARGS(elapsed)));
+    auto filename = makeString(elapsedTimeStamp.span(), '-', filenamePrefix, "-harness-"_s, unsafeSpan(GST_ELEMENT_NAME(m_element.get())), ".mmd"_s);
 
     MermaidBuilder builder;
     builder.process(*this);
-    auto path = FileSystem::pathByAppendingComponent(String::fromUTF8(dumpPath), filename);
+    auto path = FileSystem::pathByAppendingComponent(String(dumpPath.span()), filename);
     FileSystem::overwriteEntireFile(path, builder.span());
 #else
     UNUSED_PARAM(filenamePrefix);

@@ -94,7 +94,7 @@ void RegExpFunctionalTestCollector::outputEscapedString(StringView s, bool escap
     int len = s.length();
     
     for (int i = 0; i < len; ++i) {
-        UChar c = s[i];
+        char16_t c = s[i];
 
         switch (c) {
         case '\0':
@@ -574,7 +574,7 @@ template <typename CharacterType>
 static inline void appendLineTerminatorEscape(StringBuilder&, CharacterType);
 
 template <>
-inline void appendLineTerminatorEscape<LChar>(StringBuilder& builder, LChar lineTerminator)
+inline void appendLineTerminatorEscape<Latin1Character>(StringBuilder& builder, Latin1Character lineTerminator)
 {
     if (lineTerminator == '\n')
         builder.append('n');
@@ -583,7 +583,7 @@ inline void appendLineTerminatorEscape<LChar>(StringBuilder& builder, LChar line
 }
 
 template <>
-inline void appendLineTerminatorEscape<UChar>(StringBuilder& builder, UChar lineTerminator)
+inline void appendLineTerminatorEscape<char16_t>(StringBuilder& builder, char16_t lineTerminator)
 {
     if (lineTerminator == '\n')
         builder.append('n');
@@ -683,7 +683,7 @@ String RegExp::escapedPattern() const
 
 String RegExp::toSourceString() const
 {
-    return makeString('/', escapedPattern(), '/', span(Yarr::flagsString(flags()).data()));
+    return makeString('/', escapedPattern(), '/', unsafeSpan(Yarr::flagsString(flags()).data()));
 }
 
 } // namespace JSC

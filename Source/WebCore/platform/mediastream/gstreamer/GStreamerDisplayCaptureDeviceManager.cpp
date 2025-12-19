@@ -28,6 +28,7 @@
 #include "GStreamerVideoCaptureSource.h"
 #include <gio/gunixfdlist.h>
 #include <wtf/UUID.h>
+#include <wtf/glib/GMallocString.h>
 #include <wtf/text/MakeString.h>
 
 namespace WebCore {
@@ -91,12 +92,12 @@ CaptureSourceOrError GStreamerDisplayCaptureDeviceManager::createDisplayCaptureS
         return CaptureSourceOrError({ { } , MediaAccessDenialReason::PermissionDenied });
     }
 
-    GUniqueOutPtr<char> objectPath;
-    g_variant_get(result.get(), "(o)", &objectPath.outPtr());
-    waitResponseSignal(objectPath.get());
+    GUniqueOutPtr<char> objectPathChars;
+    g_variant_get(result.get(), "(o)", &objectPathChars.outPtr());
+    auto objectPath = GMallocString::unsafeAdoptFromUTF8(WTFMove(objectPathChars));
+    waitResponseSignal(toCStringView(objectPath));
 
-    auto requestPath = String::fromLatin1(objectPath.get());
-    auto sessionPath = makeStringByReplacingAll(requestPath, "/request/"_s, "/session/"_s);
+    auto sessionPath = makeStringByReplacingAll(objectPath.span(), "/request/"_s, "/session/"_s);
     sessionPath = makeStringByReplacingAll(sessionPath, token, sessionToken);
 
     // FIXME: Maybe check this depending on device.type().
@@ -126,8 +127,9 @@ CaptureSourceOrError GStreamerDisplayCaptureDeviceManager::createDisplayCaptureS
         WTFLogAlways("SelectSources error: %s", error->message);
         return CaptureSourceOrError({ { } , MediaAccessDenialReason::PermissionDenied });
     }
-    g_variant_get(result.get(), "(o)", &objectPath.outPtr());
-    waitResponseSignal(objectPath.get());
+    g_variant_get(result.get(), "(o)", &objectPathChars.outPtr());
+    objectPath = GMallocString::unsafeAdoptFromUTF8(WTFMove(objectPathChars));
+    waitResponseSignal(toCStringView(objectPath));
 
     token = makeString("WebKit"_s, weakRandomNumber<uint32_t>());
     g_variant_builder_init(&options, G_VARIANT_TYPE_VARDICT);
@@ -140,8 +142,9 @@ CaptureSourceOrError GStreamerDisplayCaptureDeviceManager::createDisplayCaptureS
     }
 
     std::optional<uint32_t> nodeId;
-    g_variant_get(result.get(), "(o)", &objectPath.outPtr());
-    waitResponseSignal(objectPath.get(), [&nodeId](GVariant* parameters) mutable {
+    g_variant_get(result.get(), "(o)", &objectPathChars.outPtr());
+    objectPath = GMallocString::unsafeAdoptFromUTF8(WTFMove(objectPathChars));
+    waitResponseSignal(toCStringView(objectPath), [&nodeId](GVariant* parameters) mutable {
         uint32_t portalResponse;
         GRefPtr<GVariant> responseData;
         g_variant_get(parameters, "(u@a{sv})", &portalResponse, &responseData.outPtr());
@@ -210,17 +213,19 @@ void GStreamerDisplayCaptureDeviceManager::stopSource(const String& persistentID
         WTFLogAlways("Portal session could not be closed: %s", error->message);
 }
 
-void GStreamerDisplayCaptureDeviceManager::waitResponseSignal(const char* objectPath, ResponseCallback&& callback)
+void GStreamerDisplayCaptureDeviceManager::waitResponseSignal(CStringView objectPath, ResponseCallback&& callback)
 {
     RELEASE_ASSERT(!m_currentResponseCallback);
     m_currentResponseCallback = WTFMove(callback);
     auto* connection = g_dbus_proxy_get_connection(m_proxy.get());
     auto signalId = g_dbus_connection_signal_subscribe(connection, "org.freedesktop.portal.Desktop", "org.freedesktop.portal.Request",
-        "Response", objectPath, nullptr, G_DBUS_SIGNAL_FLAGS_NO_MATCH_RULE, reinterpret_cast<GDBusSignalCallback>(+[](GDBusConnection*, const char* /* senderName */, const char* /* objectPath */, const char* /* interfaceName */, const char* /* signalName */, GVariant* parameters, gpointer userData) {
+        "Response", objectPath.utf8(), nullptr, G_DBUS_SIGNAL_FLAGS_NO_MATCH_RULE,
+        reinterpret_cast<GDBusSignalCallback>(+[](GDBusConnection*, const char* /* senderName */, const char* /* objectPath */,
+            const char* /* interfaceName */, const char* /* signalName */, GVariant* parameters, gpointer userData) {
             auto& manager = *reinterpret_cast<GStreamerDisplayCaptureDeviceManager*>(userData);
             manager.notifyResponse(parameters);
         }), this, nullptr);
-
+    
     while (m_currentResponseCallback)
         g_main_context_iteration(nullptr, false);
 

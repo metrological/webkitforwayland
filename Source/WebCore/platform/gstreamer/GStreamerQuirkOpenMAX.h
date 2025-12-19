@@ -30,7 +30,7 @@ class GStreamerQuirkOpenMAX final : public GStreamerQuirk {
 public:
     GStreamerQuirkOpenMAX();
     const ASCIILiteral identifier() const final { return "OpenMAX"_s; }
-    unsigned getAdditionalPlaybinFlags() const final { return getGstPlayFlag("text") | getGstPlayFlag("native-video"); }
+    unsigned getAdditionalPlaybinFlags() const final { return getGstPlayFlag("text"_s) | getGstPlayFlag("native-video"_s); }
 
     bool processWebAudioSilentBuffer(GstBuffer*) const final;
 };

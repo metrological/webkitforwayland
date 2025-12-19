@@ -210,7 +210,7 @@ Vector<ImageCandidate> parseImageCandidatesFromSrcsetAttribute(StringView attrib
 {
     // FIXME: We should consider replacing the direct pointers in the parsing process with StringView and positions.
     if (attribute.is8Bit())
-        return parseImageCandidatesFromSrcsetAttribute<LChar>(attribute.span8());
+        return parseImageCandidatesFromSrcsetAttribute<Latin1Character>(attribute.span8());
     else
         return parseImageCandidatesFromSrcsetAttribute<UChar>(attribute.span16());
 }

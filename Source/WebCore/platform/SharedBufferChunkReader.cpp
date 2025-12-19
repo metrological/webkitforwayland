@@ -60,7 +60,7 @@ void SharedBufferChunkReader::setSeparator(const Vector<char>& separator)
 void SharedBufferChunkReader::setSeparator(const char* separator)
 {
     m_separator.clear();
-    m_separator.append(span(separator));
+    m_separator.append(unsafeSpan(separator));
 }
 
 bool SharedBufferChunkReader::nextChunk(Vector<uint8_t>& chunk, bool includeSeparator)

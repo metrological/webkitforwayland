@@ -162,7 +162,7 @@ static inline int decodeNonASCIISequence(const uint8_t* sequence, uint8_t& lengt
     return ((sequence[0] << 18) + (sequence[1] << 12) + (sequence[2] << 6) + sequence[3]) - 0x03C82080;
 }
 
-static inline UChar* appendCharacter(UChar* destination, int character)
+static inline char16_t* appendCharacter(char16_t* destination, int character)
 {
     ASSERT(character != nonCharacter);
     ASSERT(!U_IS_SURROGATE(character));
@@ -181,7 +181,7 @@ void TextCodecUTF8::consumePartialSequenceByte()
     memmove(m_partialSequence, m_partialSequence + 1, m_partialSequenceSize);
 }
 
-bool TextCodecUTF8::handlePartialSequence(LChar*& destination, std::span<const uint8_t>& source, bool flush)
+bool TextCodecUTF8::handlePartialSequence(Latin1Character*& destination, std::span<const uint8_t>& source, bool flush)
 {
     ASSERT(m_partialSequenceSize);
     do {
@@ -232,7 +232,7 @@ bool TextCodecUTF8::handlePartialSequence(LChar*& destination, std::span<const u
     return false;
 }
 
-void TextCodecUTF8::handlePartialSequence(UChar*& destination, std::span<const uint8_t>& source, bool flush, bool stopOnError, bool& sawError)
+void TextCodecUTF8::handlePartialSequence(char16_t*& destination, std::span<const uint8_t>& source, bool flush, bool stopOnError, bool& sawError)
 {
     ASSERT(m_partialSequenceSize);
     do {
@@ -306,18 +306,18 @@ String TextCodecUTF8::decode(std::span<const uint8_t> bytes, bool flush, bool st
         sawError = true;
         return { };
     }
-    StringBuffer<LChar> buffer(bufferSize);
+    StringBuffer<Latin1Character> buffer(bufferSize);
 
     auto source = bytes;
     auto* alignedEnd = WTF::alignToMachineWord(bytes.data() + bytes.size());
-    LChar* destination = buffer.characters();
+    Latin1Character* destination = buffer.characters();
 
     do {
         if (m_partialSequenceSize) {
             // Explicitly copy destination and source pointers to avoid taking pointers to the
             // local variables, which may harm code generation by disabling some optimizations
             // in some compilers.
-            LChar* destinationForHandlePartialSequence = destination;
+            Latin1Character* destinationForHandlePartialSequence = destination;
             if (handlePartialSequence(destinationForHandlePartialSequence, source, flush)) {
                 goto upConvertTo16Bit;
             }
@@ -332,7 +332,7 @@ String TextCodecUTF8::decode(std::span<const uint8_t> bytes, bool flush, bool st
                 if (WTF::isAlignedToMachineWord(source.data())) {
                     while (source.data() < alignedEnd) {
                         auto chunk = *reinterpret_cast_ptr<const WTF::MachineWord*>(source.data());
-                        if (!WTF::containsOnlyASCII<LChar>(chunk))
+                        if (!WTF::containsOnlyASCII<Latin1Character>(chunk))
                             break;
                         copyASCIIMachineWord(destination, source.data());
                         source = source.subspan(sizeof(WTF::MachineWord));
@@ -385,12 +385,12 @@ String TextCodecUTF8::decode(std::span<const uint8_t> bytes, bool flush, bool st
     return String::adopt(WTFMove(buffer));
 
 upConvertTo16Bit:
-    StringBuffer<UChar> buffer16(bufferSize);
+    StringBuffer<char16_t> buffer16(bufferSize);
 
-    UChar* destination16 = buffer16.characters();
+    char16_t* destination16 = buffer16.characters();
 
     // Copy the already converted characters
-    for (LChar* converted8 = buffer.characters(); converted8 < destination;)
+    for (Latin1Character* converted8 = buffer.characters(); converted8 < destination;)
         *destination16++ = *converted8++;
 
     do {
@@ -398,7 +398,7 @@ upConvertTo16Bit:
             // Explicitly copy destination and source pointers to avoid taking pointers to the
             // local variables, which may harm code generation by disabling some optimizations
             // in some compilers.
-            UChar* destinationForHandlePartialSequence = destination16;
+            char16_t* destinationForHandlePartialSequence = destination16;
             handlePartialSequence(destinationForHandlePartialSequence, source, flush, stopOnError, sawError);
             destination16 = destinationForHandlePartialSequence;
             if (m_partialSequenceSize)
@@ -411,7 +411,7 @@ upConvertTo16Bit:
                 if (WTF::isAlignedToMachineWord(source.data())) {
                     while (source.data() < alignedEnd) {
                         auto chunk = *reinterpret_cast_ptr<const WTF::MachineWord*>(source.data());
-                        if (!WTF::containsOnlyASCII<LChar>(chunk))
+                        if (!WTF::containsOnlyASCII<Latin1Character>(chunk))
                             break;
                         copyASCIIMachineWord(destination16, source.data());
                         source = source.subspan(sizeof(WTF::MachineWord));

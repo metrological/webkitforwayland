@@ -82,7 +82,7 @@ StringView CachedScript::script(ShouldDecodeAsUTF8Only shouldDecodeAsUTF8Only)
     }
 
     if (m_decodingState == DataAndDecodedStringHaveSameBytes)
-        return { contiguousData->span() };
+        return { byteCast<Latin1Character>(contiguousData->span()) };
 
     bool shouldForceRedecoding = m_wasForceDecodedAsUTF8 != (shouldDecodeAsUTF8Only == ShouldDecodeAsUTF8Only::Yes);
     if (!m_script || shouldForceRedecoding) {

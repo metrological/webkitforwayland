@@ -27,7 +27,14 @@ namespace WTF {
 
 namespace Internal {
 
-std::pair<LChar*, unsigned> appendHex(LChar* buffer, unsigned bufferSize, std::uintmax_t number, unsigned minimumDigits, HexConversionMode mode)
+static const Latin1Character* hexDigitsForMode(HexConversionMode mode)
+{
+    static const Latin1Character lowercaseHexDigits[17] = "0123456789abcdef";
+    static const Latin1Character uppercaseHexDigits[17] = "0123456789ABCDEF";
+    return mode == Lowercase ? lowercaseHexDigits : uppercaseHexDigits;
+}
+
+std::pair<Latin1Character*, unsigned> appendHex(Latin1Character* buffer, unsigned bufferSize, std::uintmax_t number, unsigned minimumDigits, HexConversionMode mode)
 {
     auto end = buffer + bufferSize;
     auto start = end;

@@ -69,7 +69,7 @@ bool SVGPreserveAspectRatioValue::parse(StringView value)
     });
 }
 
-bool SVGPreserveAspectRatioValue::parse(StringParsingBuffer<LChar>& buffer, bool validate)
+bool SVGPreserveAspectRatioValue::parse(StringParsingBuffer<Latin1Character>& buffer, bool validate)
 {
     return parseInternal(buffer, validate);
 }

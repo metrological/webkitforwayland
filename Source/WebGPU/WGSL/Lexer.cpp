@@ -61,12 +61,12 @@ static unsigned isIdentifierContinue(UChar character, std::span<const UChar> cod
     return 0;
 }
 
-static unsigned isIdentifierStart(LChar character, std::span<const LChar>)
+static unsigned isIdentifierStart(Latin1Character character, std::span<const Latin1Character>)
 {
     return isASCIIAlpha(character) || character == '_';
 }
 
-static unsigned isIdentifierContinue(LChar character, std::span<const LChar>)
+static unsigned isIdentifierContinue(Latin1Character character, std::span<const Latin1Character>)
 {
     return isASCIIAlphanumeric(character) || character == '_';
 }
@@ -1052,7 +1052,7 @@ Token Lexer<T>::lexNumber()
     return convert(result);
 }
 
-template class Lexer<LChar>;
-template class Lexer<UChar>;
+template class Lexer<Latin1Character>;
+template class Lexer<char16_t>;
 
 }

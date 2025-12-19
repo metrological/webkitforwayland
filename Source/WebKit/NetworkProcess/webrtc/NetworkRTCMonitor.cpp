@@ -209,7 +209,7 @@ static HashMap<String, RTCNetwork> gatherNetworkMap()
 
         auto prefixLength = rtc::CountIPMaskBits(address->second.rtcAddress());
 
-        auto name = span(iterator->ifa_name);
+        auto name = unsafeSpan(iterator->ifa_name);
         auto prefixString = address->second.rtcAddress().ToString();
         auto networkKey = makeString(StringView { name }, "-"_s, prefixLength, "-"_s, StringView { std::span(prefixString.c_str(), prefixString.length()) });
 

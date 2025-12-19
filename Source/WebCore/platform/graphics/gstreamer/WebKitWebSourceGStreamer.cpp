@@ -37,6 +37,7 @@
 #include <wtf/PrintStream.h>
 #include <wtf/RunLoop.h>
 #include <wtf/Scope.h>
+#include <wtf/glib/GMallocString.h>
 #include <wtf/glib/GThreadSafeWeakPtr.h>
 #include <wtf/glib/WTFGType.h>
 #include <wtf/text/CString.h>
@@ -97,7 +98,7 @@ struct WebKitWebSrcPrivate {
     bool keepAlive { false };
     GUniquePtr<GstStructure> extraHeaders;
     bool compress { false };
-    GUniquePtr<gchar> httpMethod;
+    GMallocString httpMethod;
 
     struct StreamingMembers {
 #ifndef NDEBUG
@@ -327,7 +328,7 @@ static void webKitWebSrcSetProperty(GObject* object, guint propID, const GValue*
         src->priv->compress = g_value_get_boolean(value);
         break;
     case PROP_METHOD:
-        src->priv->httpMethod.reset(g_value_dup_string(value));
+        src->priv->httpMethod = GMallocString::unsafeAdoptFromUTF8(g_value_dup_string(value));
         break;
     default:
         G_OBJECT_WARN_INVALID_PROPERTY_ID(object, propID, pspec);
@@ -359,7 +360,7 @@ static void webKitWebSrcGetProperty(GObject* object, guint propID, GValue* value
         g_value_set_boolean(value, priv->compress);
         break;
     case PROP_METHOD:
-        g_value_set_string(value, priv->httpMethod.get());
+        g_value_set_string(value, priv->httpMethod.utf8());
         break;
     default:
         G_OBJECT_WARN_INVALID_PROPERTY_ID(object, propID, pspec);
@@ -572,23 +573,22 @@ static GstFlowReturn webKitWebSrcCreate(GstPushSrc* pushSrc, GstBuffer** buffer)
     return GST_FLOW_EOS;
 }
 
-static bool webKitWebSrcSetExtraHeader(StringView fieldId, const GValue* value, ResourceRequest& request)
+static bool webKitWebSrcSetExtraHeader(const String& field, const GValue* value, ResourceRequest& request)
 {
-    GUniquePtr<gchar> fieldContent;
+    GMallocString fieldContent;
 
     if (G_VALUE_HOLDS_STRING(value))
-        fieldContent.reset(g_value_dup_string(value));
+        fieldContent = GMallocString::unsafeAdoptFromUTF8(g_value_dup_string(value));
     else {
         GValue dest = G_VALUE_INIT;
 
         g_value_init(&dest, G_TYPE_STRING);
         if (g_value_transform(value, &dest))
-            fieldContent.reset(g_value_dup_string(&dest));
+            fieldContent = GMallocString::unsafeAdoptFromUTF8(g_value_dup_string(&dest));
     }
 
-    auto field = fieldId.toStringWithoutCopying();
-    GST_DEBUG("Appending extra header: \"%s: %s\"", field.ascii().data(), fieldContent.get());
-    request.setHTTPHeaderField(field, String::fromLatin1(fieldContent.get()));
+    GST_DEBUG("Appending extra header: \"%s: %s\"", field.ascii().data(), fieldContent.utf8());
+    request.setHTTPHeaderField(field, fieldContent.span());
     return true;
 }
 
@@ -611,14 +611,14 @@ static void webKitWebSrcMakeRequest(WebKitWebSrc* src, DataMutexLocker<WebKitWeb
     ASSERT(members->requestedPosition != members->stopPosition);
 
     GST_DEBUG_OBJECT(src, "Posting task to request R%u %s requestedPosition=%" G_GUINT64_FORMAT " stopPosition=%" G_GUINT64_FORMAT, members->requestNumber, priv->originalURI.data(), members->requestedPosition, members->stopPosition);
-    URL url { String::fromLatin1(priv->originalURI.data()) };
+    URL url { String(byteCast<char8_t>(unsafeSpan(priv->originalURI.data()))) };
 
     ResourceRequest request(url);
     request.setAllowCookies(true);
     request.setHTTPReferrer(members->referrer);
 
-    if (priv->httpMethod.get())
-        request.setHTTPMethod(String::fromLatin1(priv->httpMethod.get()));
+    if (priv->httpMethod)
+        request.setHTTPMethod(priv->httpMethod.span());
 
 #if USE(SOUP)
     // By default, HTTP Accept-Encoding is disabled here as we don't
@@ -640,13 +640,13 @@ static void webKitWebSrcMakeRequest(WebKitWebSrc* src, DataMutexLocker<WebKitWeb
         request.setHTTPUserAgent("Quicktime/7.6.6"_s);
 
     if (members->requestedPosition || members->stopPosition != UINT64_MAX) {
-        GUniquePtr<char> formatedRange;
+        GMallocString formatedRange;
         if (members->stopPosition != UINT64_MAX)
-            formatedRange.reset(g_strdup_printf("bytes=%" G_GUINT64_FORMAT "-%" G_GUINT64_FORMAT, members->requestedPosition, members->stopPosition > 0 ? members->stopPosition - 1 : 0));
+            formatedRange = GMallocString::unsafeAdoptFromUTF8(g_strdup_printf("bytes=%" G_GUINT64_FORMAT "-%" G_GUINT64_FORMAT, members->requestedPosition, members->stopPosition > 0 ? members->stopPosition - 1 : 0));
         else
-            formatedRange.reset(g_strdup_printf("bytes=%" G_GUINT64_FORMAT "-", members->requestedPosition));
-        GST_DEBUG_OBJECT(src, "Range request: %s", formatedRange.get());
-        request.setHTTPHeaderField(HTTPHeaderName::Range, String::fromLatin1(formatedRange.get()));
+            formatedRange = GMallocString::unsafeAdoptFromUTF8(g_strdup_printf("bytes=%" G_GUINT64_FORMAT "-", members->requestedPosition));
+        GST_DEBUG_OBJECT(src, "Range request: %s", formatedRange.utf8());
+        request.setHTTPHeaderField(HTTPHeaderName::Range, formatedRange.span());
     }
     ASSERT(members->readPosition == members->requestedPosition);
 
@@ -887,9 +887,9 @@ const gchar* const* webKitWebSrcGetProtocols(GType)
     return protocols;
 }
 
-static URL convertPlaybinURI(const char* uriString)
+static URL convertPlaybinURI(String&& uriString)
 {
-    return URL { String::fromLatin1(uriString) };
+    return URL { WTFMove(uriString) };
 }
 
 static gchar* webKitWebSrcGetUri(GstURIHandler* handler)
@@ -918,7 +918,7 @@ static gboolean webKitWebSrcSetUri(GstURIHandler* handler, const gchar* uri, GEr
         return FALSE;
     }
 
-    URL url = convertPlaybinURI(uri);
+    URL url = convertPlaybinURI(byteCast<char8_t>(unsafeSpan(uri)));
 
     if (!urlHasSupportedProtocol(url)) {
         g_set_error(error, GST_URI_ERROR, GST_URI_ERROR_BAD_URI, "Invalid URI '%s'", uri);

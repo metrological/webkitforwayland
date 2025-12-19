@@ -26,7 +26,7 @@
 #include <string>
 #include <wtf/Forward.h>
 #include <wtf/MathExtras.h>
-#include <wtf/text/LChar.h>
+#include <wtf/text/Latin1Character.h>
 
 namespace WTF {
 
@@ -37,12 +37,12 @@ template<typename> struct IntegerToStringConversionTrait;
 template<typename T, typename UnsignedIntegerType, PositiveOrNegativeNumber NumberType, typename AdditionalArgumentType>
 static typename IntegerToStringConversionTrait<T>::ReturnType numberToStringImpl(UnsignedIntegerType number, AdditionalArgumentType additionalArgument)
 {
-    LChar buf[sizeof(UnsignedIntegerType) * 3 + 1];
-    LChar* end = std::end(buf);
-    LChar* p = end;
+    Latin1Character buf[sizeof(UnsignedIntegerType) * 3 + 1];
+    Latin1Character* end = std::end(buf);
+    Latin1Character* p = end;
 
     do {
-        *--p = static_cast<LChar>((number % 10) + '0');
+        *--p = static_cast<Latin1Character>((number % 10) + '0');
         number /= 10;
     } while (number);
 
@@ -70,12 +70,12 @@ template<typename CharacterType, typename UnsignedIntegerType, PositiveOrNegativ
 static void writeIntegerToBufferImpl(UnsignedIntegerType number, CharacterType* destination)
 {
     static_assert(!std::is_same_v<bool, std::remove_cv_t<UnsignedIntegerType>>, "'bool' not supported");
-    LChar buf[sizeof(UnsignedIntegerType) * 3 + 1];
-    LChar* end = std::end(buf);
-    LChar* p = end;
+    Latin1Character buf[sizeof(UnsignedIntegerType) * 3 + 1];
+    Latin1Character* end = std::end(buf);
+    Latin1Character* p = end;
 
     do {
-        *--p = static_cast<LChar>((number % 10) + '0');
+        *--p = static_cast<Latin1Character>((number % 10) + '0');
         number /= 10;
     } while (number);
 
@@ -133,10 +133,10 @@ constexpr unsigned lengthOfIntegerAsString(IntegerType integer)
 }
 
 template<size_t N>
-struct IntegerToStringConversionTrait<Vector<LChar, N>> {
-    using ReturnType = Vector<LChar, N>;
+struct IntegerToStringConversionTrait<Vector<Latin1Character, N>> {
+    using ReturnType = Vector<Latin1Character, N>;
     using AdditionalArgumentType = void;
-    static ReturnType flush(std::span<const LChar> characters, void*) { return characters; }
+    static ReturnType flush(std::span<const Latin1Character> characters, void*) { return characters; }
 };
 
 } // namespace WTF

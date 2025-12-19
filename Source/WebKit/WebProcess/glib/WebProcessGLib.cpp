@@ -181,7 +181,7 @@ void WebProcess::platformInitializeWebProcess(WebProcessCreationParameters& para
     bool useAcceleratedBuffers = true;
 #endif
 
-    if (const auto enableCPURendering = StringView::fromLatin1(g_getenv("WEBKIT_SKIA_ENABLE_CPU_RENDERING")).trim(isASCIIWhitespace<LChar>))
+    if (const auto enableCPURendering = StringView::fromLatin1(g_getenv("WEBKIT_SKIA_ENABLE_CPU_RENDERING")).trim(isASCIIWhitespace<Latin1Character>))
         useAcceleratedBuffers = (enableCPURendering == "0"_s);
 
     ProcessCapabilities::setCanUseAcceleratedBuffers(useAcceleratedBuffers);

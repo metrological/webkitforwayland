@@ -114,7 +114,7 @@ private:
 
     using ResponseCallback = CompletionHandler<void(GVariant*)>;
 
-    void waitResponseSignal(const char* objectPath, ResponseCallback&& = [](GVariant*) { });
+    void waitResponseSignal(CStringView objectPath, ResponseCallback&& = [](GVariant*) { });
 
     Vector<CaptureDevice> m_devices;
 

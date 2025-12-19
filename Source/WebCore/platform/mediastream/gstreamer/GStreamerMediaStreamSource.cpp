@@ -43,6 +43,7 @@
 #include <gst/app/gstappsrc.h>
 #include <gst/base/gstflowcombiner.h>
 #include <wtf/UUID.h>
+#include <wtf/glib/GMallocString.h>
 #include <wtf/glib/WTFGType.h>
 #include <wtf/text/MakeString.h>
 
@@ -162,7 +163,7 @@ public:
         }
 
         bool isCaptureTrack = track.isCaptureTrack();
-        m_src = makeGStreamerElement("appsrc", elementName.ascii().data());
+        m_src = makeGStreamerElement("appsrc"_s, elementName);
 
         g_object_set(m_src.get(), "is-live", TRUE, "format", GST_FORMAT_TIME, "emit-signals", TRUE, "min-percent", 100,
             "do-timestamp", isCaptureTrack, "handle-segment-change", TRUE, nullptr);
@@ -400,7 +401,7 @@ public:
 
         if (m_isVideoTrack && drop) {
             auto* caps = gst_sample_get_caps(sample.get());
-            drop = doCapsHaveType(caps, "video") || GST_BUFFER_FLAG_IS_SET(buffer, GST_BUFFER_FLAG_DELTA_UNIT);
+            drop = doCapsHaveType(caps, "video"_s) || GST_BUFFER_FLAG_IS_SET(buffer, GST_BUFFER_FLAG_DELTA_UNIT);
         }
 
         if (drop) {
@@ -1153,11 +1154,11 @@ void webkitMediaStreamSrcAddTrack(WebKitMediaStreamSrc* self, MediaStreamTrackPr
         data, reinterpret_cast<GDestroyNotify>(destroyProbeData));
 
 #ifndef GST_DISABLE_GST_DEBUG
-    GUniquePtr<char> objectPath(gst_object_get_path_string(GST_OBJECT_CAST(self)));
-    GST_DEBUG_OBJECT(self, "%s Ghosting %" GST_PTR_FORMAT, objectPath.get(), pad.get());
+    auto objectPath = GMallocString::unsafeAdoptFromUTF8(gst_object_get_path_string(GST_OBJECT_CAST(self)));
+    GST_DEBUG_OBJECT(self, "%s Ghosting %" GST_PTR_FORMAT, objectPath.utf8(), pad.get());
 #endif
 
-    auto ghostPad = webkitGstGhostPadFromStaticTemplate(padTemplate, padName.ascii().data(), pad.get());
+    auto* ghostPad = webkitGstGhostPadFromStaticTemplate(padTemplate, CStringView::unsafeFromUTF8(padName.utf8().data()), pad.get());
     gst_pad_store_sticky_event(ghostPad, stickyStreamStartEvent.get());
     gst_pad_set_active(ghostPad, TRUE);
     gst_element_add_pad(GST_ELEMENT_CAST(self), ghostPad);

@@ -351,7 +351,7 @@ static bool videoEncoderSetEncoder(WebKitVideoEncoder* self, EncoderId encoderId
 
     if (useVideoConvertScale) {
         if (!priv->videoConvert) {
-            priv->videoConvert = makeGStreamerElement("videoconvertscale", nullptr);
+            priv->videoConvert = makeGStreamerElement("videoconvertscale"_s);
             gst_bin_add(GST_BIN_CAST(self), priv->videoConvert.get());
 
             auto sinkPadTarget = adoptGRef(gst_element_get_static_pad(priv->videoConvert.get(), "sink"));
@@ -364,12 +364,12 @@ static bool videoEncoderSetEncoder(WebKitVideoEncoder* self, EncoderId encoderId
         }
     } else {
         if (!priv->videoScale) {
-            priv->videoScale = makeGStreamerElement("videoscale", nullptr);
+            priv->videoScale = makeGStreamerElement("videoscale"_s);
             gst_bin_add(GST_BIN_CAST(self), priv->videoScale.get());
         }
 
         if (!priv->videoConvert) {
-            priv->videoConvert = makeGStreamerElement("videoconvert", nullptr);
+            priv->videoConvert = makeGStreamerElement("videoconvert"_s);
             gst_bin_add(GST_BIN_CAST(self), priv->videoConvert.get());
 
             auto sinkPadTarget = adoptGRef(gst_element_get_static_pad(priv->videoConvert.get(), "sink"));
@@ -383,7 +383,7 @@ static bool videoEncoderSetEncoder(WebKitVideoEncoder* self, EncoderId encoderId
     }
 
     if (encoderDefinition->parserName) {
-        priv->parser = makeGStreamerElement(encoderDefinition->parserName, nullptr);
+        priv->parser = makeGStreamerElement(encoderDefinition->parserName);
 
         if (!priv->outputCapsFilter) {
             priv->outputCapsFilter = gst_element_factory_make("capsfilter", nullptr);
@@ -581,7 +581,7 @@ static void videoEncoderConstructed(GObject* encoder)
     self->priv->bitrateMode = CONSTANT_BITRATE_MODE;
     self->priv->latencyMode = REALTIME_LATENCY_MODE;
 
-    auto* sinkPad = webkitGstGhostPadFromStaticTemplate(&sinkTemplate, "sink", nullptr);
+    auto* sinkPad = webkitGstGhostPadFromStaticTemplate(&sinkTemplate, "sink"_s, nullptr);
     GST_OBJECT_FLAG_SET(sinkPad, GST_PAD_FLAG_NEED_PARENT);
     gst_pad_set_event_function(sinkPad, reinterpret_cast<GstPadEventFunction>(+[](GstPad* pad, GstObject* parent, GstEvent* event) -> gboolean {
         if (GST_EVENT_TYPE(event) == GST_EVENT_CUSTOM_DOWNSTREAM_OOB) {
@@ -597,7 +597,7 @@ static void videoEncoderConstructed(GObject* encoder)
     }));
     gst_element_add_pad(GST_ELEMENT_CAST(self), sinkPad);
 
-    gst_element_add_pad(GST_ELEMENT_CAST(self), webkitGstGhostPadFromStaticTemplate(&srcTemplate, "src", nullptr));
+    gst_element_add_pad(GST_ELEMENT_CAST(self), webkitGstGhostPadFromStaticTemplate(&srcTemplate, "src"_s, nullptr));
 }
 
 static void setupVaEncoder(WebKitVideoEncoder* self)
@@ -667,9 +667,9 @@ static void webkit_video_encoder_class_init(WebKitVideoEncoderClass* klass)
                 auto structure = gst_caps_get_structure(encodedCaps.get(), 0);
                 auto profile = gstStructureGetString(structure, "profile"_s);
 
-                if (profile.findIgnoringASCIICase("high"_s) != notFound)
+                if (containsIgnoringASCIICase(profile.span(), "high"_s))
                     gst_preset_load_preset(GST_PRESET(self->priv->encoder.get()), "Profile High");
-                else if (profile.findIgnoringASCIICase("main"_s) != notFound)
+                else if (containsIgnoringASCIICase(profile.span(), "main"_s))
                     gst_preset_load_preset(GST_PRESET(self->priv->encoder.get()), "Profile Main");
             }
         }, "bitrate"_s, setBitrateKbitPerSec, "key-int-max"_s, [](GstElement* encoder, BitrateMode mode) {
@@ -923,7 +923,7 @@ static void webkit_video_encoder_class_init(WebKitVideoEncoderClass* klass)
                     break;
                 }
             }, [](GstElement* encoder, LatencyMode mode) {
-                if (!gstObjectHasProperty(encoder, "usage-profile"))
+                if (!gstObjectHasProperty(encoder, "usage-profile"_s))
                     return;
                 switch (mode) {
                 case REALTIME_LATENCY_MODE:

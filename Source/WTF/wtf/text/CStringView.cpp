@@ -1,5 +1,8 @@
 /*
- * Copyright (C) 2014 Apple Inc. All rights reserved.
+ * Copyright (C) 2018 Yusuke Suzuki <utatane.tea@gmail.com>
+ * Copyright (C) 2024 Apple Inc. All Rights Reserved.
+ * Copyright (C) 2025 Comcast Inc.
+ * Copyright (C) 2025 Igalia S.L.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
@@ -21,12 +24,18 @@
  * OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- *
  */
 
-#pragma once
+#include "config.h"
+#include <wtf/text/CStringView.h>
 
-// A type to hold a single Latin-1 character.
-// This type complements the UChar type that we get from the ICU library.
-// To parallel that type, we put this one in the global namespace.
-typedef unsigned char LChar;
+#include <wtf/PrintStream.h>
+
+namespace WTF {
+
+void CStringView::dump(PrintStream& out) const
+{
+    out.print(span());
+}
+
+} // namespace WTF

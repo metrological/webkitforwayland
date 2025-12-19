@@ -25,6 +25,7 @@
 #include "GStreamerQuirks.h"
 #include "GStreamerRegistryScanner.h"
 #include "VideoFrameMetadataGStreamer.h"
+#include <wtf/glib/GMallocString.h>
 
 GST_DEBUG_CATEGORY(webkit_webrtc_incoming_track_processor_debug);
 #define GST_CAT_DEFAULT webkit_webrtc_incoming_track_processor_debug
@@ -49,7 +50,7 @@ void GStreamerIncomingTrackProcessor::configure(ThreadSafeWeakPtr<GStreamerMedia
         caps = adoptGRef(gst_pad_query_caps(m_pad.get(), nullptr));
 
     ASCIILiteral typeName;
-    if (doCapsHaveType(caps.get(), "audio")) {
+    if (doCapsHaveType(caps.get(), "audio"_s)) {
         typeName = "audio"_s;
         m_data.type = RealtimeMediaSource::Type::Audio;
     } else {
@@ -68,17 +69,18 @@ void GStreamerIncomingTrackProcessor::configure(ThreadSafeWeakPtr<GStreamerMedia
     if (auto ssrc = gstStructureGet<unsigned>(structure, "ssrc"_s)) {
         m_data.ssrc = *ssrc;
         auto msIdAttributeName = makeString("ssrc-"_s, *ssrc, "-msid"_s);
-        if (auto msIdAttribute = gstStructureGetString(structure, msIdAttributeName)) {
-            auto components = msIdAttribute.toStringWithoutCopying().split(' ');
+        if (auto msIdAttribute = gstStructureGetString(structure, CStringView::unsafeFromUTF8(msIdAttributeName.utf8().data()))) {
+            auto components = String(msIdAttribute.span()).split(' ');
             if (components.size() == 2)
-                m_sdpMsIdAndTrackId = { components[0], components[1] };
+                m_sdpMsIdAndTrackId = { WTFMove(components[0]), WTFMove(components[1]) };
         }
     }
-    if (auto msIdAttribute = gstStructureGetString(structure, "a-msid"_s)) {
-        if (msIdAttribute.startsWith(' '))
-            m_sdpMsIdAndTrackId = { emptyString(), msIdAttribute.substring(1).toString() };
+    auto msIdAttribute = gstStructureGetString(structure, "a-msid"_s);
+    if (!msIdAttribute.isEmpty()) {
+        if (startsWith(msIdAttribute.span(), " "_s))
+            m_sdpMsIdAndTrackId = { emptyString(), msIdAttribute.span().subspan(1) };
         else {
-            auto components = msIdAttribute.toStringWithoutCopying().split(' ');
+            auto components = String(msIdAttribute.span()).split(' ');
             if (components.size() == 2)
                 m_sdpMsIdAndTrackId = { components[0], components[1] };
         }
@@ -122,12 +124,13 @@ String GStreamerIncomingTrackProcessor::mediaStreamIdFromPad()
 {
     // Look-up the mediastream ID, using the msid attribute, fall back to pad name if there is no msid.
     String mediaStreamId;
-    if (gstObjectHasProperty(m_pad.get(), "msid")) {
-        GUniqueOutPtr<char> msid;
-        g_object_get(m_pad.get(), "msid", &msid.outPtr(), nullptr);
+    if (gstObjectHasProperty(m_pad.get(), "msid"_s)) {
+        GUniqueOutPtr<char> msidChars;
+        g_object_get(m_pad.get(), "msid", &msidChars.outPtr(), nullptr);
+        auto msid = GMallocString::unsafeAdoptFromUTF8(WTFMove(msidChars));
         if (msid) {
-            mediaStreamId = String::fromUTF8(msid.get());
-            GST_DEBUG_OBJECT(m_bin.get(), "msid set from pad msid property: %s", mediaStreamId.utf8().data());
+            mediaStreamId = String(msid.span());
+            GST_DEBUG_OBJECT(m_bin.get(), "msid set from pad msid property: %s", msid.utf8());
         }
     }
 
@@ -139,9 +142,9 @@ String GStreamerIncomingTrackProcessor::mediaStreamIdFromPad()
         return m_sdpMsIdAndTrackId.first;
     }
 
-    GUniquePtr<gchar> name(gst_pad_get_name(m_pad.get()));
-    mediaStreamId = String::fromLatin1(name.get());
-    GST_DEBUG_OBJECT(m_bin.get(), "msid set from webrtcbin src pad name: %s", mediaStreamId.utf8().data());
+    auto name = GMallocString::unsafeAdoptFromUTF8(gst_pad_get_name(m_pad.get()));
+    mediaStreamId = name.span();
+    GST_DEBUG_OBJECT(m_bin.get(), "msid set from webrtcbin src pad name: %s", name.utf8());
     return mediaStreamId;
 }
 
@@ -160,12 +163,12 @@ void GStreamerIncomingTrackProcessor::retrieveMediaStreamAndTrackIdFromSDP()
     if (UNLIKELY(!media))
         return;
 
-    const char* msidAttribute = gst_sdp_media_get_attribute_val(media, "msid");
+    auto msidAttribute = CStringView::unsafeFromUTF8(gst_sdp_media_get_attribute_val(media, "msid"));
     if (!msidAttribute)
         return;
 
-    GST_LOG_OBJECT(m_bin.get(), "SDP media msid attribute value: %s", msidAttribute);
-    auto components = String::fromUTF8(msidAttribute).split(' ');
+    GST_LOG_OBJECT(m_bin.get(), "SDP media msid attribute value: %s", msidAttribute.utf8());
+    auto components = String(msidAttribute.span()).split(' ');
     if (components.size() != 2)
         return;
 
@@ -188,7 +191,7 @@ GRefPtr<GstElement> GStreamerIncomingTrackProcessor::incomingTrackProcessor()
         auto structure = gst_caps_get_structure(m_data.caps.get(), 0);
         ASSERT(gst_structure_has_name(structure, "application/x-rtp"));
         auto encodingName = gstStructureGetString(structure, "encoding-name"_s);
-        auto mediaType = makeString("video/x-"_s, encodingName.convertToASCIILowercase());
+        auto mediaType = makeString("video/x-"_s, String(encodingName.span()).convertToASCIILowercase());
         auto codecCaps = adoptGRef(gst_caps_new_empty_simple(mediaType.ascii().data()));
 
         auto& scanner = GStreamerRegistryScanner::singleton();
@@ -199,7 +202,7 @@ GRefPtr<GstElement> GStreamerIncomingTrackProcessor::incomingTrackProcessor()
     }
 
     GST_DEBUG_OBJECT(m_bin.get(), "Preparing video decoder for depayloaded RTP packets");
-    GRefPtr<GstElement> decodebin = makeGStreamerElement("decodebin3", nullptr);
+    GRefPtr<GstElement> decodebin = makeGStreamerElement("decodebin3"_s);
     m_isDecoding = true;
 
     g_signal_connect(decodebin.get(), "deep-element-added", G_CALLBACK(+[](GstBin*, GstBin*, GstElement* element, gpointer userData) {
@@ -250,7 +253,7 @@ GRefPtr<GstElement> GStreamerIncomingTrackProcessor::incomingTrackProcessor()
 
 GRefPtr<GstElement> GStreamerIncomingTrackProcessor::createParser()
 {
-    GRefPtr<GstElement> parsebin = makeGStreamerElement("parsebin", nullptr);
+    GRefPtr<GstElement> parsebin = makeGStreamerElement("parsebin"_s);
     g_signal_connect(parsebin.get(), "element-added", G_CALLBACK(+[](GstBin*, GstElement* element, gpointer userData) {
         String elementClass = WTF::span(gst_element_get_metadata(element, GST_ELEMENT_METADATA_KLASS));
         auto classifiers = elementClass.split('/');

@@ -156,7 +156,7 @@ static GstCaps* transformCaps(GstBaseTransform* base, GstPadDirection direction,
             if (!canDoPassthrough) {
                 auto originalMediaType = WebCore::gstStructureGetString(outgoingStructure.get(), "original-media-type"_s);
                 RELEASE_ASSERT(originalMediaType);
-                gst_structure_set_name(outgoingStructure.get(), static_cast<const char*>(originalMediaType.rawCharacters()));
+                gst_structure_set_name(outgoingStructure.get(), originalMediaType.utf8());
             }
 
             // Filter out the DRM related fields from the down-stream caps.
@@ -170,13 +170,14 @@ static GstCaps* transformCaps(GstBaseTransform* base, GstPadDirection direction,
                 gst_structure_remove_fields(outgoingStructure.get(), "base-profile", "codec_data", "height", "framerate", "level", "pixel-aspect-ratio", "profile", "rate", "width", nullptr);
 
                 auto name = WebCore::gstStructureGetName(incomingStructure);
-                gst_structure_set(outgoingStructure.get(), "protection-system", G_TYPE_STRING, klass->protectionSystemId(self),
-                    "original-media-type", G_TYPE_STRING, reinterpret_cast<const char*>(name.rawCharacters()) , nullptr);
+                gst_structure_set(outgoingStructure.get(), "protection-system", G_TYPE_STRING, klass->protectionSystemId(self).characters(),
+                    "original-media-type", G_TYPE_STRING, name.utf8() , nullptr);
 
                 // GST_PROTECTION_UNSPECIFIED_SYSTEM_ID was added in the GStreamer
                 // developement git master which will ship as version 1.16.0.
-                gst_structure_set_name(outgoingStructure.get(), !g_strcmp0(klass->protectionSystemId(self),
-                    GST_PROTECTION_UNSPECIFIED_SYSTEM_ID) ? "application/x-webm-enc" : "application/x-cenc");
+                gst_structure_set_name(outgoingStructure.get(),
+                    WebCore::GStreamerEMEUtilities::isUnspecifiedUUID(klass->protectionSystemId(self))
+                    ? "application/x-webm-enc" : "application/x-cenc");
             }
         }
 
@@ -269,7 +270,7 @@ static GstFlowReturn transformInPlace(GstBaseTransform* base, GstBuffer* buffer)
 
     bool isCbcs = false;
     if (auto cipherMode = WebCore::gstStructureGetString(protectionMeta->info, "cipher-mode"_s))
-        isCbcs = WTF::equalIgnoringASCIICase(cipherMode, "cbcs"_s);
+        isCbcs = WTF::equalIgnoringASCIICase(cipherMode.span(), "cbcs"_s);
 
     auto ivSizeFromMeta = WebCore::gstStructureGet<unsigned>(protectionMeta->info, "iv_size"_s);
     if (!ivSizeFromMeta) {

@@ -46,8 +46,8 @@ RefPtr<GStreamerVideoRTPPacketizer> GStreamerVideoRTPPacketizer::create(RefPtr<U
 
     GST_DEBUG("Creating packetizer for codec: %" GST_PTR_FORMAT " and encoding parameters %" GST_PTR_FORMAT, codecParameters, encodingParameters.get());
     String encoding;
-    if (auto encodingName = gstStructureGetString(codecParameters, "encoding-name"_s))
-        encoding = encodingName.convertToASCIILowercase();
+    if (auto encodingName = gstStructureGetString(codecParameters.get(), "encoding-name"_s))
+        encoding = String(encodingName.span()).convertToASCIILowercase();
     else {
         GST_ERROR("encoding-name not found");
         return nullptr;
@@ -64,18 +64,18 @@ RefPtr<GStreamerVideoRTPPacketizer> GStreamerVideoRTPPacketizer::create(RefPtr<U
 
     auto codec = emptyString();
     if (encoding == "vp8"_s) {
-        if (gstObjectHasProperty(payloader.get(), "picture-id-mode"))
+        if (gstObjectHasProperty(payloader.get(), "picture-id-mode"_s))
             gst_util_set_object_arg(G_OBJECT(payloader.get()), "picture-id-mode", "15-bit");
 
         codec = "vp8"_s;
     } else if (encoding == "vp9"_s) {
-        if (gstObjectHasProperty(payloader.get(), "picture-id-mode"))
+        if (gstObjectHasProperty(payloader.get(), "picture-id-mode"_s))
             gst_util_set_object_arg(G_OBJECT(payloader.get()), "picture-id-mode", "15-bit");
 
         VPCodecConfigurationRecord record;
         record.codecName = "vp09"_s;
-        if (auto vp9Profile = gstStructureGetString(codecParameters, "profile-id"_s)) {
-            if (auto profile = parseInteger<uint8_t>(vp9Profile))
+        if (auto vp9Profile = gstStructureGetString(codecParameters.get(), "profile-id"_s)) {
+            if (auto profile = parseInteger<uint8_t>(vp9Profile.span()))
                 record.profile = *profile;
         }
         codec = createVPCodecParametersString(record);
@@ -151,10 +151,10 @@ GStreamerVideoRTPPacketizer::GStreamerVideoRTPPacketizer(GRefPtr<GstElement>&& e
 
     GST_DEBUG_OBJECT(m_bin.get(), "RTP encoding parameters: %" GST_PTR_FORMAT, m_encodingParameters.get());
 
-    m_videoRate = makeGStreamerElement("videorate", nullptr);
+    m_videoRate = makeGStreamerElement("videorate"_s);
     // https://gitlab.freedesktop.org/gstreamer/gst-plugins-base/issues/97#note_56575
     g_object_set(m_videoRate.get(), "skip-to-first", TRUE, "drop-only", TRUE, "average-period", UINT64_C(1), nullptr);
-    m_frameRateCapsFilter = makeGStreamerElement("capsfilter", nullptr);
+    m_frameRateCapsFilter = makeGStreamerElement("capsfilter"_s);
     gst_bin_add_many(GST_BIN_CAST(m_bin.get()), m_videoRate.get(), m_frameRateCapsFilter.get(), nullptr);
 
     auto lastIdentifier = findLastExtensionId(rtpCaps.get());
