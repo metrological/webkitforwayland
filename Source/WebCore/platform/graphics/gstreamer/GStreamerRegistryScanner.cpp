@@ -322,7 +322,7 @@ GStreamerRegistryScanner::RegistryLookupResult GStreamerRegistryScanner::Element
             break;
         }
         if (!hasValidCandidate) {
-            GST_WARNING("All %s elements matching caps %" GST_PTR_FORMAT " are disallowed", elementFactoryTypeToString(factoryType), caps.get());
+            GST_WARNING("All %s elements matching caps %" GST_PTR_FORMAT " are disallowed", elementFactoryTypeToString(factoryType).characters(), caps.get());
             isSupported = false;
             shouldCheckHardwareClassifier = CheckHardwareClassifier::No;
         }
