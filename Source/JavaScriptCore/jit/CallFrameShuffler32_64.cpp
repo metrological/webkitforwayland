@@ -88,13 +88,13 @@ void CallFrameShuffler::emitLoad(CachedRecovery& location)
     bool tryFPR { true };
     JSValueRegs wantedJSValueRegs { location.wantedJSValueRegs() };
     if (wantedJSValueRegs) {
-        if (wantedJSValueRegs.payloadGPR() != InvalidGPRReg
-            && !m_registers[wantedJSValueRegs.payloadGPR()]
-            && !m_lockedRegisters.get(wantedJSValueRegs.payloadGPR()))
-            tryFPR = false;
-        if (wantedJSValueRegs.tagGPR() != InvalidGPRReg
-            && !m_registers[wantedJSValueRegs.tagGPR()]
-            && !m_lockedRegisters.get(wantedJSValueRegs.tagGPR()))
+        const auto isAvailable = [this](GPRReg reg) {
+            return reg != InvalidGPRReg
+                && !m_registers[reg]
+                && !m_lockedRegisters.get(reg);
+        };
+        if (isAvailable(wantedJSValueRegs.payloadGPR())
+            && isAvailable(wantedJSValueRegs.tagGPR()))
             tryFPR = false;
     }
 
