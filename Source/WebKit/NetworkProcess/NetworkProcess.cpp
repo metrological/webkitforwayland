@@ -331,6 +331,9 @@ void NetworkProcess::initializeNetworkProcess(NetworkProcessCreationParameters&&
     for (auto [processIdentifier, domain] : parameters.allowedFirstPartiesForCookies)
         addAllowedFirstPartyForCookies(processIdentifier, WTFMove(domain), LoadedWebArchive::No, [] { });
 
+    for (auto& [processIdentifier, paths] : parameters.allowedFilePaths)
+        allowFilesAccessFromWebProcess(processIdentifier, paths, [] { });
+
     for (auto& supplement : m_supplements.values())
         supplement->initialize(parameters);
 
