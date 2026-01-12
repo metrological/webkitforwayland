@@ -143,7 +143,7 @@ private:
     GThreadSafeWeakPtr<GstElement> m_src;
 };
 
-static void webkitMediaStreamSrcEnsureStreamCollectionPosted(WebKitMediaStreamSrc*);
+static void webkitMediaStreamSrcEnsureStreamCollectionPosted(WebKitMediaStreamSrc*, bool isEmpty = false);
 
 
 class InternalSource final : public MediaStreamTrackPrivateObserver,
@@ -1118,7 +1118,7 @@ static void webkit_media_stream_src_class_init(WebKitMediaStreamSrcClass* klass)
     gst_element_class_add_pad_template(gstElementClass, gst_static_pad_template_get(&audioSrcTemplate));
 }
 
-static GRefPtr<GstStreamCollection> webkitMediaStreamSrcCreateStreamCollection(WebKitMediaStreamSrc* self);
+static GRefPtr<GstStreamCollection> webkitMediaStreamSrcCreateStreamCollection(WebKitMediaStreamSrc* self, bool isEmpty = false);
 
 struct PadChainData {
     GRefPtr<GstStream> stream;
@@ -1165,12 +1165,15 @@ static GstFlowReturn webkitMediaStreamSrcChain(GstPad* pad, GstObject*, GstBuffe
     return result;
 }
 
-static GRefPtr<GstStreamCollection> webkitMediaStreamSrcCreateStreamCollection(WebKitMediaStreamSrc* self)
+static GRefPtr<GstStreamCollection> webkitMediaStreamSrcCreateStreamCollection(WebKitMediaStreamSrc* self, bool isEmpty)
 {
     auto priv = self->priv;
     auto locker = GstObjectLocker(self);
     auto upstreamId = priv->stream ? priv->stream->id() : createVersion4UUIDString();
     auto streamCollection = adoptGRef(gst_stream_collection_new(upstreamId.ascii().data()));
+    if (isEmpty)
+        return streamCollection;
+
     for (auto& source : priv->sources.values()) {
         if (source->isEnded())
             continue;
@@ -1180,12 +1183,12 @@ static GRefPtr<GstStreamCollection> webkitMediaStreamSrcCreateStreamCollection(W
     return streamCollection;
 }
 
-static void webkitMediaStreamSrcEnsureStreamCollectionPosted(WebKitMediaStreamSrc* self)
+static void webkitMediaStreamSrcEnsureStreamCollectionPosted(WebKitMediaStreamSrc* self, bool isEmpty)
 {
     GST_DEBUG_OBJECT(self, "Posting stream collection");
     DisableMallocRestrictionsForCurrentThreadScope disableMallocRestrictions;
     callOnMainThreadAndWait([&] {
-        auto streamCollection = webkitMediaStreamSrcCreateStreamCollection(self);
+        auto streamCollection = webkitMediaStreamSrcCreateStreamCollection(self, isEmpty);
         GST_DEBUG_OBJECT(self, "Posting stream collection message containing %u streams", gst_stream_collection_get_size(streamCollection.get()));
         gst_element_post_message(GST_ELEMENT_CAST(self), gst_message_new_stream_collection(GST_OBJECT_CAST(self), streamCollection.get()));
     });
@@ -1339,9 +1342,9 @@ bool webkitMediaStreamSrcSignalEndOfStream(WebKitMediaStreamSrc* self)
             break;
         }
     }
-    self->priv->sources.clear();
+
     if (result)
-        webkitMediaStreamSrcEnsureStreamCollectionPosted(self);
+        webkitMediaStreamSrcEnsureStreamCollectionPosted(self, true);
     return result;
 }
 
