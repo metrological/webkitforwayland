@@ -53,6 +53,7 @@
 #include <memory>
 #include <pal/SessionID.h>
 #include <wtf/Assertions.h>
+#include <wtf/CompletionHandler.h>
 #include <wtf/Forward.h>
 #include <wtf/Function.h>
 #include <wtf/HashSet.h>
@@ -980,6 +981,7 @@ public:
 #if ENABLE(IMAGE_ANALYSIS)
     WEBCORE_EXPORT void analyzeImagesForFindInPage();
 #endif
+    void setVisibilityChangeCompletionHandler(CompletionHandler<void()>&& completionHandler) { m_visibilityChangeCompletionHandler = WTFMove(completionHandler); }
 private:
     struct Navigation {
         RegistrableDomain domain;
@@ -1342,6 +1344,8 @@ private:
 #endif
 
     ContentSecurityPolicyModeForExtension m_contentSecurityPolicyModeForExtension { ContentSecurityPolicyModeForExtension::None };
+
+    CompletionHandler<void()> m_visibilityChangeCompletionHandler;
 };
 
 inline PageGroup& Page::group()
