@@ -148,28 +148,6 @@ private:
         RendererBufferFormat::Usage m_usage { RendererBufferFormat::Usage::Rendering };
     };
 
-#if GTK_CHECK_VERSION(4, 13, 4)
-    class BufferDMABuf final : public Buffer {
-    public:
-        static RefPtr<Buffer> create(WebPageProxy&, uint64_t id, uint64_t surfaceID, const WebCore::IntSize&, RendererBufferFormat::Usage, uint32_t format, Vector<WTF::UnixFileDescriptor>&&, Vector<uint32_t>&& offsets, Vector<uint32_t>&& strides, uint64_t modifier);
-        ~BufferDMABuf() = default;
-
-    private:
-        BufferDMABuf(WebPageProxy&, uint64_t id, uint64_t surfaceID, const WebCore::IntSize&, RendererBufferFormat::Usage, Vector<WTF::UnixFileDescriptor>&&, GRefPtr<GdkDmabufTextureBuilder>&&);
-
-        Buffer::Type type() const override { return Buffer::Type::DmaBuf; }
-        void didUpdateContents(Buffer*, const Rects&) override;
-        GdkTexture* texture() const override { return m_texture.get(); }
-        RendererBufferDescription description() const override;
-        RefPtr<WebCore::NativeImage> asNativeImageForTesting() const override;
-        void release() override;
-
-        Vector<WTF::UnixFileDescriptor> m_fds;
-        GRefPtr<GdkDmabufTextureBuilder> m_builder;
-        GRefPtr<GdkTexture> m_texture;
-    };
-#endif
-
     class BufferEGLImage final : public Buffer {
     public:
         static RefPtr<Buffer> create(WebPageProxy&, uint64_t id, uint64_t surfaceID, const WebCore::IntSize&, RendererBufferFormat::Usage, uint32_t format, Vector<WTF::UnixFileDescriptor>&&, Vector<uint32_t>&& offsets, Vector<uint32_t>&& strides, uint64_t modifier);
@@ -194,11 +172,52 @@ private:
 #if USE(GTK4)
         GRefPtr<GdkTexture> m_texture;
 #else
+        GRefPtr<GdkGLContext> m_gdkGLContext;
         unsigned m_textureID { 0 };
 #endif
         uint32_t m_fourcc { 0 };
         uint64_t m_modifier { 0 };
     };
+
+    class BufferSHM final : public Buffer {
+    public:
+        static RefPtr<Buffer> create(WebPageProxy&, uint64_t id, uint64_t surfaceID, RefPtr<WebCore::ShareableBitmap>&&);
+
+    private:
+        BufferSHM(WebPageProxy&, uint64_t id, uint64_t surfaceID, RefPtr<WebCore::ShareableBitmap>&&);
+
+        Buffer::Type type() const override { return Buffer::Type::SharedMemory; }
+        void didUpdateContents(Buffer*, const Rects&) override;
+        cairo_surface_t* surface() const override { return m_surface.get(); }
+        RendererBufferDescription description() const override;
+        RefPtr<WebCore::NativeImage> asNativeImageForTesting() const override;
+        void release() override;
+
+        RefPtr<WebCore::ShareableBitmap> m_bitmap;
+        RefPtr<cairo_surface_t> m_surface;
+    };
+
+#if GTK_CHECK_VERSION(4, 13, 4)
+    class BufferDMABuf final : public Buffer {
+    public:
+        static RefPtr<Buffer> create(WebPageProxy&, uint64_t id, uint64_t surfaceID, const WebCore::IntSize&, RendererBufferFormat::Usage, uint32_t format, Vector<WTF::UnixFileDescriptor>&&, Vector<uint32_t>&& offsets, Vector<uint32_t>&& strides, uint64_t modifier);
+        ~BufferDMABuf() = default;
+
+    private:
+        BufferDMABuf(WebPageProxy&, uint64_t id, uint64_t surfaceID, const WebCore::IntSize&, RendererBufferFormat::Usage, Vector<WTF::UnixFileDescriptor>&&, GRefPtr<GdkDmabufTextureBuilder>&&);
+
+        Buffer::Type type() const override { return Buffer::Type::DmaBuf; }
+        void didUpdateContents(Buffer*, const Rects&) override;
+        GdkTexture* texture() const override { return m_texture.get(); }
+        RendererBufferDescription description() const override;
+        RefPtr<WebCore::NativeImage> asNativeImageForTesting() const override;
+        void release() override;
+
+        Vector<WTF::UnixFileDescriptor> m_fds;
+        GRefPtr<GdkDmabufTextureBuilder> m_builder;
+        GRefPtr<GdkTexture> m_texture;
+    };
+#endif
 
 #if USE(GBM)
     class BufferGBM final : public Buffer {
@@ -221,25 +240,6 @@ private:
         RefPtr<cairo_surface_t> m_surface;
     };
 #endif
-
-    class BufferSHM final : public Buffer {
-    public:
-        static RefPtr<Buffer> create(WebPageProxy&, uint64_t id, uint64_t surfaceID, RefPtr<WebCore::ShareableBitmap>&&);
-        ~BufferSHM() = default;
-
-    private:
-        BufferSHM(WebPageProxy&, uint64_t id, uint64_t surfaceID, RefPtr<WebCore::ShareableBitmap>&&);
-
-        Buffer::Type type() const override { return Buffer::Type::SharedMemory; }
-        void didUpdateContents(Buffer*, const Rects&) override;
-        cairo_surface_t* surface() const override { return m_surface.get(); }
-        RendererBufferDescription description() const override;
-        RefPtr<WebCore::NativeImage> asNativeImageForTesting() const override;
-        void release() override;
-
-        RefPtr<WebCore::ShareableBitmap> m_bitmap;
-        RefPtr<cairo_surface_t> m_surface;
-    };
 
     WeakPtr<WebPageProxy> m_webPage;
     FenceMonitor m_fenceMonitor;
