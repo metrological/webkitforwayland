@@ -502,7 +502,7 @@ static MediaTime bufferTimeToStreamTime(const GstSegment* segment, GstClockTime 
     return MediaTime(sign * streamTime, GST_SECOND);
 }
 
-void AppendPipeline::appsinkNewSample(const Track& track, GRefPtr<GstSample>&& sample)
+void AppendPipeline::appsinkNewSample(Track& track, GRefPtr<GstSample>&& sample)
 {
     ASSERT(isMainThread());
 
@@ -529,7 +529,8 @@ void AppendPipeline::appsinkNewSample(const Track& track, GRefPtr<GstSample>&& s
         GST_TRACE_OBJECT(track.appsinkPad.get(), "Mapped buffer to segment, PTS %" GST_TIME_FORMAT " -> %s DTS %" GST_TIME_FORMAT " -> %s",
             GST_TIME_ARGS(GST_BUFFER_PTS(buffer)), pts.toString().utf8().data(), GST_TIME_ARGS(GST_BUFFER_DTS(buffer)), dts.toString().utf8().data());
         mediaSample->setTimestamps(pts, dts);
-    } else if (!GST_BUFFER_DTS(buffer) && GST_BUFFER_PTS(buffer) > 0 && GST_BUFFER_PTS(buffer) <= 100'000'000) {
+    } else if (!GST_BUFFER_DTS(buffer) && GST_BUFFER_PTS(buffer) > 0 && GST_BUFFER_PTS(buffer) <= 100'000'000 &&
+               !track.hasExtendedFirstSample) {
         // Because a track presentation time starting at some close to zero, but not exactly zero time can cause unexpected
         // results for applications, we extend the duration of this first sample to the left so that it starts at zero.
         // This is relevant for files that should have an edit list but don't, or when using GStreamer < 1.16, where
@@ -537,6 +538,7 @@ void AppendPipeline::appsinkNewSample(const Track& track, GRefPtr<GstSample>&& s
 
         GST_DEBUG("Extending first sample of track '%" PRIu64 "' to make it start at PTS=0 %" GST_PTR_FORMAT, track.trackId, buffer);
         mediaSample->extendToTheBeginning();
+        track.hasExtendedFirstSample = true;
     }
 
     GST_TRACE_OBJECT(pipeline(), "append: trackId=%" PRIu64 " PTS=%s DTS=%s DUR=%s presentationSize=%.0fx%.0f",
@@ -743,6 +745,10 @@ void AppendPipeline::resetParserState()
     // All processing related to the previous append has been aborted and the pipeline is idle.
     // We can listen again to new requests coming from the streaming thread.
     m_taskQueue.finishAborting();
+
+    // Reset the flag for extending the first sample, as we're starting fresh with new data.
+    for (std::unique_ptr<Track>& track : m_tracks)
+        track->hasExtendedFirstSample = false;
 
 #if (!(LOG_DISABLED || defined(GST_DISABLE_GST_DEBUG)))
     {
