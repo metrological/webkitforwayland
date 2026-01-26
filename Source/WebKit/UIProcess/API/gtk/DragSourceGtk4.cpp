@@ -45,6 +45,8 @@ DragSource::DragSource(GtkWidget* webView)
 
 DragSource::~DragSource()
 {
+    if (m_drag)
+        g_signal_handlers_disconnect_by_data(m_drag.get(), this);
 }
 
 void DragSource::begin(SelectionData&& selectionData, OptionSet<DragOperation> operationMask, RefPtr<ShareableBitmap>&& image, IntPoint&& imageHotspot)
