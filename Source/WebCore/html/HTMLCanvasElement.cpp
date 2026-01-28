@@ -1065,6 +1065,19 @@ bool HTMLCanvasElement::virtualHasPendingActivity() const
     return false;
 }
 
+void HTMLCanvasElement::suspend(ReasonForSuspension reason)
+{
+    if (reason != ReasonForSuspension::BackForwardCache)
+        return;
+
+    if (m_context && m_context->is2d() && m_context->isAccelerated()) {
+        m_hasCreatedImageBuffer = false;
+        setImageBuffer(nullptr);
+        resetGraphicsContextState();
+        downcast<CanvasRenderingContext2D>(*m_context).reset();
+    }
+}
+
 void HTMLCanvasElement::eventListenersDidChange()
 {
 #if ENABLE(WEBGL)

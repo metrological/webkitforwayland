@@ -149,6 +149,8 @@ private:
     // ActiveDOMObject.
     const char* activeDOMObjectName() const final;
     bool virtualHasPendingActivity() const final;
+    void suspend(ReasonForSuspension) final;
+
 
     // EventTarget.
     void eventListenersDidChange() final;
