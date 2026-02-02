@@ -80,6 +80,7 @@ Ref<ProcessPoolConfiguration> ProcessPoolConfiguration::copy()
 #if PLATFORM(GTK) || PLATFORM(WPE)
     copy->m_memoryPressureHandlerConfiguration = this->m_memoryPressureHandlerConfiguration;
     copy->m_serviceWorkerMemoryPressureHandlerConfiguration = this->m_serviceWorkerMemoryPressureHandlerConfiguration;
+    copy->m_memoryPressureMonitorMode = this->m_memoryPressureMonitorMode;
 #endif
 #if HAVE(AUDIT_TOKEN)
     copy->m_presentingApplicationProcessToken = this->m_presentingApplicationProcessToken;
