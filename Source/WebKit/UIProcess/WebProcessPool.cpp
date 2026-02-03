@@ -240,6 +240,7 @@ WebProcessPool::WebProcessPool(API::ProcessPoolConfiguration& configuration)
     platformInitialize();
 
 #if OS(LINUX)
+    MemoryPressureMonitor::singleton().setMode(m_configuration->memoryPressureMonitorMode());
     MemoryPressureMonitor::singleton().start();
 #endif
 
