@@ -105,7 +105,7 @@ private:
 class CDMInstanceThunder final : public CDMInstanceProxy {
 public:
     CDMInstanceThunder(const String& keySystem);
-    virtual ~CDMInstanceThunder() = default;
+    virtual ~CDMInstanceThunder();
 
     // CDMInstance
     ImplementationType implementationType() const final { return ImplementationType::Thunder; }

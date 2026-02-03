@@ -247,6 +247,12 @@ CDMInstanceThunder::CDMInstanceThunder(const String& keySystem)
     , m_thunderSystem(opencdm_create_system(keySystem.utf8().data()))
     , m_keySystem(keySystem)
 {
+    GST_DEBUG("!!! Creating CDMInstanceThunder");
+}
+
+CDMInstanceThunder::~CDMInstanceThunder()
+{
+    GST_DEBUG("!!! Destroying CDMInstanceThunder");
 }
 
 void CDMInstanceThunder::initializeWithConfiguration(const CDMKeySystemConfiguration&, AllowDistinctiveIdentifiers, AllowPersistentState,

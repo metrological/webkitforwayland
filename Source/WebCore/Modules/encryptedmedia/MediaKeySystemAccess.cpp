@@ -55,9 +55,13 @@ MediaKeySystemAccess::MediaKeySystemAccess(Document& document, const String& key
     , m_configuration(new MediaKeySystemConfiguration(WTFMove(configuration)))
     , m_implementation(WTFMove(implementation))
 {
+    printf("!!! %s\n", __PRETTY_FUNCTION__); fflush(stdout);
 }
 
-MediaKeySystemAccess::~MediaKeySystemAccess() = default;
+MediaKeySystemAccess::~MediaKeySystemAccess() //= default;
+{
+    printf("!!! %s\n", __PRETTY_FUNCTION__); fflush(stdout);
+}
 
 void MediaKeySystemAccess::createMediaKeys(Document& document, Ref<DeferredPromise>&& promise)
 {
