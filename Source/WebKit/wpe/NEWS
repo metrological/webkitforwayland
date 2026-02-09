@@ -1,4 +1,14 @@
 =================
+WPE WebKit 2.50.5
+=================
+
+What's new in WebKitGTK 2.50.5?
+
+  - Fix checking whether a view is active when providing gamepad input
+    when using WPEPlatform.
+  - Fix several crashes and rendering issues.
+
+=================
 WPE WebKit 2.50.4
 =================
 
