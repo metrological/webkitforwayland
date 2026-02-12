@@ -3531,3 +3531,10 @@ void WKPageFindStringForTesting(WKPageRef pageRef, void* context, WKStringRef st
         completionHandler(found, context);
     });
 }
+
+void WKPageDoAfterProcessingAllPendingMouseEvents(WKPageRef page, void* context, WKPageDoAfterProcessingAllPendingMouseEventsFunction completionHandler)
+{
+    toProtectedImpl(page)->doAfterProcessingAllPendingMouseEvents([context, completionHandler] {
+        completionHandler(context);
+    });
+}

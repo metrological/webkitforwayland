@@ -38,6 +38,7 @@
 #include "TestController.h"
 #include <WebCore/GtkUtilities.h>
 #include <WebCore/GtkVersioning.h>
+#include <WebKit/WKPagePrivate.h>
 #include <gdk/gdk.h>
 #include <gdk/gdkkeysyms.h>
 #include <webkit/WebKitWebViewBaseInternal.h>
@@ -412,8 +413,30 @@ void EventSenderProxy::setTouchModifier(WKEventModifiers, bool)
 }
 #endif // ENABLE(TOUCH_EVENTS)
 
+struct DoAfterProcessingAllPendingMouseEventsCallbackContext {
+    bool done { false };
+    bool timedOut { false };
+};
+
+static void doAfterProcessingAllPendingMouseEventsCallback(void* userData)
+{
+    auto* context = static_cast<DoAfterProcessingAllPendingMouseEventsCallbackContext*>(userData);
+    if (context->timedOut) {
+        delete context;
+        return;
+    }
+    context->done = true;
+}
+
 void EventSenderProxy::waitForPendingMouseEvents()
 {
+    auto* context = new DoAfterProcessingAllPendingMouseEventsCallbackContext;
+    WKPageDoAfterProcessingAllPendingMouseEvents(m_testController->mainWebView()->page(), context, doAfterProcessingAllPendingMouseEventsCallback);
+    m_testController->runUntil(context->done, 100_ms);
+    if (context->done)
+        delete context;
+    else
+        context->timedOut = true;
 }
 
 } // namespace WTR
