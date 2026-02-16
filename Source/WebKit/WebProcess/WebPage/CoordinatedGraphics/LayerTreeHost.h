@@ -107,6 +107,9 @@ public:
 
     uint64_t nativeWindowID() { return m_surface->window(); }
 
+    void destroyGLResourcesAfterSuspend();
+    void recreateGLResourcesBeforeResume();
+
 private:
 #if USE(COORDINATED_GRAPHICS)
     void layerFlushTimerFired();
@@ -222,6 +225,7 @@ private:
     WebCore::FloatPoint m_transientZoomOrigin;
 #endif
     bool m_usingPageLifecycle { false };
+    bool m_destroyNativeWindowOnSuspend { false };
 };
 
 #if !USE(COORDINATED_GRAPHICS)

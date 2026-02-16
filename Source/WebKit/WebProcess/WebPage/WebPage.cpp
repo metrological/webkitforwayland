@@ -3805,6 +3805,10 @@ void WebPage::suspend(CompletionHandler<void(bool)>&& completionHandler)
     ASSERT(m_cachedPage);
     if (auto mainFrame = m_mainFrame->coreFrame())
         mainFrame->loader().detachFromAllOpenedFrames();
+
+    // Now that the page has been suspended, destroy the OpenGL resources used for rendering.
+    m_drawingArea->destroyGLResourcesAfterSuspend();
+
     completionHandler(true);
 }
 
@@ -3836,6 +3840,9 @@ void WebPage::resume(CompletionHandler<void(bool)>&& completionHandler)
     ASSERT(cachedPage);
     if (!cachedPage)
         return completionHandler(false);
+
+    // Before resuming the page, recreate the OpenGL resources required for rendering.
+    m_drawingArea->recreateGLResourcesBeforeResume();
 
     cachedPage->restore(*m_page);
     unfreezeLayerTree(LayerTreeFreezeReason::PageSuspended);

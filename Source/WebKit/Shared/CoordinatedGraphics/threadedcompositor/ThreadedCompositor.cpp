@@ -429,5 +429,52 @@ void ThreadedCompositor::targetRefreshRateDidChange(unsigned rate)
     m_displayRefreshMonitor->setTargetRefreshRate(rate);
 }
 
+void ThreadedCompositor::destroyGLResourcesAfterSuspend(bool destroyNativeWindow)
+{
+    // This must be called with the RunLoop suspended.
+    if (m_suspendedCount <= 0)
+        return;
+
+    m_scene->detach();
+    m_compositingRunLoop->performTaskSync([this, protectedThis = Ref { *this }, destroyNativeWindow] {
+        if (m_context) {
+            if (!m_context->makeContextCurrent())
+                return;
+
+            updateSceneWithoutRendering();
+            m_scene->purgeGLResources();
+            m_context = nullptr;
+        }
+
+        if (destroyNativeWindow) {
+            m_client.didDestroyGLContext();
+            m_nativeSurfaceHandle = 0;
+        }
+
+        m_scene = nullptr;
+    });
+}
+
+void ThreadedCompositor::recreateGLResourcesBeforeResume(bool nativeWindowWasDestroyed)
+{
+    // This must be called with the RunLoop suspended.
+    if (m_suspendedCount <= 0)
+        return;
+
+    m_compositingRunLoop->performTaskSync([this, protectedThis = Ref { *this }, nativeWindowWasDestroyed] {
+        m_scene = adoptRef(new CoordinatedGraphicsScene(this));
+
+        if (nativeWindowWasDestroyed)
+            m_nativeSurfaceHandle = m_client.nativeSurfaceHandleForCompositing();
+
+        createGLContext();
+        if (m_context) {
+            if (!m_nativeSurfaceHandle)
+                m_paintFlags |= TextureMapper::PaintingMirrored;
+        }
+    });
+}
+
+
 }
 #endif // USE(COORDINATED_GRAPHICS)

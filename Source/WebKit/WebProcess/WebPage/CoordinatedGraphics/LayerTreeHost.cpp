@@ -57,6 +57,7 @@ LayerTreeHost::LayerTreeHost(WebPage& webPage)
     , m_layerFlushTimer(RunLoop::main(), this, &LayerTreeHost::layerFlushTimerFired)
     , m_coordinator(webPage, *this)
     , m_usingPageLifecycle(webPage.corePage()->settings().pageLifecycleAPIEnabled())
+    , m_destroyNativeWindowOnSuspend(webPage.corePage()->settings().pageLifecycleAPIDestroyWindowOnFreeze())
 {
 #if USE(GLIB_EVENT_LOOP)
     m_layerFlushTimer.setPriority(RunLoopSourcePriority::LayerFlushTimer);
@@ -556,6 +557,31 @@ void LayerTreeHost::commitTransientZoom(double scale, FloatPoint origin)
     m_transientZoomOrigin = FloatPoint();
 }
 #endif
+
+void LayerTreeHost::destroyGLResourcesAfterSuspend()
+{
+    if (!m_isSuspended || !m_usingPageLifecycle)
+        return;
+
+    // Tell the ThreadedCompositor to release its OpenGL resources.
+    m_compositor->destroyGLResourcesAfterSuspend(m_destroyNativeWindowOnSuspend);
+
+    // Destroy the sharingContext.
+    auto& display = PlatformDisplay::sharedDisplayForCompositing();
+    display.sharingGLContext()->makeContextCurrent();
+    display.clearSharingGLContext();
+}
+
+void LayerTreeHost::recreateGLResourcesBeforeResume()
+{
+    if (!m_isSuspended || !m_usingPageLifecycle)
+        return;
+
+    // The sharingContext will be automatically recreated when any GLContext is created.
+
+    // Tell the ThreadedCompositor to recreate its OpenGL resources.
+    m_compositor->recreateGLResourcesBeforeResume(m_destroyNativeWindowOnSuspend);
+}
 
 } // namespace WebKit
 

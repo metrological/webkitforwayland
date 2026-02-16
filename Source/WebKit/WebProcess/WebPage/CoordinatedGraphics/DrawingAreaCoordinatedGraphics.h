@@ -111,6 +111,9 @@ private:
 
     void renderSingleFrameIfRenderingPaused() final;
 
+    void destroyGLResourcesAfterSuspend() final;
+    void recreateGLResourcesBeforeResume() final;
+
     uint64_t m_backingStoreStateID { 0 };
 
     // Whether painting is enabled. If painting is disabled, any calls to setNeedsDisplay and scroll are ignored.

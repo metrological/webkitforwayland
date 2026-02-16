@@ -8037,6 +8037,12 @@ void WebGLRenderingContextBase::maybeRestoreContext()
     if (!hostWindow)
         return;
 
+    if (frame->settings().nonCompositedWebGLEnabled()) {
+        // If the context was lost because the browser was frozen, the nativeWindow will have changed
+        // when resuming, so we need to set the vale again.
+        m_attributes.nativeWindowID = hostWindow->nativeWindowID();
+    }
+
     RefPtr<GraphicsContextGL> context = hostWindow->createGraphicsContextGL(m_attributes);
     if (!context) {
         if (m_contextLostState->mode == RealLostContext)

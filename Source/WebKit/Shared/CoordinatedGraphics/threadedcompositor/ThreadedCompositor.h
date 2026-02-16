@@ -83,6 +83,9 @@ public:
     void resume();
     void renderSingleFrame();
 
+    void destroyGLResourcesAfterSuspend(bool);
+    void recreateGLResourcesBeforeResume(bool);
+
 private:
     ThreadedCompositor(Client&, ThreadedDisplayRefreshMonitor::Client&, WebCore::PlatformDisplayID, const WebCore::IntSize&, float scaleFactor, WebCore::TextureMapper::PaintFlags, bool);
 
