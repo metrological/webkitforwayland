@@ -88,7 +88,33 @@
 #include <wtf/glib/GRefPtr.h>
 #endif
 
+#if USE(CAIRO)
+#include <cairo-gl.h>
+#endif
+
 namespace WebCore {
+
+#if USE(CAIRO)
+static cairo_device_t* s_cairoDevice { nullptr };
+
+cairo_device_t* PlatformDisplay::cairoGLDevice()
+{
+    if (s_cairoDevice)
+        return s_cairoDevice;
+
+    auto* context = sharedDisplayForCompositing().sharingGLContext();
+    if (is<GLContextEGL>(context))
+        s_cairoDevice = cairo_egl_device_create(sharedDisplayForCompositing().eglDisplay(), downcast<GLContextEGL>(context)->context());
+
+    return s_cairoDevice;
+}
+
+static void clearCairoGLDevice()
+{
+    cairo_device_destroy(s_cairoDevice);
+    s_cairoDevice = nullptr;
+}
+#endif
 
 std::unique_ptr<PlatformDisplay> PlatformDisplay::createPlatformDisplay()
 {
@@ -221,6 +247,9 @@ GLContext* PlatformDisplay::sharingGLContext()
 
 void PlatformDisplay::clearSharingGLContext()
 {
+#if USE(CAIRO)
+    clearCairoGLDevice();
+#endif
     m_sharingGLContext = nullptr;
 }
 #endif

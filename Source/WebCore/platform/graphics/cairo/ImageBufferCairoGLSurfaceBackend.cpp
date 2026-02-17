@@ -17,22 +17,6 @@ namespace WebCore {
 
 WTF_MAKE_ISO_ALLOCATED_IMPL(ImageBufferCairoGLSurfaceBackend);
 
-static cairo_device_t* cairoDevice()
-{
-    static cairo_device_t* s_device { nullptr };
-
-    static std::once_flag s_flag;
-    std::call_once(s_flag,
-        [&] {
-            auto& platformDisplay = PlatformDisplay::sharedDisplayForCompositing();
-            auto* context = platformDisplay.sharingGLContext();
-            if (is<GLContextEGL>(context))
-                s_device = cairo_egl_device_create(platformDisplay.eglDisplay(), downcast<GLContextEGL>(context)->context());
-        });
-
-    return s_device;
-}
-
 static RefPtr<cairo_surface_t>
 cairoGLSurfaceCopyToImageSurface(cairo_surface_t* surface)
 {
@@ -97,7 +81,7 @@ std::unique_ptr<ImageBufferCairoGLSurfaceBackend> ImageBufferCairoGLSurfaceBacke
     glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, backendSize.width(), backendSize.height(), 0, GL_RGBA, GL_UNSIGNED_BYTE, 0);
 
-    auto* device = cairoDevice();
+    auto* device = PlatformDisplay::sharedDisplayForCompositing().cairoGLDevice();
     if (!device) {
         glDeleteTextures(1, &textures[0]);
         return { };
@@ -162,7 +146,7 @@ void ImageBufferCairoGLSurfaceBackend::swapBuffersIfNeeded()
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
         glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
         glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, backendSize.width(), backendSize.height(), 0, GL_RGBA, GL_UNSIGNED_BYTE, 0);
-        m_surfaces[1] = adoptRef(cairo_gl_surface_create_for_texture(cairoDevice(), CAIRO_CONTENT_COLOR_ALPHA, m_textures[1], backendSize.width(), backendSize.height()));
+        m_surfaces[1] = adoptRef(cairo_gl_surface_create_for_texture(PlatformDisplay::sharedDisplayForCompositing().cairoGLDevice(), CAIRO_CONTENT_COLOR_ALPHA, m_textures[1], backendSize.width(), backendSize.height()));
         m_compositorContext = adoptRef(cairo_create(m_surfaces[1].get()));
     }
 

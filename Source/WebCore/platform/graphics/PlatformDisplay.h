@@ -50,6 +50,10 @@ typedef struct _GstGLDisplay GstGLDisplay;
 #include "LCMSUniquePtr.h"
 #endif
 
+#if USE(CAIRO)
+#include <cairo.h>
+#endif
+
 namespace WebCore {
 
 class GLContext;
@@ -107,6 +111,10 @@ public:
 
 #if USE(ATSPI)
     const String& accessibilityBusAddress() const;
+#endif
+
+#if USE(CAIRO)
+    cairo_device_t* cairoGLDevice();
 #endif
 
 protected:
