@@ -218,6 +218,25 @@ void RealtimeMediaSource::videoFrameAvailable(VideoFrame& videoFrame, VideoFrame
     updateHasStartedProducingData();
 
     Locker locker { m_videoFrameObserversLock };
+    if (m_videoFrameObservers.isEmpty()) {
+        if (m_pendingVideoFrames.size() < maxPendingVideoFramesBeforeAddTrack) {
+            m_pendingVideoFrames.append(PendingVideoFrame { &videoFrame, metadata });
+        }
+        else {
+            WTFLogAlways("SERXIONE-8283 RealtimeMediaSource: Dropping video frame (queue is full) %zu frames", m_pendingVideoFrames.size());
+        }
+        return;
+    }
+    if (!m_pendingVideoFrames.isEmpty()) {
+        WTFLogAlways("SERXIONE-8283 RealtimeMediaSource: Delivering %zu queued frame(s) (pipeline ready)", m_pendingVideoFrames.size());
+        for (auto& pending : m_pendingVideoFrames) {
+            if (pending.frame) {
+                for (auto* obs : m_videoFrameObservers)
+                    obs->videoFrameAvailable(*pending.frame, pending.metadata);
+            }
+        }
+        m_pendingVideoFrames.clear();
+    }
     for (auto* observer : m_videoFrameObservers)
         observer->videoFrameAvailable(videoFrame, metadata);
 }
