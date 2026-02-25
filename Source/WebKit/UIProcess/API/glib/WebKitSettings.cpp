@@ -1851,7 +1851,7 @@ static void webkit_settings_class_init(WebKitSettingsClass* klass)
         "enable-page-lifecycle",
         _("Enable Page Lifecycle"),
         _("Whether to enable the Page Lifecycle API."),
-        TRUE,
+        FALSE,
         readWriteConstructParamFlags);
 
     /**
