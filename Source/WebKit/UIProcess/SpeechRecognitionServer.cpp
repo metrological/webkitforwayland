@@ -177,6 +177,9 @@ void SpeechRecognitionServer::sendUpdate(WebCore::SpeechRecognitionConnectionCli
 
 void SpeechRecognitionServer::sendUpdate(const WebCore::SpeechRecognitionUpdate& update)
 {
+    if (!m_process || !m_process->hasConnection())
+        return;
+
     send(Messages::WebSpeechRecognitionConnection::DidReceiveUpdate(update));
 }
 
