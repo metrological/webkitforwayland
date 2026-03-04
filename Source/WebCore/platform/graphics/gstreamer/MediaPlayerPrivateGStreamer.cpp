@@ -1401,6 +1401,12 @@ void MediaPlayerPrivateGStreamer::loadingFailed(MediaPlayer::NetworkState networ
 
 GstElement* MediaPlayerPrivateGStreamer::createAudioSink()
 {
+    // ### DEBUG ###
+    GST_WARNING("### Forcing fakesink as audiosink for debugging purposes");
+    auto* fakesink = makeGStreamerElement("fakesink", nullptr);
+    if (fakesink)
+        return fakesink;
+
     auto& quirksManager = GStreamerQuirksManager::singleton();
 
     // If audio is being controlled by an another pipeline, creating sink here may interfere with

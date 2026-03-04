@@ -178,7 +178,7 @@ public:
 
     virtual GstElement* CreateFilter()
     {
-        return makeElement("identity");
+        return makeElement("h264parse");
     }
 
     int32_t Release() final
