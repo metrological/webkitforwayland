@@ -50,7 +50,7 @@ typedef struct _GstGLDisplay GstGLDisplay;
 #include "LCMSUniquePtr.h"
 #endif
 
-#if USE(CAIRO)
+#if USE(CAIRO) && ENABLE(ACCELERATED_2D_CANVAS)
 #include <cairo.h>
 #endif
 
@@ -113,7 +113,7 @@ public:
     const String& accessibilityBusAddress() const;
 #endif
 
-#if USE(CAIRO)
+#if USE(CAIRO) && ENABLE(ACCELERATED_2D_CANVAS)
     cairo_device_t* cairoGLDevice();
 #endif
 

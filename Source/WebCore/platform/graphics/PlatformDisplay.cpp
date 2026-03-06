@@ -88,13 +88,13 @@
 #include <wtf/glib/GRefPtr.h>
 #endif
 
-#if USE(CAIRO)
+#if USE(CAIRO) && ENABLE(ACCELERATED_2D_CANVAS)
 #include <cairo-gl.h>
 #endif
 
 namespace WebCore {
 
-#if USE(CAIRO)
+#if USE(CAIRO) && ENABLE(ACCELERATED_2D_CANVAS)
 static cairo_device_t* s_cairoDevice { nullptr };
 
 cairo_device_t* PlatformDisplay::cairoGLDevice()
@@ -247,7 +247,7 @@ GLContext* PlatformDisplay::sharingGLContext()
 
 void PlatformDisplay::clearSharingGLContext()
 {
-#if USE(CAIRO)
+#if USE(CAIRO) && ENABLE(ACCELERATED_2D_CANVAS)
     clearCairoGLDevice();
 #endif
     m_sharingGLContext = nullptr;
