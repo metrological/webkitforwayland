@@ -1,4 +1,19 @@
 ================
+WebKitGTK 2.50.6
+================
+
+What's new in WebKitGTK 2.50.6?
+
+  - Fix sample code included in the documentation of the
+    webkit_user_content_manager_register_script_message_handler()
+    function.
+  - Fix MP4 muxing when using GStreamer 1.28.
+  - Fix WebAudio not resuming correctly after using window.alert()
+  - Fix WebAudio producing incorrect output in some cases due to
+    incorrect sample buffer management.
+  - Fix several crashes and rendering issues.
+
+================
 WebKitGTK 2.50.5
 ================
 
