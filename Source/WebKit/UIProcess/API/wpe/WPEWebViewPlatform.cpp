@@ -489,7 +489,7 @@ void ViewPlatform::handleGesture(WPEEvent* event)
             // The last WPE_EVENT_TOUCH_UP will normally be preceded by a WPE_EVENT_TOUCH_MOVE with both
             // reporting the same position. In case a platform implementation would not do that, the deltas
             // are non-zero and cause a jump at the end of the gesture. Resetting the delta avoids the jump.
-            if (phase == WebWheelEvent::Phase::Ended)
+            if (phase == WebWheelEvent::Phase::PhaseEnded)
                 dx = dy = 0;
 
             GRefPtr<WPEEvent> simulatedScrollEvent = adoptGRef(wpe_event_scroll_new(
