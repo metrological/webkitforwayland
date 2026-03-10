@@ -355,9 +355,11 @@ public:
         bool drop = m_enoughData;
         auto* buffer = gst_sample_get_buffer(sample.get());
         auto* caps = gst_sample_get_caps(sample.get());
-        if (!GST_CLOCK_TIME_IS_VALID(m_firstBufferPts)) {
+        if (!GST_CLOCK_TIME_IS_VALID(m_firstBufferPts) && GST_CLOCK_TIME_IS_VALID(GST_BUFFER_PTS(buffer))) {
             m_firstBufferPts = GST_BUFFER_PTS(buffer);
             auto pad = adoptGRef(gst_element_get_static_pad(m_src.get(), "src"));
+            GST_DEBUG_OBJECT(m_src.get(), "### First buffer PTS is %" GST_TIME_FORMAT ", setting GstPad %s offset of -PTS",
+                GST_TIME_ARGS(GST_BUFFER_PTS(buffer)), GST_PAD_NAME(pad.get()));
             gst_pad_set_offset(pad.get(), -m_firstBufferPts);
         }
 
@@ -366,7 +368,7 @@ public:
 
         if (drop) {
             m_needsDiscont = true;
-            GST_TRACE_OBJECT(m_src.get(), "%s queue full already... not pushing", m_track.isVideo() ? "Video" : "Audio");
+            GST_TRACE_OBJECT(m_src.get(), "### %s queue full already... not pushing", m_track.isVideo() ? "Video" : "Audio");
             return;
         }
 
@@ -567,7 +569,7 @@ private:
         gst_buffer_add_video_meta_full(buffer.get(), GST_VIDEO_FRAME_FLAG_NONE, GST_VIDEO_FORMAT_I420, width, height, 3, info.offset, info.stride);
         GST_BUFFER_DTS(buffer.get()) = GST_BUFFER_PTS(buffer.get()) = gst_element_get_current_running_time(m_parent);
         auto sample = adoptGRef(gst_sample_new(buffer.get(), m_blackFrameCaps.get(), nullptr, nullptr));
-        pushSample(WTFMove(sample), "Pushing black video frame");
+        pushSample(WTFMove(sample), "### Pushing black video frame");
     }
 
     void pushSilentSample()
@@ -588,7 +590,7 @@ private:
             webkitGstAudioFormatFillSilence(info.finfo, map.data(), map.size());
         }
         auto sample = adoptGRef(gst_sample_new(buffer.get(), m_silentSampleCaps.get(), nullptr, nullptr));
-        pushSample(WTFMove(sample), "Pushing audio silence from disabled track");
+        pushSample(WTFMove(sample), "### Pushing audio silence from disabled track");
     }
 
     void createGstStream()
