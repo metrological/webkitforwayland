@@ -153,11 +153,26 @@ public:
             m_audioTrack = AudioTrackPrivateMediaStream::create(track);
             elementName = makeString("audiosrc", audioCounter);
             audioCounter++;
+
+            m_dumpPipeline = nullptr;
+            m_dumpSrc = nullptr;
         } else {
             RELEASE_ASSERT(track.isVideo());
             m_videoTrack = VideoTrackPrivateMediaStream::create(track);
             elementName = makeString("videosrc", videoCounter);
             videoCounter++;
+
+            //m_dumpPipeline = gst_parse_launch(
+            //    "appsrc name=dumpsrc ! h264parse name=dumpparse ! video/x-h264,stream-format=byte-stream ! filesink name=dumpsink location=/tmp/webrtc.h264",
+            //    nullptr);
+            m_dumpPipeline = gst_parse_launch(
+                "appsrc name=dumpsrc ! filesink name=dumpsink location=/tmp/webrtc.h264",
+                nullptr);
+            m_dumpSrc = gst_bin_get_by_name(GST_BIN(m_dumpPipeline.get()), "dumpsrc");
+            GST_DEBUG_OBJECT(m_dumpSrc.get(), "=//= Setup");
+
+            GST_DEBUG_OBJECT(m_dumpSrc.get(), "=//= Play");
+            gst_element_set_state(m_dumpPipeline.get(), GST_STATE_PLAYING);
         }
 
         bool isCaptureTrack = track.isCaptureTrack();
@@ -336,6 +351,11 @@ public:
 
     void signalEndOfStream()
     {
+        if (m_dumpSrc) {
+            GST_INFO_OBJECT(m_dumpSrc.get(), "=//= EOS");
+            gst_app_src_end_of_stream(GST_APP_SRC(m_dumpSrc.get()));
+        }
+
         if (m_src)
             gst_app_src_end_of_stream(GST_APP_SRC(m_src.get()));
         callOnMainThreadAndWait([&] {
@@ -375,6 +395,13 @@ public:
         if (m_needsDiscont) {
             GST_BUFFER_FLAG_SET(buffer, GST_BUFFER_FLAG_DISCONT);
             m_needsDiscont = false;
+        }
+
+        if (m_dumpSrc) {
+            GRefPtr<GstSample> copied = adoptGRef(gst_sample_copy(sample.get()));
+            GST_DEBUG_OBJECT(m_dumpSrc.get(), "=//= Pushing sample with caps: %" GST_PTR_FORMAT, gst_sample_get_caps(copied.get()));
+            gst_app_src_push_sample(GST_APP_SRC(m_dumpSrc.get()), copied.get());
+
         }
 
         if (m_track.isAudio()) {
@@ -635,6 +662,9 @@ private:
     bool m_consumerIsVideoPlayer { false };
     bool m_isIncomingVideoSource { false };
     GRefPtr<GstStream> m_stream;
+
+    GRefPtr<GstElement> m_dumpPipeline;
+    GRefPtr<GstElement> m_dumpSrc;
 };
 
 struct _WebKitMediaStreamSrcPrivate {
