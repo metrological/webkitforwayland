@@ -377,7 +377,11 @@ public:
             m_needsDiscont = false;
         }
 
-        gst_app_src_push_sample(GST_APP_SRC(m_src.get()), sample.get());
+        if (m_track.isAudio()) {
+            GST_WARNING_OBJECT(m_src.get(), "!!! NOT pushing audio samplo in MediaStream !!!");
+        } else {
+            gst_app_src_push_sample(GST_APP_SRC(m_src.get()), sample.get());
+        }
     }
 
     void trackStarted(MediaStreamTrackPrivate&) final { };
@@ -1099,7 +1103,11 @@ void webkitMediaStreamSrcAddTrack(WebKitMediaStreamSrc* self, MediaStreamTrackPr
     auto padName = makeString(sourceType, "_src", counter);
     auto source = makeUnique<InternalSource>(GST_ELEMENT_CAST(self), *track, padName, consumerIsVideoPlayer);
     auto* element = source->get();
-    gst_bin_add(GST_BIN_CAST(self), element);
+    if (track->isAudio()) {
+        GST_WARNING_OBJECT(self, "!!! NOT setting up audio source in MediaStream !!!");
+    } else {
+        gst_bin_add(GST_BIN_CAST(self), element);
+    }
 
     auto pad = adoptGRef(gst_element_get_static_pad(element, "src"));
     auto tags = mediaStreamTrackPrivateGetTags(*track);
