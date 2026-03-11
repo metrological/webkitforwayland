@@ -165,6 +165,8 @@ public:
             //m_dumpPipeline = gst_parse_launch(
             //    "appsrc name=dumpsrc ! h264parse name=dumpparse ! video/x-h264,stream-format=byte-stream ! filesink name=dumpsink location=/tmp/webrtc.h264",
             //    nullptr);
+
+            /*
             m_dumpPipeline = gst_parse_launch(
                 "appsrc name=dumpsrc ! filesink name=dumpsink location=/tmp/webrtc.h264",
                 nullptr);
@@ -173,6 +175,7 @@ public:
 
             GST_DEBUG_OBJECT(m_dumpSrc.get(), "=//= Play");
             gst_element_set_state(m_dumpPipeline.get(), GST_STATE_PLAYING);
+            */
         }
 
         bool isCaptureTrack = track.isCaptureTrack();
@@ -397,12 +400,14 @@ public:
             m_needsDiscont = false;
         }
 
+        /*
         if (m_dumpSrc) {
             GRefPtr<GstSample> copied = adoptGRef(gst_sample_copy(sample.get()));
             GST_DEBUG_OBJECT(m_dumpSrc.get(), "=//= Pushing sample with caps: %" GST_PTR_FORMAT, gst_sample_get_caps(copied.get()));
             gst_app_src_push_sample(GST_APP_SRC(m_dumpSrc.get()), copied.get());
 
         }
+        */
 
         if (m_track.isAudio()) {
             GST_WARNING_OBJECT(m_src.get(), "!!! NOT pushing audio samplo in MediaStream !!!");

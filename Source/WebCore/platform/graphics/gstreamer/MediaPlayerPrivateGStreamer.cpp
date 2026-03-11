@@ -80,6 +80,7 @@
 #include <cstring>
 #include <fnmatch.h>
 #include <glib.h>
+#include <gst/app/gstappsrc.h>
 #include <gst/audio/streamvolume.h>
 #include <gst/gst.h>
 #include <gst/pbutils/missing-plugins.h>
@@ -3082,7 +3083,8 @@ static const char* gst_state_to_string(GstState s) {
 
 
 // debugProbeId refers to an index in the debugProbeIds array.
-static void installOrUninstallProbeIfNeeded(MediaPlayerPrivateGStreamer* player, const char* elementNamePattern, const char* padName, GstState installState, uint debugProbeId, GstMessage* message)
+// dumpPipeline, if not null, must contain an "appsrc name=dumpsrc" element.
+static void installOrUninstallProbeIfNeeded(MediaPlayerPrivateGStreamer* player, const char* elementNamePattern, const char* padName, GstState installState, uint debugProbeId, GstMessage* message, const char* dumpPipeline = nullptr)
 {
     if (GST_MESSAGE_TYPE(message) == GST_MESSAGE_STATE_CHANGED
         && !fnmatch(elementNamePattern, GST_MESSAGE_SRC_NAME(message), 0)) {
@@ -3104,14 +3106,33 @@ static void installOrUninstallProbeIfNeeded(MediaPlayerPrivateGStreamer* player,
                 const gchar* padName = GST_PAD_NAME(pad.get());
                 const gchar* elementName = GST_ELEMENT_NAME(element);
                 printf("### %s: Adding probe to pad %s:%s: (caps) %s\n", __PRETTY_FUNCTION__, elementName, padName, strcaps.get()); fflush(stdout);
+                gpointer userData = nullptr;
+                if (dumpPipeline) {
+                    printf("### %s: Dumping data to pipeline: %s\n", __PRETTY_FUNCTION__, dumpPipeline); fflush(stdout);
+
+                    // We're leaking this pipeline and never signaling EOS, but this is debug, who cares? O:-)
+                    GstElement* pipeline = GST_ELEMENT(gst_object_ref(gst_parse_launch(dumpPipeline, nullptr)));
+                    GstElement* dumpsrc = GST_ELEMENT(gst_bin_get_by_name(GST_BIN(pipeline), "dumpsrc"));
+                    userData = dumpsrc;
+                    gst_element_set_state(pipeline, GST_STATE_PLAYING);
+                }
                 probeId = gst_pad_add_probe(pad.get(), GST_PAD_PROBE_TYPE_BUFFER,
-                    [] (GstPad* pad, GstPadProbeInfo* info, gpointer) -> GstPadProbeReturn {
+                    [] (GstPad* pad, GstPadProbeInfo* info, gpointer userData) -> GstPadProbeReturn {
                         GstBuffer *buffer = GST_BUFFER(info->data);
                         const gchar* padName = GST_PAD_NAME(pad);
                         const gchar* elementName = GST_ELEMENT_NAME(GST_PAD_PARENT(pad));
                         printf("### %s:%s: PTS=%" GST_TIME_FORMAT ", DUR=%" GST_TIME_FORMAT "\n", elementName, padName, GST_TIME_ARGS(GST_BUFFER_PTS(buffer)), GST_TIME_ARGS(GST_BUFFER_DURATION(buffer))); fflush(stdout);
+
+                        if (userData) {
+                            GstElement* dumpsrc = GST_ELEMENT(userData);
+                            GRefPtr<GstCaps> currentCaps = adoptGRef(gst_pad_get_current_caps(pad));
+                            GST_DEBUG_OBJECT(dumpsrc, "=//= Pushing sample with caps: %" GST_PTR_FORMAT, currentCaps.get());
+                            gst_app_src_set_caps(GST_APP_SRC(dumpsrc), currentCaps.get());
+                            gst_app_src_push_buffer(GST_APP_SRC(dumpsrc), gst_buffer_copy(buffer));
+                        }
+
                         return GST_PAD_PROBE_OK;
-                    }, nullptr, nullptr);
+                    }, userData, nullptr);
             }
         } else if (currentState == static_cast<GstState>(installState) && newState == installState-1) {
             GRefPtr<GstPad> pad = adoptGRef(gst_element_get_static_pad(element, padName));
@@ -3198,10 +3219,10 @@ void MediaPlayerPrivateGStreamer::createGSTPlayBin(const URL& url)
         uint debugProbeId = 0;
 
         // Place more installOrUninstallProbeIfNeeded() calls here. Wildcards can be used to match element names.
-        installOrUninstallProbeIfNeeded(player, "brcmvidfilter*", "brcm-vidfilter-sink", GST_STATE_PAUSED, debugProbeId++, message);
-        installOrUninstallProbeIfNeeded(player, "parsebin1", "sink", GST_STATE_PAUSED, debugProbeId++, message);
-        installOrUninstallProbeIfNeeded(player, "WesterosVideoSink", "sink", GST_STATE_PAUSED, debugProbeId++, message);
-        installOrUninstallProbeIfNeeded(player, "*brcmaudio", "sink", GST_STATE_PAUSED, debugProbeId++, message);
+        installOrUninstallProbeIfNeeded(player, "brcmvidfilter*", "brcm-vidfilter-sink", GST_STATE_PAUSED, debugProbeId++, message, "appsrc name=dumpsrc ! filesink name=dumpsink location=/tmp/webrtc.h264");
+        //installOrUninstallProbeIfNeeded(player, "parsebin1", "sink", GST_STATE_PAUSED, debugProbeId++, message, false);
+        //installOrUninstallProbeIfNeeded(player, "WesterosVideoSink", "sink", GST_STATE_PAUSED, debugProbeId++, message, false);
+        //installOrUninstallProbeIfNeeded(player, "*brcmaudio", "sink", GST_STATE_PAUSED, debugProbeId++, message, false);
     }), this);
 
     g_object_set(m_pipeline.get(), "mute", static_cast<gboolean>(m_player->muted()), nullptr);
