@@ -679,20 +679,29 @@ MediaTime MediaPlayerPrivateGStreamer::durationMediaTime() const
 MediaTime MediaPlayerPrivateGStreamer::currentMediaTime() const
 {
     if (isMediaStreamPlayer()) {
-        if (m_pausedTime)
+        if (m_pausedTime) {
+            GST_DEBUG_OBJECT(pipeline(), "Position (m_pausedTime): %s", m_pausedTime.toString().utf8().data());
             return m_pausedTime;
+        }
 
-        return MediaTime::createWithDouble(MonotonicTime::now().secondsSinceEpoch().value()) - m_startTime;
+        MediaTime result = MediaTime::createWithDouble(MonotonicTime::now().secondsSinceEpoch().value()) - m_startTime;
+        GST_DEBUG_OBJECT(pipeline(), "Position (isMediaStreamPlayer): %s", result.toString().utf8().data());
+        return result;
     }
 
-    if (!m_pipeline || m_didErrorOccur)
+    if (!m_pipeline || m_didErrorOccur) {
+        GST_DEBUG_OBJECT(pipeline(), "Position (invalid)");
         return MediaTime::invalidTime();
+    }
 
-    GST_TRACE_OBJECT(pipeline(), "seeking: %s, seekTime: %s", boolForPrinting(m_isSeeking), m_seekTime.toString().utf8().data());
-    if (m_isSeeking)
+    if (m_isSeeking) {
+        GST_DEBUG_OBJECT(pipeline(), "Position (seeking): %s", m_seekTime.toString().utf8().data());
         return m_seekTime;
+    }
 
-    return playbackPosition();
+    MediaTime result = playbackPosition();
+    GST_DEBUG_OBJECT(pipeline(), "Position (playbackPosition): %s", result.toString().utf8().data());    
+    return result;
 }
 
 void MediaPlayerPrivateGStreamer::setRate(float rate)
@@ -3189,7 +3198,10 @@ void MediaPlayerPrivateGStreamer::createGSTPlayBin(const URL& url)
         uint debugProbeId = 0;
 
         // Place more installOrUninstallProbeIfNeeded() calls here. Wildcards can be used to match element names.
-        //installOrUninstallProbeIfNeeded(player, "source", "src_A0", GST_STATE_PLAYING, debugProbeId++, message);
+        installOrUninstallProbeIfNeeded(player, "brcmvidfilter*", "brcm-vidfilter-sink", GST_STATE_PAUSED, debugProbeId++, message);
+        installOrUninstallProbeIfNeeded(player, "parsebin1", "sink", GST_STATE_PAUSED, debugProbeId++, message);
+        installOrUninstallProbeIfNeeded(player, "WesterosVideoSink", "sink", GST_STATE_PAUSED, debugProbeId++, message);
+        installOrUninstallProbeIfNeeded(player, "*brcmaudio", "sink", GST_STATE_PAUSED, debugProbeId++, message);
     }), this);
 
     g_object_set(m_pipeline.get(), "mute", static_cast<gboolean>(m_player->muted()), nullptr);
