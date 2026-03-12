@@ -3115,6 +3115,14 @@ static void installOrUninstallProbeIfNeeded(MediaPlayerPrivateGStreamer* player,
                     GstElement* dumpsrc = GST_ELEMENT(gst_bin_get_by_name(GST_BIN(pipeline), "dumpsrc"));
                     userData = dumpsrc;
                     gst_element_set_state(pipeline, GST_STATE_PLAYING);
+                    g_timeout_add(2000, [] (gpointer userData) -> gboolean {
+                        static guint id = 0;
+                        GstElement* pipeline = GST_ELEMENT(userData);
+                        auto dotFileName = makeString(GST_OBJECT_NAME(pipeline), "_", id);
+                        printf("### %s: dumpPipeline graph saved", __PRETTY_FUNCTION__); fflush(stdout);
+                        GST_DEBUG_BIN_TO_DOT_FILE_WITH_TS(GST_BIN_CAST(pipeline), GST_DEBUG_GRAPH_SHOW_ALL, dotFileName.utf8().data());
+                        return G_SOURCE_REMOVE;
+                    }, pipeline);
                 }
                 probeId = gst_pad_add_probe(pad.get(), GST_PAD_PROBE_TYPE_BUFFER,
                     [] (GstPad* pad, GstPadProbeInfo* info, gpointer userData) -> GstPadProbeReturn {
@@ -3219,7 +3227,12 @@ void MediaPlayerPrivateGStreamer::createGSTPlayBin(const URL& url)
         uint debugProbeId = 0;
 
         // Place more installOrUninstallProbeIfNeeded() calls here. Wildcards can be used to match element names.
-        installOrUninstallProbeIfNeeded(player, "brcmvidfilter*", "brcm-vidfilter-sink", GST_STATE_PAUSED, debugProbeId++, message, "appsrc name=dumpsrc ! filesink name=dumpsink location=/tmp/webrtc.h264");
+        //installOrUninstallProbeIfNeeded(player, "brcmvidfilter*", "brcm-vidfilter-sink", GST_STATE_PAUSED, debugProbeId++, message, "appsrc name=dumpsrc ! filesink name=dumpsink location=/tmp/webrtc.h264");
+
+        //installOrUninstallProbeIfNeeded(player, "brcmvidfilter*", "brcm-vidfilter-sink",
+        //    GST_STATE_PAUSED, debugProbeId++, message,
+        //    "appsrc name=dumpsrc ! brcmvidfilter ! queue ! westerossink");
+
         //installOrUninstallProbeIfNeeded(player, "parsebin1", "sink", GST_STATE_PAUSED, debugProbeId++, message, false);
         //installOrUninstallProbeIfNeeded(player, "WesterosVideoSink", "sink", GST_STATE_PAUSED, debugProbeId++, message, false);
         //installOrUninstallProbeIfNeeded(player, "*brcmaudio", "sink", GST_STATE_PAUSED, debugProbeId++, message, false);
