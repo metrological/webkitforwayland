@@ -19,7 +19,6 @@ skip:
     - resizable-arraybuffer
     - import-assertions
     - json-modules
-    - class-static-block
     - callable-boundary-realms
     - FinalizationRegistry.prototype.cleanupSome
     - Intl.DurationFormat
