@@ -235,6 +235,8 @@ void WebPageProxy::callAfterNextPresentationUpdate(CompletionHandler<void()>&& c
 
         if (RefPtr pageClient = protectedThis->pageClient())
             static_cast<PageClientImpl&>(*pageClient).callAfterNextPresentationUpdate(WTFMove(callback));
+        else
+            callback();
     });
     auto drawingAreaIdentifier = m_drawingArea->identifier();
     forEachWebContentProcess([&] (auto& process, auto) {
