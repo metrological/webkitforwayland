@@ -138,6 +138,17 @@ static VideoDecodingLimits* resolveVideoDecodingLimits()
     return limits ? &*limits : nullptr;
 }
 
+// Returns true if the given mp4a codec string refers to USAC (xHE-AAC, AudioObjectType=42).
+// Format: mp4a.<hex-object-type>.<decimal-audio-object-type>  e.g. "mp4a.40.42"
+static bool isUsacMp4aCodec(const String& codec)
+{
+    auto parts = codec.split('.');
+    if (parts.size() != 3)
+        return false;
+    auto aot = parseInteger<unsigned>(parts[2]);
+    return aot && *aot == 42;
+}
+
 // We shouldn't accept media that the player can't actually play.
 // AAC supports up to 96 channels.
 #define MEDIA_MAX_AAC_CHANNELS 96
@@ -798,6 +809,8 @@ GStreamerRegistryScanner::CodecLookupResult GStreamerRegistryScanner::isCodecSup
         result = isAVC1CodecSupported(configuration, codecName, shouldCheckForHardwareUse);
     else if (codecName.startsWith("hev1"_s) || codecName.startsWith("hvc1"_s))
         result = isHEVCCodecSupported(configuration, codecName, shouldCheckForHardwareUse);
+    else if (codecName.startsWith("mp4a"_s) && isUsacMp4aCodec(codecName))
+        result = isUSACCodecSupported(configuration, shouldCheckForHardwareUse);
     else if (codecName.startsWith("ac-4"_s) && !parseAc4LevelAndProfile(codecName))
         result = { false, nullptr };
 #if PLATFORM(WPE)
@@ -949,21 +962,19 @@ bool GStreamerRegistryScanner::areAllCodecsSupported(Configuration configuration
     return true;
 }
 
-GStreamerRegistryScanner::CodecLookupResult GStreamerRegistryScanner::areCapsSupported(Configuration configuration, const GRefPtr<GstCaps>& caps, bool shouldCheckForHardwareUse) const
+GStreamerRegistryScanner::CodecLookupResult GStreamerRegistryScanner::areCapsSupported(ElementFactories::Type factoryType, const GRefPtr<GstCaps>& caps, bool shouldCheckForHardwareUse) const
 {
-    OptionSet<ElementFactories::Type> factoryTypes;
-    switch (configuration) {
-    case Configuration::Decoding:
-        factoryTypes.add(ElementFactories::Type::VideoDecoder);
-        break;
-    case Configuration::Encoding:
-        factoryTypes.add(ElementFactories::Type::VideoEncoder);
-        break;
-    }
+    OptionSet<ElementFactories::Type> factoryTypes = { factoryType };
     auto lookupResult = ElementFactories(factoryTypes).hasElementForCaps(factoryTypes.toSingleValue().value(), caps, ElementFactories::CheckHardwareClassifier::Yes);
     bool supported = lookupResult && (shouldCheckForHardwareUse ? lookupResult.isUsingHardware : true);
     GST_DEBUG("%s decoding supported for caps %" GST_PTR_FORMAT ": %s", shouldCheckForHardwareUse ? "Hardware" : "Software", caps.get(), boolForPrinting(supported));
     return { supported, supported ? lookupResult.factory : nullptr };
+}
+
+GStreamerRegistryScanner::CodecLookupResult GStreamerRegistryScanner::areCapsSupported(Configuration configuration, const GRefPtr<GstCaps>& caps, bool shouldCheckForHardwareUse) const
+{
+    auto factoryType = configuration == Configuration::Decoding ? ElementFactories::Type::VideoDecoder : ElementFactories::Type::VideoEncoder;
+    return areCapsSupported(factoryType, caps, shouldCheckForHardwareUse);
 }
 
 GStreamerRegistryScanner::CodecLookupResult GStreamerRegistryScanner::isAVC1CodecSupported(Configuration configuration, const String& codec, bool shouldCheckForHardwareUse) const
@@ -1019,6 +1030,17 @@ ASCIILiteral GStreamerRegistryScanner::configurationNameForLogging(Configuration
         return "decoding"_s;
     }
     return ""_s;
+}
+
+GStreamerRegistryScanner::CodecLookupResult GStreamerRegistryScanner::isUSACCodecSupported(Configuration configuration, bool shouldCheckForHardwareUse) const
+{
+    // USAC (Unified Speech and Audio Coding / xHE-AAC) requires a decoder that explicitly
+    // supports xHE-AAC/USAC. Check stream-format=usac: used by platform decoders/sinks
+    auto factoryType = configuration == Configuration::Decoding ? ElementFactories::Type::AudioDecoder : ElementFactories::Type::AudioEncoder;
+    auto usacStreamFormatCaps = adoptGRef(gst_caps_from_string("audio/mpeg, mpegversion=(int)4, stream-format=(string)usac"));
+    auto result = areCapsSupported(factoryType, usacStreamFormatCaps, shouldCheckForHardwareUse);
+    GST_DEBUG("USAC (xHE-AAC) audio %s supported: %s", shouldCheckForHardwareUse ? "hardware" : "software", boolForPrinting(result.isSupported));
+    return result;
 }
 
 bool GStreamerRegistryScanner::parseAc4LevelAndProfile(const String& codec) const

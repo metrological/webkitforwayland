@@ -161,6 +161,7 @@ protected:
     void initializeEncoders(const ElementFactories&);
 
     RegistryLookupResult isConfigurationSupported(Configuration, const MediaConfiguration&) const;
+    CodecLookupResult areCapsSupported(ElementFactories::Type, const GRefPtr<GstCaps>&, bool shouldCheckForHardwareUse) const;
 
     struct GstCapsWebKitMapping {
         ElementFactories::Type elementType;
@@ -175,6 +176,7 @@ private:
     CodecLookupResult isHEVCCodecSupported(Configuration, const String& codec, bool shouldCheckForHardwareUse) const;
 
     bool parseAc4LevelAndProfile(const String& codec) const;
+    CodecLookupResult isUSACCodecSupported(Configuration, bool shouldCheckForHardwareUse) const;
 
     ASCIILiteral configurationNameForLogging(Configuration) const;
     bool supportsFeatures(const String& features) const;
