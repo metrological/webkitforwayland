@@ -565,7 +565,7 @@ void GStreamerRegistryScanner::initializeDecoders(const GStreamerRegistryScanner
     Vector<GstCapsWebKitMapping> mseCompatibleMapping = {
         { ElementFactories::Type::AudioDecoder, "audio/x-ac3"_s, { }, { "x-ac3"_s, "ac-3"_s, "ac3"_s } },
         { ElementFactories::Type::AudioDecoder, "audio/x-eac3"_s, { "audio/x-ac3"_s }, { "x-eac3"_s, "ec3"_s, "ec-3"_s, "eac3"_s } },
-        { ElementFactories::Type::AudioDecoder, "audio/x-ac4"_s, { }, { "x-ac4"_s, "ac-4*"_s, "ac4*"_s } },
+        { ElementFactories::Type::AudioDecoder, "audio/x-ac4"_s, { }, { "x-ac4"_s, "ac-4*"_s, "ac4"_s } },
         { ElementFactories::Type::AudioDecoder, "audio/x-flac"_s, { "audio/x-flac"_s, "audio/flac"_s }, { "x-flac"_s, "flac"_s, "fLaC"_s } },
     };
     fillMimeTypeSetFromCapsMapping(factories, mseCompatibleMapping);
@@ -798,6 +798,8 @@ GStreamerRegistryScanner::CodecLookupResult GStreamerRegistryScanner::isCodecSup
         result = isAVC1CodecSupported(configuration, codecName, shouldCheckForHardwareUse);
     else if (codecName.startsWith("hev1"_s) || codecName.startsWith("hvc1"_s))
         result = isHEVCCodecSupported(configuration, codecName, shouldCheckForHardwareUse);
+    else if (codecName.startsWith("ac-4"_s) && !parseAc4LevelAndProfile(codecName))
+        result = { false, nullptr };
 #if PLATFORM(WPE)
     else if ((codecName.startsWith("dvhe"_s) || codecName.startsWith("dvh1"_s)) && !supportsDVHCodec)
         result = { false, nullptr };
@@ -1017,6 +1019,35 @@ ASCIILiteral GStreamerRegistryScanner::configurationNameForLogging(Configuration
         return "decoding"_s;
     }
     return ""_s;
+}
+
+bool GStreamerRegistryScanner::parseAc4LevelAndProfile(const String& codec) const
+{
+    auto parts = codec.split('.');
+    // sanity check
+    if (parts.isEmpty())
+        return false;
+    // "ac-4" with no dots is valid (generic, unconstrained).
+    if (parts.size() == 1 && equalIgnoringASCIICase(parts[0], "ac-4"_s))
+        return true;
+    // Full format requires exactly 4 components: ["ac-4", bitstream_version, presentation_version, mdcompat]
+    if (parts.size() != 4) {
+        GST_DEBUG("AC-4 codec string has wrong number of components: %s", codec.utf8().data());
+        return false;
+    }
+    // presentation_version must be 1 (stereo/5.1); value 2 denotes IMS which is not supported.
+    auto presentationVersion = parseInteger<unsigned>(parts[2]);
+    if (!presentationVersion || *presentationVersion != 1) {
+        GST_DEBUG("AC-4 codec string has unsupported presentation_version: %s", codec.utf8().data());
+        return false;
+    }
+    // mdcompat (level): only levels 0-3 are supported.
+    auto mdcompat = parseInteger<unsigned>(parts[3]);
+    if (!mdcompat || *mdcompat > 3) {
+        GST_DEBUG("AC-4 codec string has unsupported mdcompat level: %s", codec.utf8().data());
+        return false;
+    }
+    return true;
 }
 
 GStreamerRegistryScanner::RegistryLookupResult GStreamerRegistryScanner::isConfigurationSupported(Configuration configuration, const MediaConfiguration& mediaConfiguration) const

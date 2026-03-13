@@ -174,6 +174,8 @@ private:
     CodecLookupResult isAVC1CodecSupported(Configuration, const String& codec, bool shouldCheckForHardwareUse) const;
     CodecLookupResult isHEVCCodecSupported(Configuration, const String& codec, bool shouldCheckForHardwareUse) const;
 
+    bool parseAc4LevelAndProfile(const String& codec) const;
+
     ASCIILiteral configurationNameForLogging(Configuration) const;
     bool supportsFeatures(const String& features) const;
 
