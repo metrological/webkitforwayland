@@ -1020,10 +1020,11 @@ ASCIILiteral GStreamerRegistryScanner::configurationNameForLogging(Configuration
 
 GStreamerRegistryScanner::RegistryLookupResult GStreamerRegistryScanner::isConfigurationSupported(Configuration configuration, const MediaConfiguration& mediaConfiguration) const
 {
-    bool isUsingHardware = false;
 #ifndef GST_DISABLE_GST_DEBUG
     ASCIILiteral configLogString = configurationNameForLogging(configuration);
 #endif
+
+    Vector<String> allCodecs;
 
     if (mediaConfiguration.video) {
         auto& videoConfiguration = mediaConfiguration.video.value();
@@ -1054,12 +1055,7 @@ GStreamerRegistryScanner::RegistryLookupResult GStreamerRegistryScanner::isConfi
         if (!isContainerTypeSupported(configuration, contentType.containerType()))
             return { false, false, nullptr };
 
-        auto codecs = contentType.codecs();
-        if (!codecs.isEmpty()) {
-            if (!areAllCodecsSupported(configuration, codecs, false))
-                return { false, false, nullptr };
-            isUsingHardware = areAllCodecsSupported(configuration, codecs, true);
-        }
+        allCodecs.appendVector(contentType.codecs());
     }
 
     if (mediaConfiguration.audio) {
@@ -1072,6 +1068,15 @@ GStreamerRegistryScanner::RegistryLookupResult GStreamerRegistryScanner::isConfi
         auto contentType = ContentType(audioConfiguration.contentType);
         if (!isContainerTypeSupported(configuration, contentType.containerType()))
             return { false, false, nullptr };
+
+        allCodecs.appendVector(contentType.codecs());
+    }
+
+    bool isUsingHardware = false;
+    if (!allCodecs.isEmpty()) {
+        if (!areAllCodecsSupported(configuration, allCodecs, false))
+            return { false, false, nullptr };
+        isUsingHardware = areAllCodecsSupported(configuration, allCodecs, true);
     }
 
     return { true, isUsingHardware, nullptr };
