@@ -47,11 +47,11 @@
 /Tools/TestWebKitAPI
 /Tools/TestWebKitAPI/WebKitGLib/ @WebKit/glib-reviewers
 /Tools/TestWebKitAPI/WebKitGtk/ @WebKit/glib-reviewers
-/Tools/TestWebKitAPI/WPEQt/ @philn
+/Tools/TestWebKitAPI/WPEQt/
 
-/Tools/buildstream/ @philn
-/Tools/flatpak/ @philn
-/Tools/gstreamer/ @WebKit/glib-reviewers @philn
+/Tools/buildstream/
+/Tools/flatpak/
+/Tools/gstreamer/ @WebKit/glib-reviewers
 /Tools/jhbuild/ @WebKit/glib-reviewers
 
 # ================================================================================
@@ -153,11 +153,11 @@ nicosia/ @magomez @zdobersek
 # ================================================================================
 # Linux Multimedia
 
-/Source/WebCore/Modules/mediastream/gstreamer @calvaris @philn
-/Source/WebCore/platform/audio/gstreamer @calvaris @philn
-/Source/WebCore/platform/graphics/gstreamer @ntrrgc @calvaris @philn
-/Source/WebCore/platform/mediastream/gstreamer @calvaris @philn
-gstreamer/ @philn
+/Source/WebCore/Modules/mediastream/gstreamer @calvaris
+/Source/WebCore/platform/audio/gstreamer @calvaris
+/Source/WebCore/platform/graphics/gstreamer @ntrrgc @calvaris
+/Source/WebCore/platform/mediastream/gstreamer @calvaris
+gstreamer/
 
 # ================================================================================
 # WPE WebKit and WebKitGTK
@@ -179,7 +179,7 @@ soup/ @WebKit/glib-reviewers
 unix/ @WebKit/glib-reviewers
 xdg/ @WebKit/glib-reviewers
 wpe/ @WebKit/glib-reviewers @zdobersek
-**/wpe/qt/ @philn
+**/wpe/qt/
 
 /LayoutTests/platform/glib/
 /LayoutTests/platform/gtk/
