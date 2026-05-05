@@ -499,6 +499,10 @@ void GStreamerRegistryScanner::initializeDecoders(const GStreamerRegistryScanner
         // USAC AOT, is not yet widely available enough to be enabled by default.
         const char* value = g_getenv("WEBKIT_GST_CAN_PLAY_USAC");
         bool canPlayUsac = value && (!g_strcmp0(value, "true") || !g_strcmp0(value, "1"));
+        if (!value) {
+            // Env is not set. Fall back to gst elements query
+            canPlayUsac = factories.hasElementForMediaType(ElementFactories::Type::AudioDecoder, "audio/mpeg, mpegversion=(int)4, stream-format=(string)usac"_s).isSupported;
+        }
         if (canPlayUsac)
             m_decoderCodecMap.add("mp4a.40.42"_s, result); // MPEG-4 Extended HE-AAC and xHE-AAC (USAC AOT)
     }
