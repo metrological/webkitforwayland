@@ -37,9 +37,12 @@ WeakSet::~WeakSet()
         remove();
     
     Heap& heap = *this->heap();
-    while (WeakBlock* block = m_blocks.removeHead())
+    WeakBlock* next = nullptr;
+    for (WeakBlock* block = m_blocks.head(); block; block = next) {
+        next = block->next();
         WeakBlock::destroy(heap, block);
-    ASSERT(m_blocks.isEmpty());
+    }
+    m_blocks.clear();
 }
 
 void WeakSet::sweep()
