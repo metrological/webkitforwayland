@@ -1273,7 +1273,6 @@ void JIT::emit_op_in_by_id(const JSInstruction* currentInstruction)
     addSlowCase();
     m_inByIds.append(gen);
 
-    resetSP(); // We might OSR exit here, so we need to conservatively reset SP
     setFastPathResumePoint();
     emitPutVirtualRegister(resultVReg, resultJSR);
 }
@@ -1334,7 +1333,6 @@ void JIT::emit_op_in_by_val(const JSInstruction* currentInstruction)
     addSlowCase();
     m_inByVals.append(gen);
 
-    resetSP(); // We might OSR exit here, so we need to conservatively reset SP
     setFastPathResumePoint();
     emitPutVirtualRegister(dst, resultJSR);
 }
@@ -1387,7 +1385,6 @@ void JIT::emitHasPrivate(VirtualRegister dst, VirtualRegister base, VirtualRegis
     addSlowCase();
     m_inByVals.append(gen);
 
-    resetSP(); // We might OSR exit here, so we need to conservatively reset SP
     setFastPathResumePoint();
     emitPutVirtualRegister(dst, resultJSR);
 }
