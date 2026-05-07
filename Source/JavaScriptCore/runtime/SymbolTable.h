@@ -668,7 +668,6 @@ public:
                 return false;
             m_arguments.set(vm, this, table);
         }
-
         return true;
     }
 
@@ -688,16 +687,6 @@ public:
         return true;
     }
     
-    void prepareToWatchScopedArgument(SymbolTableEntry& entry, uint32_t i)
-    {
-        entry.prepareToWatch();
-        if (!m_arguments)
-            return;
-
-        WatchpointSet* watchpoints = entry.watchpointSet();
-        m_arguments->trySetWatchpointSet(i, watchpoints);
-    }
-
     ScopedArgumentsTable* arguments() const
     {
         if (!m_arguments)
@@ -747,10 +736,6 @@ public:
     DECLARE_VISIT_CHILDREN;
 
     DECLARE_EXPORT_INFO;
-
-#if ASSERT_ENABLED
-    bool hasScopedWatchpointSet(WatchpointSet*);
-#endif
 
     void finalizeUnconditionally(VM&);
     void dump(PrintStream&) const;

@@ -319,9 +319,8 @@ public:
 
     // Exactly equivalent to codeBlock->ownerExecutable()->newReplacementCodeBlockFor(codeBlock->specializationKind())
     CodeBlock* newReplacement();
-    CodeBlock* replacement();
-
-    void setJITCode(Ref<JSC::JITCode>&& code)
+    
+    void setJITCode(Ref<JITCode>&& code)
     {
         if (!code->isShared())
             heap()->reportExtraMemoryAllocated(code->size());
@@ -348,6 +347,8 @@ public:
     bool useDataIC() const;
 
 #if ENABLE(JIT)
+    CodeBlock* replacement();
+
     DFG::CapabilityLevel computeCapabilityLevel();
     DFG::CapabilityLevel capabilityLevel();
     DFG::CapabilityLevel capabilityLevelState() { return static_cast<DFG::CapabilityLevel>(m_capabilityLevelState); }

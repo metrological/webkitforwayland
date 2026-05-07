@@ -115,10 +115,10 @@ void ScriptExecutable::clearCode(IsoCellSet& clearableCodeSet)
 
 void ScriptExecutable::installCode(CodeBlock* codeBlock)
 {
-    installCode(codeBlock->vm(), codeBlock, codeBlock->codeType(), codeBlock->specializationKind(), Profiler::JettisonReason::NotJettisoned);
+    installCode(codeBlock->vm(), codeBlock, codeBlock->codeType(), codeBlock->specializationKind());
 }
 
-void ScriptExecutable::installCode(VM& vm, CodeBlock* genericCodeBlock, CodeType codeType, CodeSpecializationKind kind, Profiler::JettisonReason reason)
+void ScriptExecutable::installCode(VM& vm, CodeBlock* genericCodeBlock, CodeType codeType, CodeSpecializationKind kind)
 {
     if (genericCodeBlock)
         CODEBLOCK_LOG_EVENT(genericCodeBlock, "installCode", ());
@@ -196,17 +196,6 @@ void ScriptExecutable::installCode(VM& vm, CodeBlock* genericCodeBlock, CodeType
         Debugger* debugger = genericCodeBlock->globalObject()->debugger();
         if (UNLIKELY(debugger))
             debugger->registerCodeBlock(genericCodeBlock);
-    }
-
-    switch (reason) {
-    case Profiler::JettisonReason::JettisonDueToWeakReference:
-    case Profiler::JettisonReason::JettisonDueToOldAge: {
-        if (genericCodeBlock && !vm.heap.isMarked(genericCodeBlock))
-            genericCodeBlock = nullptr;
-        break;
-    }
-    default:
-        break;
     }
 
     if (oldCodeBlock)
@@ -412,7 +401,7 @@ void ScriptExecutable::prepareForExecutionImpl(VM& vm, JSFunction* function, JSS
             setupJIT(vm, codeBlock);
     }
 
-    installCode(vm, codeBlock, codeBlock->codeType(), codeBlock->specializationKind(), Profiler::JettisonReason::NotJettisoned);
+    installCode(vm, codeBlock, codeBlock->codeType(), codeBlock->specializationKind());
 }
 
 ScriptExecutable* ScriptExecutable::topLevelExecutable()

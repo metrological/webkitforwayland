@@ -205,21 +205,14 @@ public:
     }
 
     template<typename Functor>
-    void fill(VM& vm, size_t count, const Functor& func)
+    void fill(size_t count, const Functor& func)
     {
         ASSERT(!m_size);
         ensureCapacity(count);
         if (OverflowHandler::hasOverflowed())
             return;
-        if (LIKELY(!m_markSet)) {
-            m_markSet = &vm.heap.markListSet();
-            m_markSet->add(this);
-        }
         m_size = count;
-        auto* buffer = reinterpret_cast<JSValue*>(&slotFor(0));
-        for (unsigned i = 0; i < count; ++i)
-            buffer[i] = JSValue();
-        func(buffer);
+        func(reinterpret_cast<JSValue*>(&slotFor(0)));
     }
 
 private:
