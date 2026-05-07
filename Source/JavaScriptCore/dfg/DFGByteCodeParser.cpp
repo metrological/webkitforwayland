@@ -4486,18 +4486,18 @@ Node* ByteCodeParser::load(
 
 ObjectPropertyCondition ByteCodeParser::presenceConditionIfConsistent(JSObject* knownBase, UniquedStringImpl* uid, PropertyOffset offset, const StructureSet& set)
 {
-    Structure* structure = knownBase->structure();
+    if (set.isEmpty())
+        return ObjectPropertyCondition();
     unsigned attributes;
-    PropertyOffset baseOffset = structure->getConcurrently(uid, attributes);
-    if (offset != baseOffset)
+    PropertyOffset firstOffset = set[0]->getConcurrently(uid, attributes);
+    if (firstOffset != offset)
         return ObjectPropertyCondition();
-
-    // We need to check set contains knownBase's structure because knownBase's GetOwnPropertySlot could normally prevent access
-    // to this property, for example via a cross-origin restriction check. So unless we've executed this access before we can't assume
-    // just because knownBase has a property uid at offset we're allowed to access.
-    if (!set.contains(structure))
-        return ObjectPropertyCondition();
-
+    for (unsigned i = 1; i < set.size(); ++i) {
+        unsigned otherAttributes;
+        PropertyOffset otherOffset = set[i]->getConcurrently(uid, otherAttributes);
+        if (otherOffset != offset || otherAttributes != attributes)
+            return ObjectPropertyCondition();
+    }
     return ObjectPropertyCondition::presenceWithoutBarrier(knownBase, uid, offset, attributes);
 }
 
