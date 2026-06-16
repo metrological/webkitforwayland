@@ -219,6 +219,8 @@ void RealtimeMediaSource::videoFrameAvailable(VideoFrame& videoFrame, VideoFrame
 
     Locker locker { m_videoFrameObserversLock };
     if (m_videoFrameObservers.isEmpty()) {
+        printf("!!!! %s: m_pendingVideoFrames: %zu", __PRETTY_FUNCTION__, m_pendingVideoFrames.size()); fflush(stdout);
+
         if (m_pendingVideoFrames.size() < maxPendingVideoFramesBeforeAddTrack) {
             m_pendingVideoFrames.append(PendingVideoFrame { &videoFrame, metadata });
         }
@@ -227,6 +229,15 @@ void RealtimeMediaSource::videoFrameAvailable(VideoFrame& videoFrame, VideoFrame
         }
         return;
     }
+
+    // !!! DEBUG !!! DISCARD ONE EVERY N FRAMES TO CREATE DECODING ERRORS ON PURPOSE !!!
+    static size_t count = 0;
+    count++;
+    if (count % 3 == 0) {
+        printf("!!!! %s: Dropping video frame %d to create decoding errors !!!!", __PRETTY_FUNCTION__, count); fflush(stdout);
+        return;
+    }
+
     if (!m_pendingVideoFrames.isEmpty()) {
         WTFLogAlways("SERXIONE-8283 RealtimeMediaSource: Delivering %zu queued frame(s) (pipeline ready)", m_pendingVideoFrames.size());
         for (auto& pending : m_pendingVideoFrames) {
