@@ -2142,6 +2142,8 @@ void MediaPlayerPrivateGStreamer::handleMessage(GstMessage* message)
         if (!messageSourceIsPlaybin || m_isDelayingLoad)
             break;
 
+        updateBufferingStatus();
+
         // The MediaPlayerPrivateGStreamer superclass now processes what it needs by calling updateStates() in handleMessage() for
         // GST_MESSAGE_STATE_CHANGED. However, subclasses still need to override asyncStateChangeDone() to do their own stuff.
         didPreroll();
@@ -2440,6 +2442,17 @@ void MediaPlayerPrivateGStreamer::updateBufferingStatus(GstBufferingMode mode, d
         updateStates();
     GST_TRACE("[Buffering] Settled results: m_wasBuffering: %s, m_isBuffering: %s, m_previousBufferingPercentage: %d, m_bufferingPercentage: %d",
         boolForPrinting(m_wasBuffering), boolForPrinting(m_isBuffering), m_previousBufferingPercentage, m_bufferingPercentage);
+}
+
+void MediaPlayerPrivateGStreamer::updateBufferingStatus()
+{
+    std::optional<int> percentage = queryBufferingPercentage();
+
+    if (!percentage.has_value()) {
+        GST_DEBUG_OBJECT(pipeline(), "[Buffering] Unable to determine buffering status");
+        return;
+    }
+    updateBufferingStatus(GST_BUFFERING_DOWNLOAD, percentage.value(), false, false);
 }
 
 #if USE(GSTREAMER_MPEGTS)
