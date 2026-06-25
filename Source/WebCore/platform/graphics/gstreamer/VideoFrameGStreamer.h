@@ -60,6 +60,9 @@ public:
     GstSample* sample() const { return m_sample.get(); }
     RefPtr<JSC::Uint8ClampedArray> computeRGBAImageData() const;
 
+    bool isEncoded() const final;
+    bool hasSameEncodedFormat(const VideoFrame&) const final;
+
 private:
     VideoFrameGStreamer(GRefPtr<GstSample>&&, const FloatSize& presentationSize, const MediaTime& presentationTime = MediaTime::invalidTime(), Rotation = Rotation::None, bool videoMirrored = false, std::optional<VideoFrameTimeMetadata>&& = std::nullopt);
     VideoFrameGStreamer(const GRefPtr<GstSample>&, const MediaTime& presentationTime, Rotation = Rotation::None);

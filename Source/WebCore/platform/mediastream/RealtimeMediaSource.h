@@ -300,6 +300,13 @@ private:
     mutable Lock m_videoFrameObserversLock;
     HashSet<VideoFrameObserver*> m_videoFrameObservers WTF_GUARDED_BY_LOCK(m_videoFrameObserversLock);
 
+    struct PendingVideoFrame {
+        Ref<VideoFrame> frame;
+        VideoFrameTimeMetadata metadata;
+    };
+    static constexpr size_t maxPendingVideoFramesBeforeAddTrack = 30;
+    Vector<PendingVideoFrame> m_pendingVideoFrames WTF_GUARDED_BY_LOCK(m_videoFrameObserversLock);
+
     // Set on the main thread from constraints.
     IntSize m_size;
     // Set on sample generation thread.

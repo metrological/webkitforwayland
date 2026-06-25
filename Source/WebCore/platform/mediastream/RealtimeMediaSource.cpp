@@ -218,8 +218,37 @@ void RealtimeMediaSource::videoFrameAvailable(VideoFrame& videoFrame, VideoFrame
     updateHasStartedProducingData();
 
     Locker locker { m_videoFrameObserversLock };
-    for (auto* observer : m_videoFrameObservers)
-        observer->videoFrameAvailable(videoFrame, metadata);
+
+    // videoFrameObservers needs to be passed as parameter because if m_videoFrameObservers
+    // is used, that confuses the thread safety static analysis, which can't deduce that
+    // the lock has been taken by the outer scope of the videoFrameAvailable() method.
+    auto deliverFrame = [&] (Ref<VideoFrame>&& frame, VideoFrameTimeMetadata&& frameMetadata,
+        HashSet<VideoFrameObserver*>& videoFrameObservers) {
+        for (auto* observer : videoFrameObservers)
+            observer->videoFrameAvailable(frame, frameMetadata);
+    };
+
+    // Store encoded (H.264, vp9, etc.) video frames to avoid missing the headers when the first observer starts listening.
+    if (m_videoFrameObservers.isEmpty() && videoFrame.isEncoded()) {
+        // If the encoded format has changed, empty the pending frames, because there's no point on delivering them anymore.
+        if (!m_pendingVideoFrames.isEmpty() && !(Ref(m_pendingVideoFrames.last().frame)->hasSameEncodedFormat(videoFrame)))
+            m_pendingVideoFrames.clear();
+
+        if (m_pendingVideoFrames.size() < maxPendingVideoFramesBeforeAddTrack)
+            m_pendingVideoFrames.append(PendingVideoFrame { Ref(videoFrame), WTFMove(metadata) });
+        else
+            ALWAYS_LOG_IF(m_logger, LOGIDENTIFIER, "RealtimeMediaSource: Dropping video frame (queue is full) ", m_pendingVideoFrames.size(), " frames");
+        return;
+    }
+
+    if (!m_pendingVideoFrames.isEmpty()) {
+        ALWAYS_LOG_IF(m_logger, LOGIDENTIFIER, "RealtimeMediaSource: Delivering ", m_pendingVideoFrames.size(), " queued frame(s) (observer ready)");
+        for (auto& pending : m_pendingVideoFrames)
+            deliverFrame(WTFMove(pending.frame), WTFMove(pending.metadata), m_videoFrameObservers);
+        m_pendingVideoFrames.clear();
+    }
+
+    deliverFrame(Ref(videoFrame), WTFMove(metadata), m_videoFrameObservers);
 }
 
 void RealtimeMediaSource::audioSamplesAvailable(const MediaTime& time, const PlatformAudioData& audioData, const AudioStreamDescription& description, size_t numberOfFrames)
@@ -257,6 +286,12 @@ void RealtimeMediaSource::stop()
     ALWAYS_LOG_IF(m_logger, LOGIDENTIFIER);
 
     m_isProducingData = false;
+
+    {
+        Locker locker { m_videoFrameObserversLock };
+        m_pendingVideoFrames.clear();
+    }
+
     stopProducingData();
 }
 

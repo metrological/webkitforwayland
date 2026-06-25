@@ -120,6 +120,7 @@ VideoFrameGStreamer::VideoFrameGStreamer(GRefPtr<GstSample>&& sample, const Floa
     , m_presentationSize(presentationSize)
 {
     ASSERT(m_sample);
+
     GstBuffer* buffer = gst_sample_get_buffer(m_sample.get());
     RELEASE_ASSERT(buffer);
 
@@ -218,6 +219,38 @@ RefPtr<JSC::Uint8ClampedArray> VideoFrameGStreamer::computeRGBAImageData() const
     }
     gst_video_converter_frame(converter.get(), inputFrame.get(), outputFrame.get());
     return JSC::Uint8ClampedArray::tryCreate(WTFMove(bufferStorage), 0, byteLength);
+}
+
+bool VideoFrameGStreamer::isEncoded() const
+{
+    GstCaps* caps = gst_sample_get_caps(m_sample.get());
+    if (!caps)
+        return false;
+
+    const GstStructure* structure = gst_caps_get_structure(caps, 0);
+    if (!structure)
+        return false;
+
+    return !g_strcmp0(gst_structure_get_name(structure), "video/x-raw");
+}
+
+bool VideoFrameGStreamer::hasSameEncodedFormat(const VideoFrame& other) const
+{
+    if (!other.isGStreamer())
+        return false;
+
+    GstCaps* thisCaps = gst_sample_get_caps(m_sample.get());
+    GstCaps* otherCaps = gst_sample_get_caps(static_cast<const VideoFrameGStreamer&>(other).m_sample.get());
+
+    if (!thisCaps && !otherCaps)
+        return true;
+
+    if (!thisCaps || !otherCaps)
+        return false;
+
+    ASSERT(thisCaps && otherCaps);
+
+    return gst_caps_is_equal(thisCaps, otherCaps);
 }
 
 } // namespace WebCore
