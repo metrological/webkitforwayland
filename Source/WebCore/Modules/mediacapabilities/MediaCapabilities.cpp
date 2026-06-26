@@ -43,6 +43,7 @@
 #include "Page.h"
 #include "Settings.h"
 #include "WebRTCProvider.h"
+#include "NavigatorBase.h"
 #include <wtf/Logger.h>
 #include <wtf/SortedArrayMap.h>
 
